@@ -13,7 +13,7 @@ public:
 
     Node center;
 
-    std::vector<Edge> neigEdges(3); // TODO we need order here for calculating div
+    std::vector<Edge> neigEdges; // TODO we need order here for calculating div
 };
 
 #endif
