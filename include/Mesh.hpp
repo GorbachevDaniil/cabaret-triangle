@@ -12,6 +12,8 @@ public:
     std::vector<Node> nodes;
     std::vector<Edge> edges;
     std::vector<Cell> cells;
+
+    int InitMesh(Mesh *GRID);
 };
 
 #endif

@@ -8,5 +8,10 @@
 .DS_Store
 .DS_Store?
 ._*
+# Triangle generated files #
+*.poly
+*.ele
+*.node
+*.edge
 
 cabaret_triangle
