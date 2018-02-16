@@ -1,34 +1,44 @@
-#dir:
-ROOT_DIR = ./
-PROJ_SRC = ${ROOT_DIR}src
-INCLUDE_DIR = ${ROOT_DIR}include
+TARGET		= cabaret_triangle
 
-#the c++ compiler to use:
-CXX = g++
+SRC_DIR		= src
+INCLUDE_DIR	= include
+LIB_DIR		= lib
+BIN_DIR		= bin
+BUILD_DIR	= build
+TEST_DIR	= test
 
-#compilation flags for c++ source files:
-OPTS=-O3 -g0
-CXXFLAGS = $(OPTS) -Wall -iquote $(INCLUDE_DIR)
+CXX       	= g++
+CXXFLAGS  	= -std=c++11 \
+		 		-Wall \
+		 		-I $(INCLUDE_DIR) \
+		 		-I $(LIB_DIR)
 
-#source and header files
-vpath %.h $(INCLUDE_DIR)
-vpath %.cpp $(PROJ_SRC)
+LINKER   	= g++ -o
+LFLAGS   	= -Wall \
+		 		-I $(INCLUDE_DIR) \
+		 		-I $(LIB_DIR)
 
-objects = Main.o 
+SOURCES  	= $(wildcard $(SRC_DIR)/*.cpp)
+INCLUDES 	= $(wildcard $(INCLUDE_DIR)/*.hpp)
+OBJECTS  	= $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
-%.o : %.cpp
-	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $< -o $@
+$(BIN_DIR)/$(TARGET): $(OBJECTS)
+	@$(LINKER) $@ $(LFLAGS) $(OBJECTS)
+	@echo "Linked successfully!"
 
-all: cabaret_triangle
+$(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BIN_DIR)
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
+	@echo "Compiled "$<" successfully!"
 
-cabaret_triangle: $(objects)
-	$(CXX) $(objects) -o cabaret_triangle 
+test:
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -rf *.o cabaret_triangle
+	@rm -f $(OBJECTS)
+	@echo "Cleaned object files successfully!"
 
-
-
-
-
-
+remove: clean
+	@rm -f $(BIN_DIR)/$(TARGET)
+	@echo "Cleaned bin files successfully!"

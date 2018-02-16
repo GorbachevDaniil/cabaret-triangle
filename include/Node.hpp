@@ -6,7 +6,7 @@
 
 class Node {
 public:
-    long id;
+    long ID;
 
     Data data;
     Vector normal;

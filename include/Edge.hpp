@@ -10,10 +10,11 @@ class Cell;
 
 class Edge {
 public:
-    long id;
+    long ID;
+    long centerNodeID;
 
-    std::vector<Node> nodes; // TODO we need order here
-    std::vector<Cell> neigCells; // TODO we need order here
+    std::vector<long> nodeIDs; // TODO do we need order here?
+    std::vector<long> cellIDs; // TODO do we need order here?
 };
 
 #endif
