@@ -1,9 +1,6 @@
 #ifndef Edge_hpp
 #define Edge_hpp
 
-#include "Node.hpp"
-#include "Cell.hpp"
-
 #include <vector>
 
 class Cell;
