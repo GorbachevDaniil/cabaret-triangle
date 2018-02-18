@@ -1,44 +1,68 @@
-TARGET		= cabaret_triangle
+TARGET			= cabaret_triangle
+TEST_TARGET		= cabaret_triangle_test
 
-SRC_DIR		= src
-INCLUDE_DIR	= include
-LIB_DIR		= lib
-BIN_DIR		= bin
-BUILD_DIR	= build
-TEST_DIR	= test
+SRC_DIR			= src
+INCLUDE_DIR		= include
+LIB_DIR			= lib
+BIN_DIR			= bin
+BUILD_DIR		= build
+TEST_DIR		= test
+GTEST_DIR 		= $(LIB_DIR)/googletest
 
-CXX       	= g++
-CXXFLAGS  	= -std=c++11 \
-		 		-Wall \
-		 		-I $(INCLUDE_DIR) \
-		 		-I $(LIB_DIR)
+CXX       		= g++
+CXXFLAGS  		= -std=c++11 -Wall -Wextra
 
-LINKER   	= g++ -o
-LFLAGS   	= -Wall \
-		 		-I $(INCLUDE_DIR) \
-		 		-I $(LIB_DIR)
+LINKER   		= g++ -o
+LFLAGS   		= -Wall -Wextra
 
-SOURCES  	= $(wildcard $(SRC_DIR)/*.cpp)
-INCLUDES 	= $(wildcard $(INCLUDE_DIR)/*.hpp)
-OBJECTS  	= $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+INCLUDES 		= $(wildcard $(INCLUDE_DIR)/*.hpp)
+
+SOURCES  		= $(wildcard $(SRC_DIR)/*.cpp)
+OBJECTS  		= $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+TEST_SOURCES	= $(wildcard $(TEST_DIR)/*.cpp)
+TEST_OBJECTS	= $(TEST_SOURCES:$(TEST_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+
+$(BUILD_DIR)/gtest-all.o: $(GTEST_DIR)/src/gtest-all.cc
+	$(CXX) $(CXXFLAGS) -I $(GTEST_DIR)/include -I $(GTEST_DIR) \
+            -c $(GTEST_DIR)/src/gtest-all.cc \
+            -o $(BUILD_DIR)/gtest-all.o
+
+$(BUILD_DIR)/gtest_main.o: $(GTEST_DIR)/src/gtest_main.cc
+	$(CXX) $(CXXFLAGS) -I $(GTEST_DIR)/include -I $(GTEST_DIR) \
+            -c $(GTEST_DIR)/src/gtest_main.cc \
+            -o $(BUILD_DIR)/gtest_main.o
+
+$(BUILD_DIR)/gtest_main.a: $(BUILD_DIR)/gtest-all.o $(BUILD_DIR)/gtest_main.o
+	$(AR) $(ARFLAGS) $@ $^
 
 $(BIN_DIR)/$(TARGET): $(OBJECTS)
-	@$(LINKER) $@ $(LFLAGS) $(OBJECTS)
-	@echo "Linked successfully!"
+	@$(LINKER) $@ $(LFLAGS) -I $(INCLUDE_DIR) $(OBJECTS)
+	@echo "Target linked successfully!"
 
 $(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(BIN_DIR)
-	@$(CXX) $(CXXFLAGS) -c $< -o $@
+	@$(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
-test:
-	@$(CXX) $(CXXFLAGS) -c $< -o $@
+$(BIN_DIR)/$(TEST_TARGET): $(TEST_OBJECTS)
+	@$(LINKER) $@ $(LFLAGS) -I $(INCLUDE_DIR) -I $(GTEST_DIR)/include $(TEST_OBJECTS) $(BUILD_DIR)/gtest_main.a
+	@echo "Test target linked successfully!"
+
+$(TEST_OBJECTS): $(BUILD_DIR)/%.o : $(TEST_DIR)/%.cpp
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BIN_DIR)
+	@$(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) -I $(GTEST_DIR)/include -c $< -o $@
+	@echo "Compiled "$<" successfully!"	
+
+target: $(BIN_DIR)/$(TARGET)
+
+test_target: $(BIN_DIR)/$(TEST_TARGET)
 
 clean:
-	@rm -f $(OBJECTS)
+	@rm -f $(OBJECTS) $(TEST_OBJECTS)
 	@echo "Cleaned object files successfully!"
 
 remove: clean
-	@rm -f $(BIN_DIR)/$(TARGET)
+	@rm -f $(BIN_DIR)/$(TARGET) $(BIN_DIR)/$(TEST_TARGET)
 	@echo "Cleaned bin files successfully!"

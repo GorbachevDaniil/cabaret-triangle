@@ -4,6 +4,7 @@
 *.exe
 *.o
 *.out
+*.a
 # OS generated files #
 ######################
 .DS_Store
