@@ -1,5 +1,6 @@
 TARGET			= cabaret_triangle
 TEST_TARGET		= cabaret_triangle_test
+MAIN_CLASS		= Main.cpp
 
 SRC_DIR			= src
 INCLUDE_DIR		= include
@@ -17,7 +18,7 @@ LFLAGS   		= -Wall -Wextra
 
 INCLUDES 		= $(wildcard $(INCLUDE_DIR)/*.hpp)
 
-SOURCES  		= $(wildcard $(SRC_DIR)/*.cpp)
+SOURCES  		= $(filter-out $(SRC_DIR)/$(MAIN_CLASS), $(wildcard $(SRC_DIR)/*.cpp))
 OBJECTS  		= $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 TEST_SOURCES	= $(wildcard $(TEST_DIR)/*.cpp)
 TEST_OBJECTS	= $(TEST_SOURCES:$(TEST_DIR)/%.cpp=$(BUILD_DIR)/%.o)
@@ -36,7 +37,7 @@ $(BUILD_DIR)/gtest_main.a: $(BUILD_DIR)/gtest-all.o $(BUILD_DIR)/gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
 $(BIN_DIR)/$(TARGET): $(OBJECTS)
-	@$(LINKER) $@ $(LFLAGS) -I $(INCLUDE_DIR) $(OBJECTS)
+	@$(LINKER) $@ $(LFLAGS) -I $(INCLUDE_DIR) $(OBJECTS) $(SRC_DIR)/$(MAIN_CLASS)
 	@echo "Target linked successfully!"
 
 $(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
@@ -45,8 +46,8 @@ $(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
 	@$(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
-$(BIN_DIR)/$(TEST_TARGET): $(TEST_OBJECTS) $(BUILD_DIR)/gtest_main.a
-	@$(LINKER) $@ $(LFLAGS) -I $(INCLUDE_DIR) -I $(GTEST_DIR)/include $(TEST_OBJECTS) $(BUILD_DIR)/gtest_main.a
+$(BIN_DIR)/$(TEST_TARGET): $(TEST_OBJECTS) $(OBJECTS) $(BUILD_DIR)/gtest_main.a
+	@$(LINKER) $@ $(LFLAGS) -I $(INCLUDE_DIR) -I $(GTEST_DIR)/include $(BUILD_DIR)/gtest_main.a $(TEST_OBJECTS) $(OBJECTS)
 	@echo "Test target linked successfully!"
 
 $(TEST_OBJECTS): $(BUILD_DIR)/%.o : $(TEST_DIR)/%.cpp
@@ -57,7 +58,7 @@ $(TEST_OBJECTS): $(BUILD_DIR)/%.o : $(TEST_DIR)/%.cpp
 
 target: $(BIN_DIR)/$(TARGET)
 
-test_target: $(BIN_DIR)/$(TEST_TARGET)
+target_test: $(BIN_DIR)/$(TEST_TARGET)
 
 clean:
 	@rm -f $(OBJECTS) $(TEST_OBJECTS)

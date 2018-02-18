@@ -9,10 +9,11 @@ class Edge {
 public:
     long ID;
     long centerNodeID;
-    bool BoundEdge;
+    long length;
+    bool boundEdge;
 
-    std::vector<long> nodeIDs; // TODO do we need order here?
-    std::vector<long> cellIDs; // TODO do we need order here?
+    std::vector<long> nodeIDs;
+    std::vector<long> cellIDs;
 };
 
 #endif

@@ -32,7 +32,7 @@ int LoadNodes(Mesh *grid){
 
 	if(!nodefile){
 		cout << "Error opening node file!" << endl;
-		return 0;
+		return 1;
 	}
 
 	vector<string> values;
@@ -60,7 +60,7 @@ int LoadNodes(Mesh *grid){
 		i++;
 	}
 
-	return 1;
+	return 0;
 }
 
 int LoadEdges(Mesh *grid){
@@ -69,7 +69,7 @@ int LoadEdges(Mesh *grid){
 
 	if(!edgefile){
 		cout << "Error opening edge file!" << endl;
-		return 0;
+		return 1;
 	}
 
 	vector<string> values;
@@ -89,13 +89,13 @@ int LoadEdges(Mesh *grid){
 		edge->ID = atol(values[0].c_str());
 		edge->nodeIDs.push_back(atol(values[1].c_str())-1);
 		edge->nodeIDs.push_back(atol(values[2].c_str())-1);
-		edge->BoundEdge = atoi(values[3].c_str());
+		edge->boundEdge = atoi(values[3].c_str());
 		grid->edges.push_back(*edge);
 
 		i++;
 	}
 
-	return 1;
+	return 0;
 }
 
 int LoadCells(Mesh *grid){
@@ -104,7 +104,7 @@ int LoadCells(Mesh *grid){
 
 	if(!cellfile){
 		cout << "Error opening edge file!" << endl;
-		return 0;
+		return 1;
 	}
 
 	vector<string> values;
@@ -130,12 +130,12 @@ int LoadCells(Mesh *grid){
 		i++;
 	}
 
-	return 1;
+	return 0;
 }
 
 
 int Mesh::InitMesh(Mesh *GRID){
-	printf("Loading mesh\n");
+	cout << "Loading mesh" << endl;
 
 	LoadNodes(GRID);
 	LoadEdges(GRID);
@@ -153,5 +153,5 @@ int Mesh::InitMesh(Mesh *GRID){
 		cout << i << " " << GRID->cells[i].nodeIDs[0] << " " << GRID->cells[i].nodeIDs[1] << " " << GRID->cells[i].nodeIDs[2] << endl; 
 	}
 	
-	return 1;
+	return 0;
 }

@@ -8,22 +8,22 @@ public:
     double x;
     double y;
 
-    inline void Clear() { x = 0.;  y = 0.; }
-    inline void Set(Vector &c) { x = c.x; y = c.y; }
-    inline void Set(double *c) { x = c[0]; y = c[1]; }
-    inline void Set(double c0, double c1) {x = c0; y = c1; }
-    inline void SetMult(Vector &c, double d) { x = d * c.x; y = d * c.y; }
-    inline void SetPlus(Vector &c1, Vector &c2) { x=c1.x + c2.x; y=c1.y + c2.y; }
-    inline void SetMinus(Vector &c1, Vector &c2) { x=c1.x - c2.x; y=c1.y - c2.y; }
-    inline void Mult(double d){ x *= d; y *= d; }
-    inline void Plus(Vector &c){ x += c.x; y += c.y; }
-    inline void Minus(Vector &c){ x -= c.x; y -= c.y; }
-    inline void PlusMult(Vector &c, double d){ x += d * c.x; y += d * c.y; }
-    inline void MinusMult(Vector &c, double d){ x -= d * c.x; y -= d * c.y; }
+    inline void clear() { x = 0.;  y = 0.; }
+    inline void set(Vector &c) { x = c.x; y = c.y; }
+    inline void set(double *c) { x = c[0]; y = c[1]; }
+    inline void set(double c0, double c1) {x = c0; y = c1; }
+    inline void setMult(Vector &c, double d) { x = d * c.x; y = d * c.y; }
+    inline void setPlus(Vector &c1, Vector &c2) { x=c1.x + c2.x; y=c1.y + c2.y; }
+    inline void setMinus(Vector &c1, Vector &c2) { x=c1.x - c2.x; y=c1.y - c2.y; }
+    inline void mult(double d){ x *= d; y *= d; }
+    inline void plus(Vector &c){ x += c.x; y += c.y; }
+    inline void minus(Vector &c){ x -= c.x; y -= c.y; }
+    inline void plusMult(Vector &c, double d){ x += d * c.x; y += d * c.y; }
+    inline void minusMult(Vector &c, double d){ x -= d * c.x; y -= d * c.y; }
 
-    inline double Scalar(Vector &c){ return (x * c.x + y * c.y); }
-    inline double Length(){ return sqrt(x * x + y * y); }
-    inline double Length2(){ return (x * x + y * y); }
+    inline double scalar(Vector &c){ return (x * c.x + y * c.y); }
+    inline double length(){ return sqrt(x * x + y * y); }
+    inline double length2(){ return (x * x + y * y); }
 
     static double ScalarProduct(Vector &v1, Vector &v2) { return v1.x * v2.x + v1.y * v2.y; }
     static double ScalarProduct(double *d, Vector &v) { return d[0] * v.x + d[1] * v.y; }
