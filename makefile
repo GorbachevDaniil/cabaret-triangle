@@ -45,7 +45,7 @@ $(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
 	@$(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
-$(BIN_DIR)/$(TEST_TARGET): $(TEST_OBJECTS)
+$(BIN_DIR)/$(TEST_TARGET): $(TEST_OBJECTS) $(BUILD_DIR)/gtest_main.a
 	@$(LINKER) $@ $(LFLAGS) -I $(INCLUDE_DIR) -I $(GTEST_DIR)/include $(TEST_OBJECTS) $(BUILD_DIR)/gtest_main.a
 	@echo "Test target linked successfully!"
 
