@@ -13,7 +13,8 @@ public:
     std::vector<Edge> edges;
     std::vector<Cell> cells;
 
-    int InitMesh(Mesh *GRID);
+    inline long getNewNodeID(){ return nodes.size();};
+    int InitMesh(Mesh *mesh);
 };
 
 #endif
