@@ -9,7 +9,7 @@ class Edge {
 public:
     long ID;
     long centerNodeID;
-    long length;
+    double length;
     bool boundEdge;
 
     std::vector<long> nodeIDs;
