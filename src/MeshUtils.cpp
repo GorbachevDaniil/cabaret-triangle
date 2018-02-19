@@ -20,7 +20,7 @@ void calculateNormal(Mesh &mesh, Cell &cell, long edgeID) {
 
     Vector normal;
     normal.set(tangential.y, -tangential.x);
-    normal.mult(1 / tangential.length());
+    normal.mult(1. / edge.length);
 
     mesh.nodes[edge.centerNodeID].normal.set(normal);
 }
