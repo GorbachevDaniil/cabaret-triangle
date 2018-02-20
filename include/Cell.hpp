@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 
+class Mesh;
+
 class Cell {
 public:
     long ID;
@@ -14,6 +16,8 @@ public:
     std::vector<long> edgeIDs;
     std::map<long, int> edgeIDNormalDirection;
 
+    Cell(Mesh &mesh, long id, long node_id_1, long node_id_2, long node_id_3);
+    double countVolume(Mesh &mesh, long node_id_1, long node_id_2, long node_id_3);
     long getNextNodeID(unsigned long nodeIDPos);
     long getPrevNodeID(unsigned long nodeIDPos);
     std::vector<long> getEdgeOrderedNodeIDs(std::vector<long> edgeUnorderedNodeIDs);

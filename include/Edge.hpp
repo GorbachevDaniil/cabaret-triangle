@@ -3,7 +3,7 @@
 
 #include <vector>
 
-class Cell;
+class Mesh;
 
 class Edge {
 public:
@@ -14,6 +14,8 @@ public:
 
     std::vector<long> nodeIDs;
     std::vector<long> cellIDs;
+
+    Edge(Mesh &mesh, long id, long start_node_id, long end_node_id, bool boundEdge);
 };
 
 #endif

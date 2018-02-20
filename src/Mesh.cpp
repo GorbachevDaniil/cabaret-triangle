@@ -8,17 +8,17 @@
 using namespace std;
 
 //Make vector of values from string words
-vector<string> split(const string& s, char delimiter)
+vector<string> split(const string& s, const char *delimiter)
 {
 	vector<string> values;
 	char *pch;
 	char *cstr = new char[s.length() + 1];
 	strcpy(cstr, s.c_str());
-	pch = strtok(cstr," ");
+	pch = strtok(cstr, delimiter);
 	
 	while (pch != NULL){
 		values.push_back(pch);
-		pch = strtok(NULL, " ");
+		pch = strtok(NULL, delimiter);
 	}
 
 	delete [] cstr;
@@ -41,20 +41,14 @@ int LoadNodes(Mesh *grid){
 	while (getline(nodefile, line) && (i != (nNodes+1))){
 		if (i==nNodes+1) continue; // miss last string 
 
-		values = split(line, ' ');
+		values = split(line, " ");
 		if (i==0){
 			i++;
 			nNodes = atoi(values[0].c_str()); //init number of Nodes
 			continue;
 		} 
 
-		Vector *vec = new Vector();
-		vec->x = atof(values[1].c_str());
-		vec->y = atof(values[2].c_str());
-		Data *data = new Data();
-		data->coords = *vec;
-		Node *node = new Node();
-		node->data = *data;
+		Node *node = new Node(*grid, atof(values[1].c_str()), atof(values[2].c_str()));
 		grid->nodes.push_back(*node);
 
 		i++;
@@ -78,18 +72,14 @@ int LoadEdges(Mesh *grid){
 	while (getline(edgefile, line) && (i != (nEdges+1))){
 		if (i==nEdges+1) continue; // miss last string 
 
-		values = split(line, ' ');
+		values = split(line, " ");
 		if (i==0){
 			i++;
 			nEdges = atoi(values[0].c_str()); //init number of Nodes
 			continue;
 		} 
 
-		Edge *edge = new Edge();
-		edge->ID = atol(values[0].c_str());
-		edge->nodeIDs.push_back(atol(values[1].c_str())-1);
-		edge->nodeIDs.push_back(atol(values[2].c_str())-1);
-		edge->boundEdge = atoi(values[3].c_str());
+		Edge *edge = new Edge(*grid, atol(values[0].c_str()), atol(values[1].c_str())-1, atol(values[2].c_str())-1, atoi(values[3].c_str()));
 		grid->edges.push_back(*edge);
 
 		i++;
@@ -113,18 +103,14 @@ int LoadCells(Mesh *grid){
 	while (getline(cellfile, line) && (i != (nCells+1))){
 		if (i==nCells+1) continue; // miss last string 
 
-		values = split(line, ' ');
+		values = split(line, " ");
 		if (i==0){
 			i++;
 			nCells = atoi(values[0].c_str()); //init number of Nodes
 			continue;
 		} 
 
-		Cell *cell = new Cell();
-		cell->ID = atol(values[0].c_str());
-		cell->nodeIDs.push_back(atol(values[1].c_str())-1);
-		cell->nodeIDs.push_back(atol(values[2].c_str())-1);
-		cell->nodeIDs.push_back(atol(values[3].c_str())-1);
+		Cell *cell = new Cell(*grid, atol(values[0].c_str()), atol(values[1].c_str())-1, atol(values[2].c_str())-1, atol(values[3].c_str())-1);
 		grid->cells.push_back(*cell);
 
 		i++;
@@ -133,24 +119,23 @@ int LoadCells(Mesh *grid){
 	return 0;
 }
 
-
-int Mesh::InitMesh(Mesh *GRID){
+int Mesh::InitMesh(Mesh *mesh){
 	cout << "Loading mesh" << endl;
 
-	LoadNodes(GRID);
-	LoadEdges(GRID);
-	LoadCells(GRID);
+	LoadNodes(mesh);
+	LoadEdges(mesh);
+	LoadCells(mesh);
 
-	for(int i=0; i<GRID->nodes.size(); i++){
-		cout << i << " " << GRID->nodes[i].data.coords.x << " " << GRID->nodes[i].data.coords.y << endl; 
+	for(unsigned long i=0; i<mesh->nodes.size(); i++){
+		cout << i << " " << mesh->nodes[i].data.coords.x << " " << mesh->nodes[i].data.coords.y << endl; 
 	}
 
-	for(int i=0; i<GRID->edges.size(); i++){
-		cout << i << " " << GRID->edges[i].nodeIDs[0] << " " << GRID->edges[i].nodeIDs[1] << endl; 
+	for(unsigned long i=0; i<mesh->edges.size(); i++){
+		cout << i << " " << mesh->edges[i].nodeIDs[0] << " " << mesh->edges[i].nodeIDs[1] << endl; 
 	}
 
-	for(int i=0; i<GRID->cells.size(); i++){
-		cout << i << " " << GRID->cells[i].nodeIDs[0] << " " << GRID->cells[i].nodeIDs[1] << " " << GRID->cells[i].nodeIDs[2] << endl; 
+	for(unsigned long i=0; i<mesh->cells.size(); i++){
+		cout << i << " " << mesh->cells[i].nodeIDs[0] << " " << mesh->cells[i].nodeIDs[1] << " " << mesh->cells[i].nodeIDs[2] << endl; 
 	}
 	
 	return 0;
