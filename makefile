@@ -7,7 +7,7 @@ INCLUDE_DIR		= include
 LIB_DIR			= lib
 BIN_DIR			= bin
 BUILD_DIR		= build
-TEST_DIR		= test
+TEST_DIR			= test
 GTEST_DIR 		= $(LIB_DIR)/googletest
 
 CXX       		= g++
@@ -63,7 +63,5 @@ target_test: $(BIN_DIR)/$(TEST_TARGET)
 clean:
 	@rm -f $(OBJECTS) $(TEST_OBJECTS)
 	@echo "Cleaned object files successfully!"
-
-remove: clean
 	@rm -f $(BIN_DIR)/$(TARGET) $(BIN_DIR)/$(TEST_TARGET)
 	@echo "Cleaned bin files successfully!"

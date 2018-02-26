@@ -13,6 +13,7 @@ public:
     Data data;
     Vector normal;
 
+    Node() {};
     Node(Mesh &mesh, double x, double y);
 };
 

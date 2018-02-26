@@ -5,11 +5,14 @@
 
 class Data {
 public:
-    double u0;
-    double u1;
-    double u2;
-
     Vector coords;
+
+    Vector u0;
+    Vector u1;
+    Vector u2;
+    double phi0;
+    double phi1;
+    double phi2;
 };
 
 #endif

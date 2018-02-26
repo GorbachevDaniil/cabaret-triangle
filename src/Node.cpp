@@ -3,9 +3,9 @@
 
 #include <iostream>
 
-Node::Node(Mesh &mesh, double x, double y){
-	Vector vec;
-	vec.set(x,y);
-	data.coords = vec;
-	ID = mesh.getNewNodeID();
+Node::Node(Mesh &mesh, double x, double y) {
+    Vector vec;
+    vec.set(x, y);
+    data.coords = vec;
+    ID = mesh.getNewNodeID();
 }

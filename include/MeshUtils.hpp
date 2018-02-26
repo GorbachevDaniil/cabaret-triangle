@@ -5,7 +5,8 @@
 
 class MeshUtils {
 public:
-    static void calculateNormals(Mesh &mesh);
+    static void calculateNodeNormals(Mesh &mesh);
+    static void calculateVectorsFromCenterToEdges(Mesh &mesh);
 };
 
 #endif

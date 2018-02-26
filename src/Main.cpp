@@ -1,6 +1,5 @@
-#include "Data.hpp"
 #include "Mesh.hpp"
-#include "Cell.hpp"
+#include "Solver.hpp"
 #include "OutputUtils.hpp"
 
 #include <iostream>
@@ -8,10 +7,15 @@
 int main(int argc, char **argv) {
     std::cout << "Hello world, CABARET inda house" << std::endl;
 
-	Mesh *mesh = new Mesh();
+    Mesh *mesh = new Mesh();
+    mesh->InitMesh(mesh);
 
-	mesh->InitMesh(mesh);
-	// OutputUtils::OutputParaview(mesh);
+    Solver solver(mesh);
+//    solver.processPhase1();
+//    solver.processPhase2();
+//    solver.processPhase3();
 
-	return 1;
-}	
+    // OutputUtils::OutputParaview(mesh);
+
+    return 0;
+}

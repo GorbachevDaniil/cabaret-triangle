@@ -25,9 +25,9 @@ public:
     inline double length(){ return sqrt(x * x + y * y); }
     inline double length2(){ return (x * x + y * y); }
 
-    static double ScalarProduct(Vector &v1, Vector &v2) { return v1.x * v2.x + v1.y * v2.y; }
-    static double ScalarProduct(double *d, Vector &v) { return d[0] * v.x + d[1] * v.y; }
-    static double ScalarProduct(double *d1, double *d2) { return d1[0] * d2[0] + d1[1] * d2[1]; }
+    static double Scalar(Vector &v1, Vector &v2) { return v1.x * v2.x + v1.y * v2.y; }
+    static double Scalar(double *d, Vector &v) { return d[0] * v.x + d[1] * v.y; }
+    static double Scalar(double *d1, double *d2) { return d1[0] * d2[0] + d1[1] * d2[1]; }
     static double Length(double x, double y) { return sqrt(x * x + y * y); }
     static double GetDistance(Vector &v1, Vector &v2) { return Vector::Length(v2.x - v1.x,v2.y - v1.y); }
 };

@@ -9,7 +9,7 @@
 
 #include <vector>
 
-void calculateNormal(Mesh &mesh, Cell &cell, long edgeID) {
+void calculateNodeNormal(Mesh &mesh, Cell &cell, long edgeID) {
     Edge edge = mesh.edges[edgeID];
 
     std::vector<long> nodeIDs = cell.getEdgeOrderedNodeIDs(edge.nodeIDs);
@@ -25,17 +25,38 @@ void calculateNormal(Mesh &mesh, Cell &cell, long edgeID) {
     mesh.nodes[edge.centerNodeID].normal.set(normal);
 }
 
-void MeshUtils::calculateNormals(Mesh &mesh) {
+void MeshUtils::calculateNodeNormals(Mesh &mesh) {
     std::vector<int> isNormalCalculated(mesh.edges.size(), 0);
-    for (Cell cell : mesh.cells) {
-        for (long edgeID : cell.edgeIDs) {
+    for (unsigned long i = 0; i < mesh.cells.size(); i++) {
+        Cell *cell = &mesh.cells[i];
+
+        for (long edgeID : cell->edgeIDs) {
             if (isNormalCalculated[edgeID] == 1) {
-                cell.edgeIDNormalDirection[edgeID] = -1;
+                cell->edgeToNormalDirection[edgeID] = -1;
             } else {
-                calculateNormal(mesh, cell, edgeID);
+                calculateNodeNormal(mesh, *cell, edgeID);
                 isNormalCalculated[edgeID] = 1;
-                cell.edgeIDNormalDirection[edgeID] = 1;
+                cell->edgeToNormalDirection[edgeID] = 1;
             }
+        }
+    }
+}
+
+void MeshUtils::calculateVectorsFromCenterToEdges(Mesh &mesh) {
+    for (unsigned long i = 0; i < mesh.cells.size(); i++) {
+        Cell *cell = &mesh.cells[i];
+        Node cellCenter = mesh.nodes[cell->centerNodeID];
+
+        for (long edgeID : cell->edgeIDs) {
+            Edge edge = mesh.edges[edgeID];
+            Node edgeCenter = mesh.nodes[edge.centerNodeID];
+
+            Vector vectorFromCenter;
+            vectorFromCenter.set(edgeCenter.data.coords);
+            vectorFromCenter.minus(cellCenter.data.coords);
+            vectorFromCenter.mult(1. / vectorFromCenter.length());
+
+            cell->edgeToVectorFromCenter[edgeID].set(vectorFromCenter);
         }
     }
 }
