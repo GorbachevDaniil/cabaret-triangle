@@ -5,7 +5,7 @@
 
 class OutputUtils {
 public:
-	static void OutputParaview(Mesh *mesh);
+	static void OutputParaview(Mesh *mesh, int step);
 };
 
 #endif

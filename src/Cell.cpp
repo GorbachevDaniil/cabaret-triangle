@@ -5,7 +5,6 @@
 #include <vector>
 #include <algorithm>
 #include <cassert>
-#include <iostream>
 
 double determinant(double a1, double a2, double a3, double a4) {
     return a1 * a4 - a2 * a3;
@@ -27,8 +26,6 @@ std::vector<double> findLinesIntersection(double x1, double y1, double x2, doubl
     det1 = determinant(b1, a2, b2, a4);
     det2 = determinant(a1, b1, a3, b2);
 
-    std::cout << det1 / det << std::endl;
-    std::cout << det2 / det << std::endl;
     intersectionCoords.push_back(det1 / det);
     intersectionCoords.push_back(det2 / det);
 
@@ -58,9 +55,9 @@ Cell::Cell(Mesh &mesh, long id, long node_id_1, long node_id_2, long node_id_3) 
     y2 = mesh.nodes[node_id_2].data.coords.y;
     y3 = mesh.nodes[node_id_3].data.coords.y;
 
-    intersectionCoords = findLinesIntersection(x1, y1, (x2 + x3) / 2, (y2 + y3) / 2, x3, y3,
-            (x1 + x2) / 2, (y1 + y2) / 2);
-    Node *node = new Node(mesh, intersectionCoords[0], intersectionCoords[1]);
+//    intersectionCoords = findLinesIntersection(x1, y1, (x2 + x3) / 2, (y2 + y3) / 2, x3, y3,
+//            (x1 + x2) / 2, (y1 + y2) / 2);
+    Node *node = new Node(mesh, (x1 + x2 +x3) / 3, (y1 + y2 + y3) / 3);
     mesh.nodes.push_back(*node);
 
     centerNodeID = node->ID;

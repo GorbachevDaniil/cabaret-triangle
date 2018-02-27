@@ -7,7 +7,8 @@ INCLUDE_DIR		= include
 LIB_DIR			= lib
 BIN_DIR			= bin
 BUILD_DIR		= build
-TEST_DIR			= test
+TEST_DIR		= test
+OUTPUT_DIR		= $(BIN_DIR)/output
 GTEST_DIR 		= $(LIB_DIR)/googletest
 
 CXX       		= g++
@@ -43,6 +44,7 @@ $(BIN_DIR)/$(TARGET): $(OBJECTS)
 $(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(BIN_DIR)
+	@mkdir -p $(OUTPUT_DIR)
 	@$(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 

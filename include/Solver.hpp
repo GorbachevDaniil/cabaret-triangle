@@ -12,6 +12,7 @@ public:
     void processPhase1();
     void processPhase2();
     void processPhase3();
+    void prepareNextStep();
 };
 
 #endif
