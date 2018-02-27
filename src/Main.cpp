@@ -4,7 +4,15 @@
 #include "MeshUtils.hpp"
 #include "OutputUtils.hpp"
 
+#include <iostream>
+
 int main(int argc, char **argv) {
+    if (argc < 2) {
+        std::cout << "Number of steps should be specified" << std::endl;
+        return 1;
+    }
+    int steps = std::atoi(argv[1]);
+
     Mesh *mesh = new Mesh();
     mesh->InitMesh(mesh);
     MeshUtils::calculateNodeNormals(*mesh);
@@ -15,7 +23,7 @@ int main(int argc, char **argv) {
 
     Solver solver(mesh);
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < steps; i++) {
         solver.processPhase1();
         solver.processPhase2();
         solver.processPhase3();

@@ -94,7 +94,7 @@ int LoadCells(Mesh *grid) {
     ifstream cellfile("triangle/Mesh.1.ele");
 
     if (!cellfile) {
-        cout << "Error opening edge file!" << endl;
+        cout << "Error opening ele file!" << endl;
         return 1;
     }
 
