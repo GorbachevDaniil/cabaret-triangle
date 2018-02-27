@@ -5,6 +5,8 @@
 *.o
 *.out
 *.a
+bin/
+build/
 # OS generated files #
 ######################
 .DS_Store
