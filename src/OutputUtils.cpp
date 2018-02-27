@@ -12,11 +12,9 @@ void OutputUtils::OutputParaview(Mesh *mesh, int step) {
 
     std::fprintf(output_f, "x,y,phi\n");
 
-    for (unsigned long i = 0; i < mesh->nodes.size(); i++) {
-        std::fprintf(output_f, "%f,%f,%f\n",
-                        mesh->nodes[i].data.coords.x,
-                        mesh->nodes[i].data.coords.y,
-                        mesh->nodes[i].data.phi0);
+    for (unsigned long i = 0; i < mesh->cells.size(); i++) {
+        Data *data = &mesh->nodes[mesh->cells[i].centerNodeID].data;
+        std::fprintf(output_f, "%f,%f,%f\n", data->coords.x, data->coords.y, data->phi0);
     }
     std::fclose(output_f);
 
