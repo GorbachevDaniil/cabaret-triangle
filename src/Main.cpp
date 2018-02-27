@@ -11,6 +11,7 @@ int main(int argc, char **argv) {
     mesh->InitMesh(mesh);
 
     Solver solver(mesh);
+
 //    solver.processPhase1();
 //    solver.processPhase2();
 //    solver.processPhase3();

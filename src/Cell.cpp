@@ -69,6 +69,22 @@ Cell::Cell(Mesh &mesh, long id, long node_id_1, long node_id_2, long node_id_3) 
     nodeIDs.push_back(node_id_2);
     nodeIDs.push_back(node_id_3);
     volume = determinant((x1 - x3), (x2 - x3), (y1 - y3), (y2 - y3));
+
+    std::map<std::pair<int, int>,int>::const_iterator it;
+    int tempEdgeID;
+
+    it = mesh.mapNodesWithEdge.find(std::make_pair(node_id_1, node_id_2));
+    tempEdgeID = it->second;
+    edgeIDs.push_back(tempEdgeID);
+    mesh.edges[tempEdgeID].cellIDs.push_back(ID);
+    it = mesh.mapNodesWithEdge.find(std::make_pair(node_id_2, node_id_3));
+    tempEdgeID = it->second;
+    edgeIDs.push_back(tempEdgeID);
+    mesh.edges[tempEdgeID].cellIDs.push_back(ID);
+    it = mesh.mapNodesWithEdge.find(std::make_pair(node_id_3, node_id_1));
+    tempEdgeID = it->second;
+    edgeIDs.push_back(tempEdgeID);
+    mesh.edges[tempEdgeID].cellIDs.push_back(ID);
 }
 
 long Cell::getNextNodeID(unsigned long nodeIDPos) {

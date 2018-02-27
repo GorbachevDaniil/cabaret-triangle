@@ -3,7 +3,7 @@
 #include <cmath>
 #include <fstream>
 #include <sstream>
-#include <string>
+#include <cstring>
 
 using namespace std;
 
@@ -13,11 +13,11 @@ vector<string> split(const string& s, const char *delimiter) {
     char *pch;
     char *cstr = new char[s.length() + 1];
     strcpy(cstr, s.c_str());
-    pch = strtok(cstr, delimiter);
+    pch = std::strtok(cstr, delimiter);
 
     while (pch != NULL) {
         values.push_back(pch);
-        pch = strtok(NULL, delimiter);
+        pch = std::strtok(NULL, delimiter);
     }
 
     delete[] cstr;
@@ -79,7 +79,7 @@ int LoadEdges(Mesh *grid) {
             continue;
         }
 
-        Edge *edge = new Edge(*grid, atol(values[0].c_str()), atol(values[1].c_str()) - 1,
+        Edge *edge = new Edge(*grid, atol(values[0].c_str()) - 1, atol(values[1].c_str()) - 1,
                 atol(values[2].c_str()) - 1, atoi(values[3].c_str()));
         grid->edges.push_back(*edge);
 
@@ -112,7 +112,7 @@ int LoadCells(Mesh *grid) {
             continue;
         }
 
-        Cell *cell = new Cell(*grid, atol(values[0].c_str()), atol(values[1].c_str()) - 1,
+        Cell *cell = new Cell(*grid, atol(values[0].c_str()) - 1, atol(values[1].c_str()) - 1,
                 atol(values[2].c_str()) - 1, atol(values[3].c_str()) - 1);
         grid->cells.push_back(*cell);
 
@@ -128,20 +128,6 @@ int Mesh::InitMesh(Mesh *mesh) {
     LoadNodes(mesh);
     LoadEdges(mesh);
     LoadCells(mesh);
-
-    for (unsigned long i = 0; i < mesh->nodes.size(); i++) {
-        cout << i << " " << mesh->nodes[i].data.coords.x << " " << mesh->nodes[i].data.coords.y
-                << endl;
-    }
-
-    for (unsigned long i = 0; i < mesh->edges.size(); i++) {
-        cout << i << " " << mesh->edges[i].nodeIDs[0] << " " << mesh->edges[i].nodeIDs[1] << endl;
-    }
-
-    for (unsigned long i = 0; i < mesh->cells.size(); i++) {
-        cout << i << " " << mesh->cells[i].nodeIDs[0] << " " << mesh->cells[i].nodeIDs[1] << " "
-                << mesh->cells[i].nodeIDs[2] << endl;
-    }
 
     return 0;
 }

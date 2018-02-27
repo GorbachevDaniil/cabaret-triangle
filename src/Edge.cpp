@@ -23,4 +23,10 @@ Edge::Edge(Mesh &mesh, long id, long start_node_id, long end_node_id, bool bound
     Node *node = new Node(mesh, (start_node_x + end_node_x) / 2, (start_node_y + end_node_y) / 2);
     mesh.nodes.push_back(*node);
     centerNodeID = node->ID;
+
+    std::pair<int, int> tempNodeIDs;
+    tempNodeIDs = std::make_pair(start_node_id,end_node_id);
+    mesh.mapNodesWithEdge.insert(std::pair<std::pair<int, int>,int>(tempNodeIDs,id));
+    tempNodeIDs = std::make_pair(end_node_id,start_node_id);
+    mesh.mapNodesWithEdge.insert(std::pair<std::pair<int, int>,int>(tempNodeIDs,id));
 }
