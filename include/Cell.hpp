@@ -13,11 +13,12 @@ public:
     long ID;
     long centerNodeID;
     double volume;
+    double maxH;
 
     std::vector<long> nodeIDs;
     std::vector<long> edgeIDs;
-    std::map<long, int> edgeToNormalDirection;
-    std::map<long, Vector> edgeToVectorFromCenter;
+    std::map<long, int> edgeToNormalDir;
+    std::map<long, Vector> edgeToTransportDir;
 
     Cell() {};
     Cell(Mesh &mesh, long id, long node_id_1, long node_id_2, long node_id_3);

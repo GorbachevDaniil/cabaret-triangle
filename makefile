@@ -12,15 +12,17 @@ OUTPUT_DIR		= $(BIN_DIR)/output
 GTEST_DIR 		= $(LIB_DIR)/googletest
 
 CXX       		= g++
-CXXFLAGS  		= -std=c++11 -Wall -Wextra
+CXXFLAGS  		= -g -std=c++11 -Wall -Wextra
 
 LINKER   		= g++ -o
 LFLAGS   		= -Wall -Wextra
 
 INCLUDES 		= $(wildcard $(INCLUDE_DIR)/*.hpp)
 
-SOURCES  		= $(filter-out $(SRC_DIR)/$(MAIN_CLASS), $(wildcard $(SRC_DIR)/*.cpp))
+SOURCES  		= $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS  		= $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+SOURCES_NO_MAIN	= $(filter-out $(SRC_DIR)/$(MAIN_CLASS), $(wildcard $(SRC_DIR)/*.cpp))
+OBJECTS_NO_MAIN	= $(SOURCES_NO_MAIN:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 TEST_SOURCES	= $(wildcard $(TEST_DIR)/*.cpp)
 TEST_OBJECTS	= $(TEST_SOURCES:$(TEST_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
@@ -38,7 +40,7 @@ $(BUILD_DIR)/gtest_main.a: $(BUILD_DIR)/gtest-all.o $(BUILD_DIR)/gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
 $(BIN_DIR)/$(TARGET): $(OBJECTS)
-	@$(LINKER) $@ $(LFLAGS) -I $(INCLUDE_DIR) $(OBJECTS) $(SRC_DIR)/$(MAIN_CLASS)
+	@$(LINKER) $@ $(LFLAGS) -I $(INCLUDE_DIR) $(OBJECTS)
 	@echo "Target linked successfully!"
 
 $(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
@@ -48,8 +50,8 @@ $(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
 	@$(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
-$(BIN_DIR)/$(TEST_TARGET): $(TEST_OBJECTS) $(OBJECTS) $(BUILD_DIR)/gtest_main.a
-	@$(LINKER) $@ $(LFLAGS) -I $(INCLUDE_DIR) -I $(GTEST_DIR)/include $(BUILD_DIR)/gtest_main.a $(TEST_OBJECTS) $(OBJECTS)
+$(BIN_DIR)/$(TEST_TARGET): $(TEST_OBJECTS) $(OBJECTS_NO_MAIN) $(BUILD_DIR)/gtest_main.a
+	@$(LINKER) $@ $(LFLAGS) -I $(INCLUDE_DIR) -I $(GTEST_DIR)/include $(BUILD_DIR)/gtest_main.a $(TEST_OBJECTS) $(OBJECTS_NO_MAIN)
 	@echo "Test target linked successfully!"
 
 $(TEST_OBJECTS): $(BUILD_DIR)/%.o : $(TEST_DIR)/%.cpp
@@ -67,3 +69,5 @@ clean:
 	@echo "Cleaned object files successfully!"
 	@rm -f $(BIN_DIR)/$(TARGET) $(BIN_DIR)/$(TEST_TARGET)
 	@echo "Cleaned bin files successfully!"
+	@rm -rf $(OUTPUT_DIR)/
+	@echo "Cleaned result files successfully!"

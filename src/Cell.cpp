@@ -1,6 +1,8 @@
 #include "Cell.hpp"
+
 #include "Node.hpp"
 #include "Mesh.hpp"
+#include "Vector.hpp"
 
 #include <vector>
 #include <algorithm>
@@ -12,7 +14,7 @@ double determinant(double a1, double a2, double a3, double a4) {
 
 Cell::Cell(Mesh &mesh, long id, long node_id_1, long node_id_2, long node_id_3) {
     std::vector<double> intersectionCoords;
-    double x1, x2, x3, y1, y2, y3;
+    double x1, x2, x3, y1, y2, y3, xMedian, yMedian;
 
     x1 = mesh.nodes[node_id_1].data.coords.x;
     x2 = mesh.nodes[node_id_2].data.coords.x;
@@ -20,8 +22,15 @@ Cell::Cell(Mesh &mesh, long id, long node_id_1, long node_id_2, long node_id_3) 
     y1 = mesh.nodes[node_id_1].data.coords.y;
     y2 = mesh.nodes[node_id_2].data.coords.y;
     y3 = mesh.nodes[node_id_3].data.coords.y;
+    xMedian = (x1 + x2 +x3) / 3;
+    yMedian = (y1 + y2 + y3) / 3;
 
-    Node *node = new Node(mesh, (x1 + x2 +x3) / 3, (y1 + y2 + y3) / 3);
+    double median1Length = Vector::length(1.5 * (x1 - xMedian), 1.5 * (y1 - yMedian));
+    double median2Length = Vector::length(1.5 * (x2 - xMedian), 1.5 * (y2 - yMedian));
+    double median3Length = Vector::length(1.5 * (x3 - xMedian), 1.5 * (y3 - yMedian));
+    maxH = std::max(std::max(median1Length, median2Length), median3Length);
+
+    Node *node = new Node(mesh, xMedian, yMedian);
     mesh.nodes.push_back(*node);
 
     centerNodeID = node->ID;

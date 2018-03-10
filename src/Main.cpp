@@ -22,11 +22,12 @@ int main(int argc, char **argv) {
     OutputUtils::OutputParaview(mesh, 0);
 
     Solver solver(mesh);
-
+    double tau = solver.calculateTau();
+    std::cout << "tau = " << tau << std::endl;
     for (int i = 0; i < steps; i++) {
-        solver.processPhase1();
-        solver.processPhase2();
-        solver.processPhase3();
+        solver.processPhase1(tau);
+        solver.processPhase2(tau);
+        solver.processPhase3(tau);
         solver.prepareNextStep();
         OutputUtils::OutputParaview(mesh, i + 1);
     }

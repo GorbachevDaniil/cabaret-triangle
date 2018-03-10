@@ -1,5 +1,7 @@
-#include "Mesh.hpp"
 #include "Parser.hpp"
+
+#include "Mesh.hpp"
+
 #include <iostream>
 #include <cmath>
 #include <fstream>

@@ -1,7 +1,8 @@
 #include "Mesh.hpp"
+
 #include "Parser.hpp"
 
-#include <iostream>
+#include <string>
 
 int Mesh::InitMesh(Mesh *mesh) {
     Parser parser;

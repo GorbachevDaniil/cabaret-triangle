@@ -15,13 +15,13 @@ TEST(calculateNodeNormals, Positive) {
     double y1 = 0;
     double x2 = 3;
     double y2 = 2;
-    double length = Vector::Length(x1 - x2, y1 - y2);
+    double length = Vector::length(x1 - x2, y1 - y2);
 
     Node node1;
-    node1.data.coords.set(x1, y1);
+    node1.data.coords = Vector(x1, y1);
 
     Node node2;
-    node2.data.coords.set(x2, y2);
+    node2.data.coords = Vector(x2, y2);
 
     Node edgeCenter;
 
@@ -47,7 +47,7 @@ TEST(calculateNodeNormals, Positive) {
 
     EXPECT_EQ((y2 - y1) / length, mesh.nodes[2].normal.x);
     EXPECT_EQ(-(x2 - x1) / length, mesh.nodes[2].normal.y);
-    EXPECT_EQ(1, mesh.cells[0].edgeToNormalDirection[0]);
+    EXPECT_EQ(1, mesh.cells[0].edgeToNormalDir[0]);
 }
 
 TEST(calculateVectorsFromCenterToEdges, Positive) {
@@ -55,13 +55,13 @@ TEST(calculateVectorsFromCenterToEdges, Positive) {
     double y1 = 0;
     double x2 = 3;
     double y2 = 2;
-    double length = Vector::Length(x1 - x2, y1 - y2);
+    double length = Vector::length(x1 - x2, y1 - y2);
 
     Node edgeCenter;
-    edgeCenter.data.coords.set(x1, y1);
+    edgeCenter.data.coords = Vector(x1, y1);
 
     Node cellCenter;
-    cellCenter.data.coords.set(x2, y2);
+    cellCenter.data.coords = Vector(x2, y2);
 
     Edge edge;
     edge.centerNodeID = 0; // edgeCenter
@@ -78,6 +78,6 @@ TEST(calculateVectorsFromCenterToEdges, Positive) {
 
     MeshUtils::calculateVectorsFromCenterToEdges(mesh);
 
-    EXPECT_EQ((x1 - x2) / length, mesh.cells[0].edgeToVectorFromCenter[0].x);
-    EXPECT_EQ((y1 - y2) / length, mesh.cells[0].edgeToVectorFromCenter[0].y);
+    EXPECT_EQ((x1 - x2) / length, mesh.cells[0].edgeToTransportDir[0].x);
+    EXPECT_EQ((y1 - y2) / length, mesh.cells[0].edgeToTransportDir[0].y);
 }

@@ -14,15 +14,13 @@ void calculateNodeNormal(Mesh &mesh, Cell &cell, long edgeID) {
 
     std::vector<long> nodeIDs = cell.getEdgeOrderedNodeIDs(edge.nodeIDs);
 
-    Vector tangential;
-    tangential.set(mesh.nodes[nodeIDs[1]].data.coords);
-    tangential.minus(mesh.nodes[nodeIDs[0]].data.coords);
+    Vector tangential(mesh.nodes[nodeIDs[1]].data.coords -
+                      mesh.nodes[nodeIDs[0]].data.coords);
 
-    Vector normal;
-    normal.set(tangential.y, -tangential.x);
-    normal.mult(1. / edge.length);
+    Vector normal(tangential.y, -tangential.x);
+    normal /= edge.length;
 
-    mesh.nodes[edge.centerNodeID].normal.set(normal);
+    mesh.nodes[edge.centerNodeID].normal = normal;
 }
 
 void MeshUtils::calculateNodeNormals(Mesh &mesh) {
@@ -32,11 +30,11 @@ void MeshUtils::calculateNodeNormals(Mesh &mesh) {
 
         for (long edgeID : cell->edgeIDs) {
             if (isNormalCalculated[edgeID] == 1) {
-                cell->edgeToNormalDirection[edgeID] = -1;
+                cell->edgeToNormalDir[edgeID] = -1;
             } else {
                 calculateNodeNormal(mesh, *cell, edgeID);
                 isNormalCalculated[edgeID] = 1;
-                cell->edgeToNormalDirection[edgeID] = 1;
+                cell->edgeToNormalDir[edgeID] = 1;
             }
         }
     }
@@ -51,12 +49,10 @@ void MeshUtils::calculateVectorsFromCenterToEdges(Mesh &mesh) {
             Edge edge = mesh.edges[edgeID];
             Node edgeCenter = mesh.nodes[edge.centerNodeID];
 
-            Vector vectorFromCenter;
-            vectorFromCenter.set(edgeCenter.data.coords);
-            vectorFromCenter.minus(cellCenter.data.coords);
-            vectorFromCenter.mult(1. / vectorFromCenter.length());
+            Vector vectorFromCenter(edgeCenter.data.coords - cellCenter.data.coords);
+            vectorFromCenter /= vectorFromCenter.length();
 
-            cell->edgeToVectorFromCenter[edgeID].set(vectorFromCenter);
+            cell->edgeToTransportDir[edgeID] = vectorFromCenter;
         }
     }
 }

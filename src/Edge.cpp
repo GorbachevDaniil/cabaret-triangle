@@ -1,9 +1,9 @@
 #include "Edge.hpp"
+
 #include "Node.hpp"
 #include "Mesh.hpp"
 
-#include <iostream>
-#include <math.h>
+#include <cmath>
 
 Edge::Edge(Mesh &mesh, long id, long start_node_id, long end_node_id, bool boundary) {
 

@@ -57,7 +57,7 @@ TEST(ParserTriangleTest, LoadEdges) {
     /* Edge's Length */
     EXPECT_EQ( 2, mesh.edges[0].length);
     EXPECT_EQ( 2, mesh.edges[1].length);
-    EXPECT_EQ( sqrt(8), mesh.edges[2].length);
+    EXPECT_EQ( sqrt((double) 8), mesh.edges[2].length);
     EXPECT_EQ( 2, mesh.edges[3].length);
     EXPECT_EQ( 2, mesh.edges[4].length);
 }     

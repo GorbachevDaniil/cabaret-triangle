@@ -9,9 +9,10 @@ private:
 public:
     Solver(Mesh *mesh) : mesh(mesh) {};
 
-    void processPhase1();
-    void processPhase2();
-    void processPhase3();
+    double calculateTau();
+    void processPhase1(double tau);
+    void processPhase2(double tau);
+    void processPhase3(double tau);
     void prepareNextStep();
 };
 

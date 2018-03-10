@@ -1,24 +1,44 @@
 #include "Solver.hpp"
+
 #include "Cell.hpp"
 #include "Edge.hpp"
 #include "Node.hpp"
 #include "Vector.hpp"
 #include "Parameters.hpp"
 
-void Solver::processPhase1() {
+#include <limits>
+
+double Solver::calculateTau() {
+    double tau = std::numeric_limits<double>::max();
+    for (unsigned long i = 0; i < mesh->cells.size(); i++) {
+        Cell *cell = &mesh->cells[i];
+        Node *cellCenter = &mesh->nodes[cell->centerNodeID];
+        for (unsigned long edgeID : cell->edgeIDs) {
+            double lambda = cellCenter->data.u * cell->edgeToTransportDir[edgeID];
+            if (tau > cell->maxH / std::abs(lambda)) {
+                tau = cell->maxH / std::abs(lambda);
+            }
+        }
+    }
+    return Parameters::CFL * tau;
+}
+
+void Solver::processPhase1(double tau) {
     for (unsigned long i = 0; i < mesh->cells.size(); i++) {
         Cell *cell = &mesh->cells[i];
         Node *cellCenter = &mesh->nodes[cell->centerNodeID];
         double div = 0;
 
         for (long edgeID : cell->edgeIDs) {
-            Edge edge = mesh->edges[edgeID];
-            Node edgeCenter = mesh->nodes[edge.centerNodeID];
+            Edge *edge = &mesh->edges[edgeID];
+            Node *edgeCenter = &mesh->nodes[edge->centerNodeID];
 
-            div += edgeCenter.data.phi0 * edge.length * cell->edgeToNormalDirection[edgeID]
-                    * Vector::Scalar(edgeCenter.data.u, edgeCenter.normal);
+            double uProj = edgeCenter->data.u * edgeCenter->normal;
+            uProj *= cell->edgeToNormalDir[edgeID];
+            div += edgeCenter->data.phi0 * uProj * edge->length;
         }
-        cellCenter->data.phi1 = cellCenter->data.phi0 + Parameters::CFL * div / cell->volume;
+        div /= cell->volume;
+        cellCenter->data.phi1 = cellCenter->data.phi0 - tau * div / 2;
     }
 }
 
@@ -32,26 +52,18 @@ Cell* getCellToProcessPhase2(Mesh *mesh, Edge *edge) {
     Node *cellCenter1 = &mesh->nodes[cell1->centerNodeID];
     Node *cellCenter2 = &mesh->nodes[cell2->centerNodeID];
 
-    Vector u1Projection;
-    u1Projection.set(cellCenter1->data.u);
-    u1Projection.mult(Vector::Scalar(cellCenter1->data.u, cell1->edgeToVectorFromCenter[edge->ID]));
-    Vector u2Projection;
-    u2Projection.set(cellCenter2->data.u);
-    u2Projection.mult(Vector::Scalar(cellCenter2->data.u, cell2->edgeToVectorFromCenter[edge->ID]));
+    Vector uAverage((cellCenter1->data.u + cellCenter2->data.u) / 2);
 
-    Vector uAverageProjection;
-    uAverageProjection.plus(u1Projection);
-    uAverageProjection.plus(u2Projection);
-    uAverageProjection.mult(0.5);
-
-    if (Vector::Scalar(u1Projection, uAverageProjection) >= 0) {
+    Node *edgeCenter = &mesh->nodes[edge->centerNodeID];
+    Vector normal(edgeCenter->normal *  cell1->edgeToNormalDir[edge->ID]);
+    if (normal * uAverage >= 0) {
         return cell1;
     } else {
         return cell2;
     }
 }
 
-void Solver::processPhase2() {
+void Solver::processPhase2(double tau) {
     for (unsigned long i = 0; i < mesh->edges.size(); i++) {
         Edge *edge = &mesh->edges[i];
         Cell *cell = getCellToProcessPhase2(mesh, edge);
@@ -73,20 +85,22 @@ void Solver::processPhase2() {
     }
 }
 
-void Solver::processPhase3() {
+void Solver::processPhase3(double tau) {
     for (unsigned long i = 0; i < mesh->cells.size(); i++) {
         Cell *cell = &mesh->cells[i];
         Node *cellCenter = &mesh->nodes[cell->centerNodeID];
         double div = 0;
 
         for (long edgeID : cell->edgeIDs) {
-            Edge edge = mesh->edges[edgeID];
-            Node edgeCenter = mesh->nodes[edge.centerNodeID];
+            Edge *edge = &mesh->edges[edgeID];
+            Node *edgeCenter = &mesh->nodes[edge->centerNodeID];
 
-            div += edgeCenter.data.phi2 * edge.length * cell->edgeToNormalDirection[edgeID]
-                    * Vector::Scalar(edgeCenter.data.u, edgeCenter.normal);
+            double uProj = edgeCenter->data.u * edgeCenter->normal;
+            uProj *= cell->edgeToNormalDir[edgeID];
+            div += edgeCenter->data.phi2 * uProj * edge->length;
         }
-        cellCenter->data.phi2 = cellCenter->data.phi1 + Parameters::CFL * div / cell->volume;
+        div /= cell->volume;
+        cellCenter->data.phi2 = cellCenter->data.phi1 - tau * div / 2;
     }
 }
 
