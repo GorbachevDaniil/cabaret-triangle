@@ -72,14 +72,26 @@ void Solver::processPhase2(double tau) {
         Node *cellCenter = &mesh->nodes[cell->centerNodeID];
 
         double phiRight0 = edgeCenter->data.phi0;
-        double phiCenter0 = cellCenter->data.phi0;
+        double phiCenter0 = 0;
+        for (unsigned long edgeID : cell->edgeIDs) {
+            Data *data = &mesh->nodes[mesh->edges[edgeID].centerNodeID].data;
+            phiCenter0 += data->phi0;
+        }
+        phiCenter0 = (phiCenter0 / 3 + cellCenter->data.phi0) / 2;
         double phiLeft0 = 2 * phiCenter0 - phiRight0;
 
         double phiCenter1 = cellCenter->data.phi1;
 
         double phiRight2 = 2 * phiCenter1 - phiLeft0;
 
-        // TODO add monotonization
+        double Q = (phiCenter1 - phiCenter0) / tau / 2 +
+                (cellCenter->data.u * cell->edgeToTransportDir[edge->ID]) *
+                (phiRight0 - phiLeft0) / (2. / 3.) / cell->edgeToMedianLength[edge->ID];
+        double min = std::min(std::min(phiRight0, phiLeft0), phiCenter0) + tau * Q;
+        double max = std::max(std::max(phiRight0, phiLeft0), phiCenter0) + tau * Q;
+
+        phiRight2 = std::max(phiRight2, min);
+        phiRight2 = std::min(phiRight2, max);
 
         edgeCenter->data.phi2 = phiRight2;
     }

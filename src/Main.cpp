@@ -15,6 +15,8 @@ int main(int argc, char **argv) {
 
     Mesh *mesh = new Mesh();
     mesh->InitMesh(mesh);
+    std::cout << "number of cells = " << mesh->cells.size() << std::endl;
+
     MeshUtils::calculateNodeNormals(*mesh);
     MeshUtils::calculateVectorsFromCenterToEdges(*mesh);
     Initializer::initialize(*mesh);
@@ -24,6 +26,7 @@ int main(int argc, char **argv) {
     Solver solver(mesh);
     double tau = solver.calculateTau();
     std::cout << "tau = " << tau << std::endl;
+
     for (int i = 0; i < steps; i++) {
         solver.processPhase1(tau);
         solver.processPhase2(tau);

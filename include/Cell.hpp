@@ -19,6 +19,7 @@ public:
     std::vector<long> edgeIDs;
     std::map<long, int> edgeToNormalDir;
     std::map<long, Vector> edgeToTransportDir;
+    std::map<long, double> edgeToMedianLength;
 
     Cell() {};
     Cell(Mesh &mesh, long id, long node_id_1, long node_id_2, long node_id_3);

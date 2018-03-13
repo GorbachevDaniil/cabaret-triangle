@@ -46,14 +46,17 @@ Cell::Cell(Mesh &mesh, long id, long node_id_1, long node_id_2, long node_id_3) 
     it = mesh.mapNodesWithEdge.find(std::make_pair(node_id_1, node_id_2));
     tempEdgeID = it->second;
     edgeIDs.push_back(tempEdgeID);
+    edgeToMedianLength[tempEdgeID] = median3Length;
     mesh.edges[tempEdgeID].cellIDs.push_back(ID);
     it = mesh.mapNodesWithEdge.find(std::make_pair(node_id_2, node_id_3));
     tempEdgeID = it->second;
     edgeIDs.push_back(tempEdgeID);
+    edgeToMedianLength[tempEdgeID] = median1Length;
     mesh.edges[tempEdgeID].cellIDs.push_back(ID);
     it = mesh.mapNodesWithEdge.find(std::make_pair(node_id_3, node_id_1));
     tempEdgeID = it->second;
     edgeIDs.push_back(tempEdgeID);
+    edgeToMedianLength[tempEdgeID] = median2Length;
     mesh.edges[tempEdgeID].cellIDs.push_back(ID);
 }
 

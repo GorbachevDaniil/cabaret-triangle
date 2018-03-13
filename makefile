@@ -64,10 +64,14 @@ target: $(BIN_DIR)/$(TARGET)
 
 target_test: $(BIN_DIR)/$(TEST_TARGET)
 
-clean:
+clean_all:
 	@rm -f $(OBJECTS) $(TEST_OBJECTS)
 	@echo "Cleaned object files successfully!"
 	@rm -f $(BIN_DIR)/$(TARGET) $(BIN_DIR)/$(TEST_TARGET)
 	@echo "Cleaned bin files successfully!"
+	@rm -rf $(OUTPUT_DIR)/
+	@echo "Cleaned result files successfully!"
+
+clean_result:
 	@rm -rf $(OUTPUT_DIR)/
 	@echo "Cleaned result files successfully!"
