@@ -14,6 +14,7 @@ public:
     void processPhase2(double tau);
     void processPhase3(double tau);
     void prepareNextStep();
+    void harmonise();
 };
 
 #endif

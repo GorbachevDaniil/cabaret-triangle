@@ -3,6 +3,7 @@
 #include "Initializer.hpp"
 #include "MeshUtils.hpp"
 #include "OutputUtils.hpp"
+#include "Parameters.hpp"
 
 #include <iostream>
 
@@ -32,6 +33,10 @@ int main(int argc, char **argv) {
         solver.processPhase2(tau);
         solver.processPhase3(tau);
         solver.prepareNextStep();
+        if (steps % Parameters::HARMONIZATION_STEP == 0) {
+            solver.harmonise();
+        }
+
         OutputUtils::OutputParaview(mesh, i + 1);
     }
 

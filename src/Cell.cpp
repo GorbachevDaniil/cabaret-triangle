@@ -22,7 +22,7 @@ Cell::Cell(Mesh &mesh, long id, long node_id_1, long node_id_2, long node_id_3) 
     y1 = mesh.nodes[node_id_1].data.coords.y;
     y2 = mesh.nodes[node_id_2].data.coords.y;
     y3 = mesh.nodes[node_id_3].data.coords.y;
-    xMedian = (x1 + x2 +x3) / 3;
+    xMedian = (x1 + x2 + x3) / 3;
     yMedian = (y1 + y2 + y3) / 3;
 
     double median1Length = Vector::length(1.5 * (x1 - xMedian), 1.5 * (y1 - yMedian));
@@ -48,11 +48,13 @@ Cell::Cell(Mesh &mesh, long id, long node_id_1, long node_id_2, long node_id_3) 
     edgeIDs.push_back(tempEdgeID);
     edgeToMedianLength[tempEdgeID] = median3Length;
     mesh.edges[tempEdgeID].cellIDs.push_back(ID);
+
     it = mesh.mapNodesWithEdge.find(std::make_pair(node_id_2, node_id_3));
     tempEdgeID = it->second;
     edgeIDs.push_back(tempEdgeID);
     edgeToMedianLength[tempEdgeID] = median1Length;
     mesh.edges[tempEdgeID].cellIDs.push_back(ID);
+
     it = mesh.mapNodesWithEdge.find(std::make_pair(node_id_3, node_id_1));
     tempEdgeID = it->second;
     edgeIDs.push_back(tempEdgeID);

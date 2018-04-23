@@ -1,10 +1,15 @@
 #include "OutputUtils.hpp"
 #include "Mesh.hpp"
+#include "Parameters.hpp"
 
 #include <iostream>
 #include <string>
 
 void OutputUtils::OutputParaview(Mesh *mesh, int step) {
+
+    if (step % Parameters::WRITE_STEP_PERIOD != 0) {
+        return;
+    }
 
     FILE *output_f;
 

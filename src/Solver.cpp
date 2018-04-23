@@ -68,24 +68,24 @@ void Solver::processPhase2(double tau) {
         Edge *edge = &mesh->edges[i];
         Cell *cell = getCellToProcessPhase2(mesh, edge);
 
-        Node *edgeCenter = &mesh->nodes[edge->centerNodeID];
-        Node *cellCenter = &mesh->nodes[cell->centerNodeID];
+        Data *edgeCenterData = &mesh->nodes[edge->centerNodeID].data;
+        Data *cellCenterData = &mesh->nodes[cell->centerNodeID].data;
 
-        double phiRight0 = edgeCenter->data.phi0;
-        double phiCenter0 = 0;
+        double phiAveraged0 = 0;
         for (unsigned long edgeID : cell->edgeIDs) {
             Data *data = &mesh->nodes[mesh->edges[edgeID].centerNodeID].data;
-            phiCenter0 += data->phi0;
+            phiAveraged0 += data->phi0;
         }
-        phiCenter0 = (phiCenter0 / 3 + cellCenter->data.phi0) / 2;
-        double phiLeft0 = 2 * phiCenter0 - phiRight0;
+        double phiLeft0 = (phiAveraged0 / 3 + cellCenterData->phi0) - edgeCenterData->phi0;
+        double phiCenter0 = cellCenterData->phi0;
+        double phiRight0 = edgeCenterData->phi0;
 
-        double phiCenter1 = cellCenter->data.phi1;
+        double phiCenter1 = cellCenterData->phi1;
 
         double phiRight2 = 2 * phiCenter1 - phiLeft0;
 
         double Q = (phiCenter1 - phiCenter0) / tau / 2 +
-                (cellCenter->data.u * cell->edgeToTransportDir[edge->ID]) *
+                (cellCenterData->u * cell->edgeToTransportDir[edge->ID]) *
                 (phiRight0 - phiLeft0) / (2. / 3.) / cell->edgeToMedianLength[edge->ID];
         double min = std::min(std::min(phiRight0, phiLeft0), phiCenter0) + tau * Q;
         double max = std::max(std::max(phiRight0, phiLeft0), phiCenter0) + tau * Q;
@@ -93,7 +93,7 @@ void Solver::processPhase2(double tau) {
         phiRight2 = std::max(phiRight2, min);
         phiRight2 = std::min(phiRight2, max);
 
-        edgeCenter->data.phi2 = phiRight2;
+        edgeCenterData->phi2 = phiRight2;
     }
 }
 
@@ -115,6 +115,17 @@ void Solver::processPhase3(double tau) {
         cellCenter->data.phi2 = cellCenter->data.phi1 - tau * div / 2;
     }
 }
+
+void Solver::harmonise() {
+    for (unsigned long i = 0; i < mesh->edges.size(); i++) {
+        Edge *edge = &mesh->edges[i];
+        Data *data = &mesh->nodes[edge->centerNodeID].data;
+        Data *dataCell1 = &mesh->nodes[mesh->cells[edge->cellIDs[0]].centerNodeID].data;
+        Data *dataCell2 = &mesh->nodes[mesh->cells[edge->cellIDs[1]].centerNodeID].data;
+        data->phi0 = (dataCell1->phi0 + dataCell2->phi0) / 2;
+    }
+}
+
 
 void Solver::prepareNextStep() {
     for (unsigned long i = 0; i < mesh->nodes.size(); i++) {
