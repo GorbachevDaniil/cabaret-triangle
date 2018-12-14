@@ -20,29 +20,17 @@ public:
     }
 
     Vector operator*(double coef) {
-        x *= coef;
-        y *= coef;
-        return *this;
+        Vector v(x, y);
+        v.x *= coef;
+        v.y *= coef;
+        return v;
     }
 
     Vector operator/(double coef) {
-        x /= coef;
-        y /= coef;
-        return *this;
-    }
-
-    Vector operator*=(double coef) {
-        return *this * coef;
-    }
-
-    Vector operator/=(double coef) {
-        return *this / coef;
-    }
-
-    Vector operator/(int coef) {
-        x /= coef;
-        y /= coef;
-        return *this;
+        Vector v(x, y);
+        v.x /= coef;
+        v.y /= coef;
+        return v;
     }
 
     Vector operator+(Vector const &other) {

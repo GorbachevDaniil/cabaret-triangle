@@ -1,15 +1,16 @@
 #include "Parser.hpp"
 
 #include "Mesh.hpp"
+#include "Parameters.hpp"
 
-#include <iostream>
 #include <cmath>
-#include <fstream>
-#include <sstream>
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
-//Make vector of values from string words
-std::vector<std::string> split(const std::string& s, const char *delimiter) {
+// Make vector of values from string words
+std::vector<std::string> split(const std::string &s, const char *delimiter) {
     std::vector<std::string> values;
     char *pch;
     char *cstr = new char[s.length() + 1];
@@ -38,17 +39,16 @@ int Parser::LoadNodes(Mesh *mesh, std::string nodeFile) {
     int i = 0, nNodes;
 
     while (getline(nodefile, line) && (i != (nNodes + 1))) {
-        if (i == nNodes + 1)
-            continue; // miss last string
+        if (i == nNodes + 1) continue;  // miss last string
 
         values = split(line, " ");
         if (i == 0) {
             i++;
-            nNodes = atoi(values[0].c_str()); //init number of Nodes
+            nNodes = atoi(values[0].c_str());  // init number of Nodes
             continue;
         }
 
-        Node *node = new Node(*mesh, atof(values[1].c_str()), atof(values[2].c_str()));
+        Node *node = new Node(*mesh, atof(values[1].c_str()), atof(values[2].c_str()), false);
         mesh->nodes.push_back(*node);
 
         i++;
@@ -70,18 +70,18 @@ int Parser::LoadEdges(Mesh *mesh, std::string edgeFile) {
     int i = 0, nEdges;
 
     while (getline(edgefile, line) && (i != (nEdges + 1))) {
-        if (i == nEdges + 1)
-            continue; // miss last string
+        if (i == nEdges + 1) continue;  // miss last string
 
         values = split(line, " ");
         if (i == 0) {
             i++;
-            nEdges = atoi(values[0].c_str()); //init number of Nodes
+            nEdges = atoi(values[0].c_str());  // init number of Nodes
             continue;
         }
 
         Edge *edge = new Edge(*mesh, atol(values[0].c_str()) - 1, atol(values[1].c_str()) - 1,
-                atol(values[2].c_str()) - 1, atoi(values[3].c_str()));
+                              atol(values[2].c_str()) - 1, atoi(values[3].c_str()),
+                              Parameters::EDGE_INNER_NODES_NUMBER);
         mesh->edges.push_back(*edge);
 
         i++;
@@ -103,18 +103,17 @@ int Parser::LoadCells(Mesh *mesh, std::string cellFile) {
     int i = 0, nCells;
 
     while (getline(cellfile, line) && (i != (nCells + 1))) {
-        if (i == nCells + 1)
-            continue; // miss last string
+        if (i == nCells + 1) continue;  // miss last string
 
         values = split(line, " ");
         if (i == 0) {
             i++;
-            nCells = atoi(values[0].c_str()); //init number of Nodes
+            nCells = atoi(values[0].c_str());  // init number of Nodes
             continue;
         }
 
         Cell *cell = new Cell(*mesh, atol(values[0].c_str()) - 1, atol(values[1].c_str()) - 1,
-                atol(values[2].c_str()) - 1, atol(values[3].c_str()) - 1);
+                              atol(values[2].c_str()) - 1, atol(values[3].c_str()) - 1);
         mesh->cells.push_back(*cell);
 
         i++;

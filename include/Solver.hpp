@@ -15,6 +15,9 @@ public:
     void processPhase3(double tau);
     void prepareNextStep();
     void harmonise();
+
+private:
+    double calculateDivOnEdge(Edge *edge, int phase);
 };
 
 #endif

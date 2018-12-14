@@ -1,5 +1,4 @@
-# Compiled source #
-###################
+# Compiled files #
 *.dll
 *.exe
 *.o
@@ -7,15 +6,18 @@
 *.a
 bin/
 build/
-# OS generated files #
-######################
-.DS_Store
-.DS_Store?
-._*
-# Triangle generated files #
-*.poly
-*.ele
-*.node
-*.edge
 
-cabaret_triangle
+# Project files #
+.vscode/
+.history/
+
+# Triangle generated files #
+triangle/*.poly
+triangle/*.ele
+triangle/*.node
+triangle/*.edge
+
+triangle_regular/*.poly
+triangle_regular/*.ele
+triangle_regular/*.node
+triangle_regular/*.edge

@@ -2,19 +2,18 @@
 #define Node_hpp
 
 #include "Data.hpp"
-#include "Vector.hpp"
 
 class Mesh;
 
 class Node {
-public:
+   public:
     long ID;
+    bool used;
 
     Data data;
-    Vector normal;
 
-    Node() {};
-    Node(Mesh &mesh, double x, double y);
+    Node(){};
+    Node(Mesh &mesh, double x, double y, bool used);
 };
 
 #endif

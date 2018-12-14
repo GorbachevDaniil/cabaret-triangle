@@ -6,7 +6,6 @@
 #include <string>
 
 void OutputUtils::OutputParaview(Mesh *mesh, int step) {
-
     if (step % Parameters::WRITE_STEP_PERIOD != 0) {
         return;
     }
@@ -24,10 +23,11 @@ void OutputUtils::OutputParaview(Mesh *mesh, int step) {
         std::fprintf(output_f, "%f,%f,%f,%f\n", data->coords.x, data->coords.y, 0.0, data->phi0);
         for (unsigned long edgeID : cell->edgeIDs) {
             Edge *edge = &mesh->edges[edgeID];
-            data = &mesh->nodes[edge->centerNodeID].data;
-            std::fprintf(output_f, "%f,%f,%f,%f\n", data->coords.x, data->coords.y, 0.0, data->phi0);
+            for (unsigned long usedNodeID : edge->getUsedNodes(*mesh)) {
+                data = &mesh->nodes[usedNodeID].data;
+                std::fprintf(output_f, "%f,%f,%f,%f\n", data->coords.x, data->coords.y, 0.0, data->phi0);
+            }
         }
     }
     std::fclose(output_f);
-
 }

@@ -1,32 +1,52 @@
 #include "Edge.hpp"
 
-#include "Node.hpp"
 #include "Mesh.hpp"
+#include "Node.hpp"
 
 #include <cmath>
+#include <cassert>
 
-Edge::Edge(Mesh &mesh, long id, long start_node_id, long end_node_id, bool boundary) {
+Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, 
+           bool boundEdge, int innerNodeNum) {
+    this->ID = ID;
+    this->boundEdge = boundEdge;
+    edgeEndsNodeIDs.push_back(startNodeID);
+    edgeEndsNodeIDs.push_back(endNodeID);
 
-    double start_node_x, start_node_y, end_node_x, end_node_y;
+    double startNodeX, startNodeY, endNodeX, endNodeY;
+    startNodeX = mesh.nodes[startNodeID].data.coords.x;
+    startNodeY = mesh.nodes[startNodeID].data.coords.y;
+    endNodeX = mesh.nodes[endNodeID].data.coords.x;
+    endNodeY = mesh.nodes[endNodeID].data.coords.y;
 
-    start_node_x = mesh.nodes[start_node_id].data.coords.x;
-    start_node_y = mesh.nodes[start_node_id].data.coords.y;
-    end_node_x = mesh.nodes[end_node_id].data.coords.x;
-    end_node_y = mesh.nodes[end_node_id].data.coords.y;
+    length = sqrt(pow((endNodeX - startNodeX), 2) + pow((endNodeY - startNodeY), 2));
 
-    ID = id;
-    nodeIDs.push_back(start_node_id);
-    nodeIDs.push_back(end_node_id);
-    boundEdge = boundary;
-    length = sqrt(pow((end_node_x - start_node_x), 2) + pow((end_node_y - start_node_y), 2));
-
-    Node *node = new Node(mesh, (start_node_x + end_node_x) / 2, (start_node_y + end_node_y) / 2);
-    mesh.nodes.push_back(*node);
-    centerNodeID = node->ID;
+    // In nodeIDs there will be always nodes order from start node to end node
+    nodeIDs.push_back(startNodeID);
+    Vector startNode(startNodeX, startNodeY);
+    Vector edgeVector(endNodeX - startNodeX, endNodeY - startNodeY);
+    for (int i = 1; i < innerNodeNum + 1; i++) {
+        Vector nodeCoords = edgeVector / (innerNodeNum + 1) * i + startNode;
+        Node *node = new Node(mesh, nodeCoords.x, nodeCoords.y, true);
+        mesh.nodes.push_back(*node);
+        nodeIDs.push_back(node->ID);
+    }
+    nodeIDs.push_back(endNodeID);
 
     std::pair<int, int> tempNodeIDs;
-    tempNodeIDs = std::make_pair(start_node_id,end_node_id);
-    mesh.mapNodesWithEdge.insert(std::pair<std::pair<int, int>,int>(tempNodeIDs,id));
-    tempNodeIDs = std::make_pair(end_node_id,start_node_id);
-    mesh.mapNodesWithEdge.insert(std::pair<std::pair<int, int>,int>(tempNodeIDs,id));
+    tempNodeIDs = std::make_pair(startNodeID, endNodeID);
+    mesh.mapNodesWithEdge.insert(std::pair<std::pair<int, int>, int>(tempNodeIDs, ID));
+    tempNodeIDs = std::make_pair(endNodeID, startNodeID);
+    mesh.mapNodesWithEdge.insert(std::pair<std::pair<int, int>, int>(tempNodeIDs, ID));
+}
+
+std::vector<long> Edge::getUsedNodes(Mesh &mesh) {
+    std::vector<long> usedNodeIDs;
+    for (long nodeID : nodeIDs) {
+        if (mesh.nodes[nodeID].used) {
+            usedNodeIDs.push_back(nodeID);
+        }
+    }
+    assert(usedNodeIDs.size() > 0);
+    return usedNodeIDs;
 }
