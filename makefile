@@ -15,7 +15,7 @@ CXX       		= g++
 CXXFLAGS  		= -g -std=c++11 -Wall -Wextra
 
 LINKER   		= g++ -o
-LFLAGS   		= -Wall -Wextra
+LFLAGS   		= -Wall -Wextra -larmadillo
 
 INCLUDES 		= $(wildcard $(INCLUDE_DIR)/*.hpp)
 

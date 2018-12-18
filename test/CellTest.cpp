@@ -101,7 +101,7 @@ TEST(getEdgeOrderedNodeIDs, SizeMustBeTwoForOutcomingVector) {
     ASSERT_DEATH(cell.getEdgeOrderedNodeIDs(unorderedNodeIDs), "");
 }
 
-TEST(cellWithEdgesWithOneInnerNode, InnerNodesDontHaveOpposite) {
+TEST(cellCreationInnerNodes, OneInnerNodeDontHaveOpposite) {
     double x1 = 0;
     double y1 = 0;
 
@@ -113,14 +113,17 @@ TEST(cellWithEdgesWithOneInnerNode, InnerNodesDontHaveOpposite) {
 
     Node node1;
     node1.ID = 0;
+    node1.used = false;
     node1.data.coords = Vector(x1, y1);
 
     Node node2;
     node2.ID = 1;
+    node2.used = false;
     node2.data.coords = Vector(x2, y2);
 
     Node node3;
     node3.ID = 2;
+    node3.used = false;
     node3.data.coords = Vector(x3, y3);
 
     Mesh mesh;
@@ -159,7 +162,7 @@ TEST(cellWithEdgesWithOneInnerNode, InnerNodesDontHaveOpposite) {
     EXPECT_EQ(-1, cell.nodeIDToOppositeNodeID[edge3Node->ID]);
 }
 
-TEST(botCellWithEdgesWithTwoInnerNode, InnerNodesHaveOpposite) {
+TEST(cellCreationInnerNodes, TwoInnerNodesHaveOppositeWithPositiveCoordsLeftTriangle) {
     double x1 = 0;
     double y1 = 0;
 
@@ -238,7 +241,7 @@ TEST(botCellWithEdgesWithTwoInnerNode, InnerNodesHaveOpposite) {
     EXPECT_EQ(5, cell.nodeIDToOppositeNodeID[edge3Node2->ID]);
 }
 
-TEST(topCellWithEdgesWithTwoInnerNode, InnerNodesHaveOpposite) {
+TEST(cellCreationInnerNodes, TwoInnerNodesHaveOppositeWithPositiveCoordsRightTriangle) {
     double x1 = 1;
     double y1 = 0;
 
@@ -317,7 +320,7 @@ TEST(topCellWithEdgesWithTwoInnerNode, InnerNodesHaveOpposite) {
     EXPECT_EQ(5, cell.nodeIDToOppositeNodeID[edge3Node2->ID]);
 }
 
-TEST(topCellWithEdgesWithTwoInnerNodeNegativeCoords, InnerNodesHaveOpposite) {
+TEST(cellCreationInnerNodes, TwoInnerNodesHaveOppositeWithNegativeCoords) {
     double x1 = 0;
     double y1 = -1;
 
@@ -396,7 +399,7 @@ TEST(topCellWithEdgesWithTwoInnerNodeNegativeCoords, InnerNodesHaveOpposite) {
     EXPECT_EQ(5, cell.nodeIDToOppositeNodeID[edge3Node2->ID]);
 }
 
-TEST(CellWithEdgesWithTwoInnerNodeWithWrongNodesOrder, InnerNodesHaveOpposite) {
+TEST(cellCreationInnerNodes, TwoInnerNodesHaveOppositeWithWrongOrderOnEdge) {
     double x1 = 1;
     double y1 = 0;
 

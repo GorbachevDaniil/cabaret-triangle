@@ -5,6 +5,7 @@
 
 #include <map>
 #include <vector>
+#include <armadillo>
 
 class Mesh;
 
@@ -22,6 +23,8 @@ class Cell {
     std::map<long, double> edgeToMedianLength;
     std::map<long, long> nodeIDToOppositeNodeID;
 
+    arma::mat interpolationMat;
+
     Cell(){};
     Cell(Mesh &mesh, long ID, long nodeID1, long nodeID2, long nodeID3);
     double countVolume(Mesh &mesh, long nodeID1, long nodeID2, long nodeID3);
@@ -31,6 +34,7 @@ class Cell {
 
    private:
     void assignOppositeNodeIDs(Mesh &mesh);
+    void buildInterpolationMat(Mesh &mesh);
 };
 
 #endif

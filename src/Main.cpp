@@ -32,9 +32,6 @@ int main() {
         solver.processPhase2(tau);
         solver.processPhase3(tau);
         solver.prepareNextStep();
-        if (Parameters::HARMONIZATION_STEP > 0 && steps % Parameters::HARMONIZATION_STEP == 0) {
-            solver.harmonise();
-        }
 
         OutputUtils::OutputParaview(mesh, i + 1);
     }

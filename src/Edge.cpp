@@ -3,15 +3,15 @@
 #include "Mesh.hpp"
 #include "Node.hpp"
 
-#include <cmath>
 #include <cassert>
+#include <cmath>
 
-Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, 
-           bool boundEdge, int innerNodeNum) {
+Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge,
+           int innerNodeNum) {
     this->ID = ID;
     this->boundEdge = boundEdge;
-    edgeEndsNodeIDs.push_back(startNodeID);
-    edgeEndsNodeIDs.push_back(endNodeID);
+    endNodeIDs.push_back(startNodeID);
+    endNodeIDs.push_back(endNodeID);
 
     double startNodeX, startNodeY, endNodeX, endNodeY;
     startNodeX = mesh.nodes[startNodeID].data.coords.x;
@@ -27,7 +27,7 @@ Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID,
     Vector edgeVector(endNodeX - startNodeX, endNodeY - startNodeY);
     for (int i = 1; i < innerNodeNum + 1; i++) {
         Vector nodeCoords = edgeVector / (innerNodeNum + 1) * i + startNode;
-        Node *node = new Node(mesh, nodeCoords.x, nodeCoords.y, true);
+        Node *node = new Node(mesh, nodeCoords.x, nodeCoords.y, true, false);
         mesh.nodes.push_back(*node);
         nodeIDs.push_back(node->ID);
     }
@@ -49,4 +49,12 @@ std::vector<long> Edge::getUsedNodes(Mesh &mesh) {
     }
     assert(usedNodeIDs.size() > 0);
     return usedNodeIDs;
+}
+
+std::vector<long> Edge::getInnerNodes() {
+    std::vector<long>::const_iterator firstInnerNode = nodeIDs.begin() + 1;
+    std::vector<long>::const_iterator lastInnerNode = nodeIDs.end() - 1;
+    std::vector<long> innerNodeIDs(firstInnerNode, lastInnerNode);
+    assert(innerNodeIDs.size() > 0);
+    return innerNodeIDs;
 }

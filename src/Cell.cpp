@@ -3,22 +3,22 @@
 #include "Mesh.hpp"
 #include "Node.hpp"
 #include "Vector.hpp"
+#include "Parameters.hpp"
 
 #include <algorithm>
 #include <cassert>
 #include <vector>
 #include <limits>
-#include <iostream>
 
 double calculateDeterminant(double a11, double a12, double a21, double a22) {
-    return a11 * a22 - a12 * a21;
+    return std::abs(a11 * a22 - a12 * a21);
 }
 
 void Cell::assignOppositeNodeIDs(Mesh &mesh) {
     std::map<unsigned long, std::vector<double>> edgeToLineCoef;
     for (unsigned long edgeID : edgeIDs) {
         Edge *edge = &mesh.edges[edgeID];
-        std::vector<long> orderedEndNodes = getEdgeOrderedNodeIDs(edge->edgeEndsNodeIDs);
+        std::vector<long> orderedEndNodes = getEdgeOrderedNodeIDs(edge->endNodeIDs);
         Node *endNode1 = &mesh.nodes[orderedEndNodes[0]];
         Node *endNode2 = &mesh.nodes[orderedEndNodes[1]];
 
@@ -39,7 +39,6 @@ void Cell::assignOppositeNodeIDs(Mesh &mesh) {
     for (unsigned long edgeID : edgeIDs) {
         Edge *edge = &mesh.edges[edgeID];
         for (unsigned long nodeID : edge->getUsedNodes(mesh)) {
-            // std::cout << "------------------ " << ID << std::endl;
             Node *edgeNode = &mesh.nodes[nodeID];
             // let's build line passing edgeNode and cellNode like Ax+By+C=0
             double lineA = edgeNode->data.coords.y - cellNode->data.coords.y;
@@ -63,14 +62,12 @@ void Cell::assignOppositeNodeIDs(Mesh &mesh) {
 
                 Vector nodeLine(lineA, lineB);
                 Vector edgeLine(edgeLineA, edgeLineB);
-                double cosBetweenLines = (nodeLine * edgeLine) / (nodeLine.length() * edgeLine.length());
-                // std::cout << "cos " << cosBetweenLines << std::endl;
-                if (std::abs(cosBetweenLines) > minCosBetweenLines) {
+                double cosBetweenLines = std::abs((nodeLine * edgeLine) / (nodeLine.length() * edgeLine.length()));
+                if (cosBetweenLines > minCosBetweenLines) {
                     continue;
                 }
 
-                double determinant = std::abs(calculateDeterminant(edgeLineA, edgeLineB, lineA, lineB));
-                // std::cout << "det " << determinant << std::endl;
+                double determinant = calculateDeterminant(edgeLineA, edgeLineB, lineA, lineB);
                 if (determinant == 0) {
                     continue;
                 }
@@ -79,21 +76,22 @@ void Cell::assignOppositeNodeIDs(Mesh &mesh) {
                 double yCross = (lineC * edgeLineA - edgeLineC * lineA) / determinant;
                 
                 Edge *oppositeEdge = &mesh.edges[it->first];
-                Node *endNode1 = &mesh.nodes[oppositeEdge->edgeEndsNodeIDs[0]];
-                Node *endNode2 = &mesh.nodes[oppositeEdge->edgeEndsNodeIDs[1]];
+                Node *endNode1 = &mesh.nodes[oppositeEdge->endNodeIDs[0]];
+                Node *endNode2 = &mesh.nodes[oppositeEdge->endNodeIDs[1]];
                 double maxEndX = std::max(endNode1->data.coords.x, endNode2->data.coords.x);
                 double minEndX = std::min(endNode1->data.coords.x, endNode2->data.coords.x);
                 double maxEndY = std::max(endNode1->data.coords.y, endNode2->data.coords.y);
                 double minEndY = std::min(endNode1->data.coords.y, endNode2->data.coords.y);
-                if (std::abs(minEndX - maxEndX) <= 0.1e-9 && std::abs(minEndX - xCross) > 0.1e-9) {
+                bool minAndMaxXEquals = std::abs(minEndX - maxEndX) <= 0.1e-9;
+                bool minAndMaxYEquals = std::abs(minEndY - maxEndY) <= 0.1e-9;
+                if (minAndMaxXEquals && std::abs(minEndX - xCross) > 0.1e-9) {
                     continue;
                 }
-                if (std::abs(minEndY - maxEndY) <= 0.1e-9 && std::abs(minEndY - yCross) > 0.1e-9) {
+                if (minAndMaxYEquals && std::abs(minEndY - yCross) > 0.1e-9) {
                     continue;
                 }
-                // std::cout << it->first << " " << minEndX << " " << maxEndX << " " << minEndY << " " << maxEndY << " " << xCross << " " << yCross << std::endl;
-                if ((std::abs(minEndX - maxEndX) > 0.1e-9 && ((minEndX > xCross) || (maxEndX < xCross))) || 
-                    (std::abs(minEndY - maxEndY) > 0.1e-9 && ((minEndY > yCross) || (maxEndY < yCross)))) {
+                if ((!minAndMaxXEquals && ((minEndX > xCross) || (maxEndX < xCross))) || 
+                    (!minAndMaxYEquals && ((minEndY > yCross) || (maxEndY < yCross)))) {
                     continue;
                 }
                 
@@ -101,7 +99,6 @@ void Cell::assignOppositeNodeIDs(Mesh &mesh) {
                 double distFromNodeToCellNode = (cellNode->data.coords - edgeNode->data.coords).length();
                 double distFromCellNodeToCross = (cellNode->data.coords - cross).length();
                 double ratio = distFromCellNodeToCross / distFromNodeToCellNode;
-                // std::cout << "ratio = " <<ratio << std::endl;
                 if ((ratio < 0.95) || (ratio > 1.05)) {
                     continue;
                 }
@@ -113,7 +110,6 @@ void Cell::assignOppositeNodeIDs(Mesh &mesh) {
             }
 
             if (oppositeEdgeID == std::numeric_limits<unsigned long>::max()) {
-                // std::cout << ID << " " << edgeID << " " <<edgeNode->data.coords.x << " " << edgeNode->data.coords.y << " " << cellNode->data.coords.x << " " << cellNode->data.coords.y << std::endl;
                 nodeIDToOppositeNodeID[nodeID] = -1;
             } else {
                 Edge *oppositeEdge = &mesh.edges[oppositeEdgeID];
@@ -139,18 +135,66 @@ void Cell::assignOppositeNodeIDs(Mesh &mesh) {
     }
 }
 
+void assignRowValues(arma::mat &mat, double x, double y, int row) {
+    mat(row, 0) = 1;
+    mat(row, 1) = x;
+    mat(row, 2) = y;
+    mat(row, 3) = x * x;
+    mat(row, 4) = y * y;
+    mat(row, 5) = x * y;
+    mat(row, 6) = mat(row, 3) * x;
+    mat(row, 7) = mat(row, 4) * y;
+    mat(row, 8) = mat(row, 5) * x;
+    mat(row, 9) = mat(row, 5) * y;
+}
+
+void Cell::buildInterpolationMat(Mesh &mesh) {
+    int matSize = Parameters::EDGE_INNER_NODES_NUMBER * 3 + 4;
+    if (matSize != 10) {
+        std::cout << matSize << std::endl;
+        return;
+    }
+
+    arma::mat interpolationMat = arma::mat(matSize, matSize);
+    int row = 0;
+
+    for (long nodeID : nodeIDs) {
+        Vector coords = mesh.nodes[nodeID].data.coords;
+        assignRowValues(interpolationMat, coords.x, coords.y, row);
+        row++;
+    }
+    for (long edgeID : edgeIDs) {
+        for (long nodeID : mesh.edges[edgeID].getInnerNodes()) {
+            Vector coords = mesh.nodes[nodeID].data.coords;
+            assignRowValues(interpolationMat, coords.x, coords.y, row);
+            row++;
+        }
+    }
+    Vector coords = mesh.nodes[centerNodeID].data.coords;
+    assignRowValues(interpolationMat, coords.x, coords.y, row);
+    this->interpolationMat = interpolationMat;
+}
+
 Cell::Cell(Mesh &mesh, long ID, long nodeID1, long nodeID2, long nodeID3) {
     this->ID = ID;
 
     std::vector<double> intersectionCoords;
     double x1, x2, x3, y1, y2, y3, xMedian, yMedian;
 
-    x1 = mesh.nodes[nodeID1].data.coords.x;
-    x2 = mesh.nodes[nodeID2].data.coords.x;
-    x3 = mesh.nodes[nodeID3].data.coords.x;
-    y1 = mesh.nodes[nodeID1].data.coords.y;
-    y2 = mesh.nodes[nodeID2].data.coords.y;
-    y3 = mesh.nodes[nodeID3].data.coords.y;
+    Node *node1 = &mesh.nodes[nodeID1];
+    Node *node2 = &mesh.nodes[nodeID2];
+    Node *node3 = &mesh.nodes[nodeID3];
+
+    node1->cellIDs.insert(ID);
+    node2->cellIDs.insert(ID);
+    node3->cellIDs.insert(ID);
+
+    x1 = node1->data.coords.x;
+    x2 = node2->data.coords.x;
+    x3 = node3->data.coords.x;
+    y1 = node1->data.coords.y;
+    y2 = node2->data.coords.y;
+    y3 = node3->data.coords.y;
 
     xMedian = (x1 + x2 + x3) / 3;
     yMedian = (y1 + y2 + y3) / 3;
@@ -160,7 +204,7 @@ Cell::Cell(Mesh &mesh, long ID, long nodeID1, long nodeID2, long nodeID3) {
     double median3Length = Vector::length(1.5 * (x3 - xMedian), 1.5 * (y3 - yMedian));
     maxH = std::max(std::max(median1Length, median2Length), median3Length);
 
-    Node *node = new Node(mesh, xMedian, yMedian, true);
+    Node *node = new Node(mesh, xMedian, yMedian, true, true);
     mesh.nodes.push_back(*node);
 
     centerNodeID = node->ID;
@@ -191,6 +235,7 @@ Cell::Cell(Mesh &mesh, long ID, long nodeID1, long nodeID2, long nodeID3) {
     mesh.edges[tempEdgeID].cellIDs.push_back(ID);
 
     assignOppositeNodeIDs(mesh);
+    buildInterpolationMat(mesh);
 }
 
 long Cell::getNextNodeID(unsigned long nodeIDPos) {

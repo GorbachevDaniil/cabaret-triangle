@@ -3,7 +3,7 @@
 #include "Mesh.hpp"
 #include "Parser.hpp"
 
-TEST(ParserTriangleTest, LoadNodes) {
+TEST(parserTriangleMesh, LoadNodes) {
     Parser parser;
     Mesh mesh;
     parser.LoadNodes(&mesh, "test/resources/triangle/test.node");
@@ -18,7 +18,7 @@ TEST(ParserTriangleTest, LoadNodes) {
     EXPECT_EQ(-1, mesh.nodes[3].data.coords.y);
 }
 
-TEST(ParserTriangleTest, LoadEdges) {
+TEST(parserTriangleMesh, LoadEdges) {
     Parser parser;
     Mesh mesh;
     parser.LoadNodes(&mesh, "test/resources/triangle/test.node");
@@ -79,7 +79,7 @@ TEST(ParserTriangleTest, LoadEdges) {
     EXPECT_EQ(2, mesh.edges[4].length);
 }
 
-TEST(ParserTriangleTest, LoadCells) {
+TEST(parserTriangleMesh, LoadCells) {
     Parser parser;
     Mesh mesh;
     parser.LoadNodes(&mesh, "test/resources/triangle/test.node");

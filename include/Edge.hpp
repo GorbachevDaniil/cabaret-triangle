@@ -15,7 +15,7 @@ class Edge {
 
     Vector normal;
 
-    std::vector<long> edgeEndsNodeIDs;
+    std::vector<long> endNodeIDs;
     std::vector<long> nodeIDs;
     std::vector<long> cellIDs;
 
@@ -23,6 +23,7 @@ class Edge {
     Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge, int innerNodeNum);
 
     std::vector<long> getUsedNodes(Mesh &mesh);
+    std::vector<long> getInnerNodes();
 };
 
 #endif

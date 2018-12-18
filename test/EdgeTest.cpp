@@ -7,7 +7,7 @@
 
 #include <vector>
 
-TEST(edgeWithOneInnerNodeTest, EdgeMustContainThreeNodes) {
+TEST(edgeInnerNodes, EdgeWithOneInnerNodeMustContainThreeNodes) {
     double x1 = 1;
     double y1 = 0;
     double x2 = 3;
@@ -35,7 +35,7 @@ TEST(edgeWithOneInnerNodeTest, EdgeMustContainThreeNodes) {
     EXPECT_EQ(true, node3->used);
 }
 
-TEST(edgeWithTwoInnerNodeTest, EdgeMustContainFourNodes) {
+TEST(edgeInnerNodes, EdgeWithTwoInnerNodesMustContainFourNodes) {
     double x1 = 1;
     double y1 = 0;
     double x2 = 3;

@@ -26,8 +26,8 @@ TEST(calculateEdgeNormals, Positive) {
     Node edgeCenter;
 
     Edge edge;
-    edge.edgeEndsNodeIDs.push_back(0); // node1
-    edge.edgeEndsNodeIDs.push_back(1); // node2
+    edge.endNodeIDs.push_back(0); // node1
+    edge.endNodeIDs.push_back(1); // node2
     edge.length = length;
 
     Cell cell;
