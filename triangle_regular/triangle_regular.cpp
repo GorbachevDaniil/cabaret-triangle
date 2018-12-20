@@ -1,11 +1,11 @@
-#include <iostream>
-#include <cmath>
 #include <cassert>
+#include <cmath>
+#include <iostream>
 
-double LEFT_BOUNDARY_X = -1;
-double RIGHT_BOUNDARY_X = 1;
-double LEFT_BOUNDARY_Y = -1;
-double RIGHT_BOUNDARY_Y = 1;
+double LEFT_BOUNDARY_X = -0.7;
+double RIGHT_BOUNDARY_X = 0.7;
+double LEFT_BOUNDARY_Y = -0.7;
+double RIGHT_BOUNDARY_Y = 0.7;
 
 int main(int argc, char **argv) {
     if (argc < 3) {
@@ -38,59 +38,66 @@ int main(int argc, char **argv) {
             if (j == 0 || i == 0) {
                 bound = 1;
             }
-            std::fprintf(outNodes, "%4d    %.17g  %.17g    %d\n", i * (nx + 1) + j + 1, LEFT_BOUNDARY_X + j * hx, LEFT_BOUNDARY_Y + i * hy, bound);
+            std::fprintf(outNodes, "%4d    %.17g  %.17g    %d\n", i * (nx + 1) + j + 1,
+                         LEFT_BOUNDARY_X + j * hx, LEFT_BOUNDARY_Y + i * hy, bound);
 
             if (j == nx - 1) {
                 bound = 1;
-                std::fprintf(outNodes, "%4d    %.17g  %.17g    %d\n", i * (nx + 1) + j + 2, LEFT_BOUNDARY_X + nx * hx, LEFT_BOUNDARY_Y + i * hy, bound);
+                std::fprintf(outNodes, "%4d    %.17g  %.17g    %d\n", i * (nx + 1) + j + 2,
+                             LEFT_BOUNDARY_X + nx * hx, LEFT_BOUNDARY_Y + i * hy, bound);
             }
-
-
 
             if (j == 0) {
                 bound = 1;
             }
-            std::fprintf(outEdges, "%4ld   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 1, i * (nx + 1) + j + nx + 2, bound);
+            std::fprintf(outEdges, "%4ld   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 1,
+                         i * (nx + 1) + j + nx + 2, bound);
             edgeID++;
 
             bound = 0;
             if (i == 0) {
                 bound = 1;
             }
-            std::fprintf(outEdges, "%4ld   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 1, i * (nx + 1) + j + 2, bound);
+            std::fprintf(outEdges, "%4ld   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 1,
+                         i * (nx + 1) + j + 2, bound);
             edgeID++;
 
             bound = 0;
-            std::fprintf(outEdges, "%4ld   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 1, i * (nx + 1) + j + nx + 3, bound);
+            std::fprintf(outEdges, "%4ld   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 1,
+                         i * (nx + 1) + j + nx + 3, bound);
             edgeID++;
 
             if (i == ny - 1) {
                 bound = 1;
-                std::fprintf(outEdges, "%4ld   %d  %d  %d\n", edgeID, i * (nx + 1) + j + nx + 2, i * (nx + 1) + j + nx + 3, bound);
+                std::fprintf(outEdges, "%4ld   %d  %d  %d\n", edgeID, i * (nx + 1) + j + nx + 2,
+                             i * (nx + 1) + j + nx + 3, bound);
                 edgeID++;
             }
 
             if (j == nx - 1) {
                 bound = 1;
-                std::fprintf(outEdges, "%4ld   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 2, i * (nx + 1) + j + nx + 3, bound);
+                std::fprintf(outEdges, "%4ld   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 2,
+                             i * (nx + 1) + j + nx + 3, bound);
                 edgeID++;
             }
 
-
-
-            std::fprintf(outCells, "%4ld    %4d  %4d  %4d\n", cellID, i * (nx + 1) + j + 1, i * (nx + 1) + j + 2, i * (nx + 1) + j + nx + 3);
+            std::fprintf(outCells, "%4ld    %4d  %4d  %4d\n", cellID, i * (nx + 1) + j + 1,
+                         i * (nx + 1) + j + 2, i * (nx + 1) + j + nx + 3);
             cellID++;
 
-            std::fprintf(outCells, "%4ld    %4d  %4d  %4d\n", cellID, i * (nx + 1) + j + 1, i * (nx + 1) + j + nx + 3, i * (nx + 1) + j + nx + 2);
+            std::fprintf(outCells, "%4ld    %4d  %4d  %4d\n", cellID, i * (nx + 1) + j + 1,
+                         i * (nx + 1) + j + nx + 3, i * (nx + 1) + j + nx + 2);
             cellID++;
         }
     }
 
-    for (int j = 0; j < nx; j ++) {
+    for (int j = 0; j < nx; j++) {
         int i = ny - 1;
-        std::fprintf(outNodes, "%4d    %.17g  %.17g    %d\n", i * (nx + 1) + j + nx + 2, LEFT_BOUNDARY_X + j * hx, LEFT_BOUNDARY_Y + ny * hy, 1);
+        std::fprintf(outNodes, "%4d    %.17g  %.17g    %d\n", i * (nx + 1) + j + nx + 2,
+                     LEFT_BOUNDARY_X + j * hx, LEFT_BOUNDARY_Y + ny * hy, 1);
         if (j == nx - 1) {
-            std::fprintf(outNodes, "%4d    %.17g  %.17g    %d\n", i * (nx + 1) + j + nx + 3, LEFT_BOUNDARY_X + nx * hx, LEFT_BOUNDARY_Y + ny * hy, 1);
+            std::fprintf(outNodes, "%4d    %.17g  %.17g    %d\n", i * (nx + 1) + j + nx + 3,
+                         LEFT_BOUNDARY_X + nx * hx, LEFT_BOUNDARY_Y + ny * hy, 1);
         }
     }
 

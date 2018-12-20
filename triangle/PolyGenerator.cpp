@@ -2,8 +2,8 @@
 #include <iostream>
 #include <fstream>
 
-#define L_x 1.0
-#define L_y 1.0
+#define L_x 0.7
+#define L_y 0.7
 #define N_x 100.0
 #define N_y 100.0
 

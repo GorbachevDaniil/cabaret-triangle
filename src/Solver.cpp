@@ -60,8 +60,13 @@ double Solver::calculateDivOnEdge(Edge *edge, int phase) {
             double phi2 = phase == 1 ? edgeNode2->data.phi0 : edgeNode2->data.phi2;
             double phi3 = phase == 1 ? edgeNode3->data.phi0 : edgeNode3->data.phi2;
             double phi4 = phase == 1 ? edgeNode4->data.phi0 : edgeNode4->data.phi2;
-            double phi = (phi1 + 3 * phi2 + 3 * phi3 + phi4) / 8;
-            div = phi * (edgeNode1->data.u * edge->normal) * edge->length;
+
+            double div1 = phi1 * (edgeNode1->data.u * edge->normal);
+            double div2 = phi2 * (edgeNode2->data.u * edge->normal);
+            double div3 = phi3 * (edgeNode3->data.u * edge->normal);
+            double div4 = phi4 * (edgeNode4->data.u * edge->normal);
+
+            div = (div1 + 3 * div2 + 3 * div3 + div4) / 8 * edge->length;
             break;
         }
         default:
@@ -172,45 +177,26 @@ void Solver::processPhase2(double tau) {
         assert(cellIDWithMaxCos != -1);
 
         Cell *cell = &mesh->cells[cellIDWithMaxCos];
+        Node *centerNode = &mesh->nodes[cell->centerNodeID];
 
-        double maxPhi0 = std::numeric_limits<double>::min();
-        double minPhi0 = std::numeric_limits<double>::max();
         arma::vec phi0(10);
         int pos = 0;
         for (long nodeID : cell->nodeIDs) {
             phi0[pos] = mesh->nodes[nodeID].data.phi0;
-            if (maxPhi0 < phi0[pos]) {
-                maxPhi0 = phi0[pos];
-            }
-            if (minPhi0 > phi0[pos]) {
-                minPhi0 = phi0[pos];
-            }
             pos++;
         }
         for (long edgeID : cell->edgeIDs) {
             for (long nodeID : mesh->edges[edgeID].getInnerNodes()) {
                 phi0[pos] = mesh->nodes[nodeID].data.phi0;
-                    if (maxPhi0 < phi0[pos]) {
-                    maxPhi0 = phi0[pos];
-                }
-                if (minPhi0 > phi0[pos]) {
-                    minPhi0 = phi0[pos];
-                }
                 pos++;
             }
         }
-        phi0[pos] = mesh->nodes[cell->centerNodeID].data.phi0;
-        if (maxPhi0 < phi0[pos]) {
-            maxPhi0 = phi0[pos];
-        }
-        if (minPhi0 > phi0[pos]) {
-            minPhi0 = phi0[pos];
-        }
+        phi0[pos] = centerNode->data.phi0;
         arma::vec a = arma::solve(cell->interpolationMat, phi0);
         
-        double coef = Parameters::CFL * tau;
+        double coef = -(centerNode->data.u * cell->nodeToTransferVector[node->ID]) * tau;
         Vector intersectCoords = cell->nodeToTransferVector[node->ID] * coef;
-        intersectCoords = intersectCoords + mesh->nodes[cell->centerNodeID].data.coords;
+        intersectCoords = intersectCoords + node->data.coords;
         double intersectX = intersectCoords.x;
         double intersectY = intersectCoords.y;
 
@@ -225,10 +211,25 @@ void Solver::processPhase2(double tau) {
         newPhi += a[7] * intersectY * intersectY * intersectY;
         newPhi += a[8] * intersectX * intersectY * intersectX;
         newPhi += a[9] * intersectX * intersectY * intersectY;
-        newPhi = std::max(newPhi, minPhi0);
-        newPhi = std::min(newPhi, maxPhi0);
 
         Data *data = &node->data;
+
+        double h = (centerNode->data.coords - data->coords).length();
+        double phiLeft0 = centerNode->data.phi0;
+        double phiCenter0 = centerNode->data.phi0;
+        double phiRight0 = data->phi0;
+
+        double phiCenter1 = centerNode->data.phi1;
+
+        double Q = (phiCenter1 - phiCenter0) / tau / 2 +
+                    (centerNode->data.u * cell->nodeToTransferVector[node->ID]) *
+                    (phiRight0 - phiLeft0) / h;
+        double min = std::min(std::min(phiRight0, phiLeft0), phiCenter0) + tau * Q;
+        double max = std::max(std::max(phiRight0, phiLeft0), phiCenter0) + tau * Q;
+
+        newPhi = std::max(newPhi, min);
+        newPhi = std::min(newPhi, max);
+
         data->phi2 = newPhi;
         node->phase2Calculated = true;
     }
