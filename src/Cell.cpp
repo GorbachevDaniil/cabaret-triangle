@@ -199,12 +199,7 @@ Cell::Cell(Mesh &mesh, long ID, long nodeID1, long nodeID2, long nodeID3) {
     xMedian = (x1 + x2 + x3) / 3;
     yMedian = (y1 + y2 + y3) / 3;
 
-    double median1Length = Vector::length(1.5 * (x1 - xMedian), 1.5 * (y1 - yMedian));
-    double median2Length = Vector::length(1.5 * (x2 - xMedian), 1.5 * (y2 - yMedian));
-    double median3Length = Vector::length(1.5 * (x3 - xMedian), 1.5 * (y3 - yMedian));
-    maxH = std::max(std::max(median1Length, median2Length), median3Length);
-
-    Node *node = new Node(mesh, xMedian, yMedian, true, true);
+    Node *node = new Node(mesh, xMedian, yMedian, true, false, true);
     mesh.nodes.push_back(*node);
 
     centerNodeID = node->ID;
@@ -219,19 +214,16 @@ Cell::Cell(Mesh &mesh, long ID, long nodeID1, long nodeID2, long nodeID3) {
     it = mesh.mapNodesWithEdge.find(std::make_pair(nodeID1, nodeID2));
     tempEdgeID = it->second;
     edgeIDs.push_back(tempEdgeID);
-    edgeToMedianLength[tempEdgeID] = median3Length;
     mesh.edges[tempEdgeID].cellIDs.push_back(ID);
 
     it = mesh.mapNodesWithEdge.find(std::make_pair(nodeID2, nodeID3));
     tempEdgeID = it->second;
     edgeIDs.push_back(tempEdgeID);
-    edgeToMedianLength[tempEdgeID] = median1Length;
     mesh.edges[tempEdgeID].cellIDs.push_back(ID);
 
     it = mesh.mapNodesWithEdge.find(std::make_pair(nodeID3, nodeID1));
     tempEdgeID = it->second;
     edgeIDs.push_back(tempEdgeID);
-    edgeToMedianLength[tempEdgeID] = median2Length;
     mesh.edges[tempEdgeID].cellIDs.push_back(ID);
 
     assignOppositeNodeIDs(mesh);

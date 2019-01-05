@@ -11,6 +11,7 @@ class Node {
    public:
     long ID;
     bool used;
+    bool boundNode;
     bool cellCenterNode;
     bool phase2Calculated;
 
@@ -19,7 +20,7 @@ class Node {
     std::set<long> cellIDs;
 
     Node(){};
-    Node(Mesh &mesh, double x, double y, bool used, bool cellCenterNode);
+    Node(Mesh &mesh, double x, double y, bool used, bool boundNode, bool cellCenterNode);
 };
 
 #endif

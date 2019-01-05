@@ -14,13 +14,15 @@ double Solver::calculateTau() {
     double tau = std::numeric_limits<double>::max();
     for (unsigned long i = 0; i < mesh->cells.size(); i++) {
         Cell *cell = &mesh->cells[i];
-        Node *cellCenter = &mesh->nodes[cell->centerNodeID];
+        Node *cellNode = &mesh->nodes[cell->centerNodeID];
         for (unsigned long edgeID : cell->edgeIDs) {
             for (unsigned long nodeID : mesh->edges[edgeID].getUsedNodes(*mesh)) {
-                double lambda = cellCenter->data.u * cell->nodeToTransferVector[nodeID];
-                double edgeTau = cell->maxH / std::abs(lambda);
-                if (tau > edgeTau) {
-                    tau = edgeTau;
+                Node *node = &mesh->nodes[nodeID];
+                double lambda = node->data.u * cell->nodeToTransferVector[nodeID];
+                double h = 2 * (node->data.coords - cellNode->data.coords).length();
+                double nodeTau = h / std::abs(lambda);
+                if (tau > nodeTau) {
+                    tau = nodeTau;
                 }
             }
         }
@@ -120,10 +122,17 @@ void Solver::processPhase2(double tau) {
         for (unsigned long nodeID : edge->getInnerNodes()) {
             Node *node = &mesh->nodes[nodeID];
             Data *nodeData = &node->data;
-            assert(cell->nodeIDToOppositeNodeID[nodeID] != -1);
-            Data *oppositeNodeDate = &mesh->nodes[cell->nodeIDToOppositeNodeID[nodeID]].data;
+            if (node->boundNode) {
+                if (cellCenterData->u * cell->nodeToTransferVector[nodeID] < 0) {
+                    nodeData->phi2 = 0;
+                    continue;
+                }
+            }
 
-            double phiLeft0 = oppositeNodeDate->phi0;
+            assert(cell->nodeIDToOppositeNodeID[nodeID] != -1);
+            Data *oppositeNodeData = &mesh->nodes[cell->nodeIDToOppositeNodeID[nodeID]].data;
+
+            double phiLeft0 = oppositeNodeData->phi0;
             double phiCenter0 = cellCenterData->phi0;
             double phiRight0 = nodeData->phi0;
 
@@ -131,10 +140,15 @@ void Solver::processPhase2(double tau) {
 
             double phiRight2 = 2 * phiCenter1 - phiLeft0;
 
-            double h = 2 * (cellCenterData->coords - nodeData->coords).length();
+            int coef = 1;
+            if ((oppositeNodeData->coords.x > nodeData->coords.x) || 
+                (oppositeNodeData->coords.y > nodeData->coords.y)) {
+                coef = -1;
+            }
+            double h = (oppositeNodeData->coords - nodeData->coords).length();
             double Q = (phiCenter1 - phiCenter0) / tau / 2 +
                        (cellCenterData->u * cell->nodeToTransferVector[nodeID]) *
-                        (phiRight0 - phiLeft0) / h;
+                        coef * (phiRight0 - phiLeft0) / h;
             double min = std::min(std::min(phiRight0, phiLeft0), phiCenter0) + tau * Q;
             double max = std::max(std::max(phiRight0, phiLeft0), phiCenter0) + tau * Q;
 
@@ -148,7 +162,12 @@ void Solver::processPhase2(double tau) {
 
     for (unsigned long i = 0; i < mesh->nodes.size(); i++) {
         Node *node = &mesh->nodes[i];
-        if (node->phase2Calculated || node->cellCenterNode) {
+        Data *data = &node->data;
+        if (node->phase2Calculated || node->cellCenterNode || !node->used) {
+            continue;
+        }
+        if (node->boundNode) {
+            data->phi2 = 0;
             continue;
         }
 
@@ -195,8 +214,9 @@ void Solver::processPhase2(double tau) {
         arma::vec a = arma::solve(cell->interpolationMat, phi0);
         
         double coef = -(centerNode->data.u * cell->nodeToTransferVector[node->ID]) * tau;
+        // double coef = -(avgU * cell->nodeToTransferVector[node->ID]) * tau;
         Vector intersectCoords = cell->nodeToTransferVector[node->ID] * coef;
-        intersectCoords = intersectCoords + node->data.coords;
+        intersectCoords = intersectCoords + data->coords;
         double intersectX = intersectCoords.x;
         double intersectY = intersectCoords.y;
 
@@ -211,8 +231,6 @@ void Solver::processPhase2(double tau) {
         newPhi += a[7] * intersectY * intersectY * intersectY;
         newPhi += a[8] * intersectX * intersectY * intersectX;
         newPhi += a[9] * intersectX * intersectY * intersectY;
-
-        Data *data = &node->data;
 
         double h = (centerNode->data.coords - data->coords).length();
         double phiLeft0 = centerNode->data.phi0;
@@ -232,6 +250,19 @@ void Solver::processPhase2(double tau) {
 
         data->phi2 = newPhi;
         node->phase2Calculated = true;
+
+        // double div = 0;
+        // double volume = 0;
+        // for (unsigned long cellID : node->cellIDs) {
+        //     Cell *cell = &mesh->cells[cellID];
+        //     volume += cell->volume;
+        //     for (long edgeID : cell->edgeIDs) {
+        //         div += calculateDivOnEdge(&mesh->edges[edgeID], 1) * cell->edgeToNormalDir[edgeID];
+        //     }
+        // }
+        // div /= volume;
+        // data->phi2 = data->phi0 - tau * div;
+        // node->phase2Calculated = true;
     }
 }
 

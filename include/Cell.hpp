@@ -14,13 +14,11 @@ class Cell {
     long ID;
     long centerNodeID;
     double volume;
-    double maxH;
 
     std::vector<long> nodeIDs;
     std::vector<long> edgeIDs;
     std::map<long, int> edgeToNormalDir;
     std::map<long, Vector> nodeToTransferVector;
-    std::map<long, double> edgeToMedianLength;
     std::map<long, long> nodeIDToOppositeNodeID;
 
     arma::mat interpolationMat;

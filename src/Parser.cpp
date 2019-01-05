@@ -48,7 +48,8 @@ int Parser::LoadNodes(Mesh *mesh, std::string nodeFile) {
             continue;
         }
 
-        Node *node = new Node(*mesh, atof(values[1].c_str()), atof(values[2].c_str()), true, false);
+        bool boundNode = atoi(values[3].c_str()) == 1 ? true : false;
+        Node *node = new Node(*mesh, atof(values[1].c_str()), atof(values[2].c_str()), true, boundNode, false);
         mesh->nodes.push_back(*node);
 
         i++;
