@@ -126,7 +126,7 @@ TEST(cellCreationInnerNodes, OneInnerNodeDontHaveOpposite) {
     node3.used = false;
     node3.data.coords = Vector(x3, y3);
 
-    Mesh mesh;
+    Mesh mesh(1, false);
     mesh.nodes.push_back(node1);
     mesh.nodes.push_back(node2);
     mesh.nodes.push_back(node3);
@@ -187,7 +187,7 @@ TEST(cellCreationInnerNodes, TwoInnerNodesHaveOppositeWithPositiveCoordsLeftTria
     node3.used = false;
     node3.data.coords = Vector(x3, y3);
 
-    Mesh mesh;
+    Mesh mesh(2, false);
     mesh.nodes.push_back(node1);
     mesh.nodes.push_back(node2);
     mesh.nodes.push_back(node3);
@@ -266,7 +266,7 @@ TEST(cellCreationInnerNodes, TwoInnerNodesHaveOppositeWithPositiveCoordsRightTri
     node3.used = false;
     node3.data.coords = Vector(x3, y3);
 
-    Mesh mesh;
+    Mesh mesh(2, false);
     mesh.nodes.push_back(node1);
     mesh.nodes.push_back(node2);
     mesh.nodes.push_back(node3);
@@ -345,7 +345,7 @@ TEST(cellCreationInnerNodes, TwoInnerNodesHaveOppositeWithNegativeCoords) {
     node3.used = false;
     node3.data.coords = Vector(x3, y3);
 
-    Mesh mesh;
+    Mesh mesh(2, false);
     mesh.nodes.push_back(node1);
     mesh.nodes.push_back(node2);
     mesh.nodes.push_back(node3);
@@ -424,7 +424,7 @@ TEST(cellCreationInnerNodes, TwoInnerNodesHaveOppositeWithWrongOrderOnEdge) {
     node3.used = false;
     node3.data.coords = Vector(x3, y3);
 
-    Mesh mesh;
+    Mesh mesh(2, false);
     mesh.nodes.push_back(node1);
     mesh.nodes.push_back(node2);
     mesh.nodes.push_back(node3);

@@ -3,7 +3,6 @@
 #include "Mesh.hpp"
 #include "Node.hpp"
 #include "Vector.hpp"
-#include "Parameters.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -149,9 +148,8 @@ void assignRowValues(arma::mat &mat, double x, double y, int row) {
 }
 
 void Cell::buildInterpolationMat(Mesh &mesh) {
-    int matSize = Parameters::EDGE_INNER_NODES_NUMBER * 3 + 4;
+    int matSize = mesh.edgeInnerNodesNumber * 3 + 4;
     if (matSize != 10) {
-        std::cout << matSize << std::endl;
         return;
     }
 
@@ -202,7 +200,7 @@ Cell::Cell(Mesh &mesh, long ID, long nodeID1, long nodeID2, long nodeID3) {
     Node *node = new Node(mesh, xMedian, yMedian, true, false, true);
     mesh.nodes.push_back(*node);
 
-    centerNodeID = node->ID;
+    this->centerNodeID = node->ID;
     nodeIDs.push_back(nodeID1);
     nodeIDs.push_back(nodeID2);
     nodeIDs.push_back(nodeID3);

@@ -35,7 +35,7 @@ TEST(calculateEdgeNormals, Positive) {
     cell.nodeIDs.push_back(1); // node2
     cell.edgeIDs.push_back(0); // edge
 
-    Mesh mesh;
+    Mesh mesh(1, false);
     mesh.nodes.push_back(node1);
     mesh.nodes.push_back(node2);
     mesh.nodes.push_back(edgeCenter);
@@ -74,7 +74,7 @@ TEST(calculateTransferVectors, Positive) {
     cell.centerNodeID = 1; // cellCenter
     cell.edgeIDs.push_back(0); // edge
 
-    Mesh mesh;
+    Mesh mesh(1, false);
     mesh.nodes.push_back(edgeCenter);
     mesh.nodes.push_back(cellCenter);
     mesh.edges.push_back(edge);

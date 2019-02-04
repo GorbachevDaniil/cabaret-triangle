@@ -10,6 +10,27 @@ void Initializer::initialize(Mesh &mesh) {
             double x = data->coords.x;
             double y = data->coords.y;
 
+            // data->u = Vector(1, 1);
+            // if ((x < -0.4) && (x > -0.6) && (y < -0.4) && (y > -0.6)) {
+            //     data->phi0 = 1;
+            // } else {
+            //     data->phi0 = 0;
+            // }
+
+            // data->u = Vector(0.5, sqrt(3) / 2);
+            // if ((x < -0.4) && (x > -0.6) && (y < -0.4) && (y > -0.6)) {
+            //     data->phi0 = 1;
+            // } else {
+            //     data->phi0 = 0;
+            // }
+
+            // data->u = Vector(0, 1);
+            // if ((x < 0.1) && (x > -0.1) && (y < -0.5) && (y > -0.7)) {
+            //     data->phi0 = 1;
+            // } else {
+            //     data->phi0 = 0;
+            // }
+
             // data->u = Vector(1, 0);
             // double gamma = 0.1;
             // data->phi0 = exp(-(pow(x + 0.45, 2) + pow(y, 2)) / (2 * pow(gamma, 2))) / 1;
@@ -25,9 +46,9 @@ void Initializer::initialize(Mesh &mesh) {
                 data->phi0 = 0;
             }
 
-            data->u = Vector(-y, x);
-            double gamma = 0.15;
-            data->phi0 = exp(-(pow(x - 0.35, 2) + pow(y, 2)) / (2 * pow(gamma, 2))) / 1;
+            // data->u = Vector(-y, x);
+            // double gamma = 0.15;
+            // data->phi0 = exp(-(pow(x - 0.35, 2) + pow(y, 2)) / (2 * pow(gamma, 2))) / 1;
         }
     }
     for (unsigned long i = 0; i < mesh.cells.size(); i++) {

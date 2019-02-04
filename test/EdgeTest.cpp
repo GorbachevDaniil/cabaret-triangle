@@ -21,7 +21,7 @@ TEST(edgeInnerNodes, EdgeWithOneInnerNodeMustContainThreeNodes) {
     node2.ID = 1;
     node2.data.coords = Vector(x2, y2);
 
-    Mesh mesh;
+    Mesh mesh(1, false);
     mesh.nodes.push_back(node1);
     mesh.nodes.push_back(node2);
 
@@ -49,7 +49,7 @@ TEST(edgeInnerNodes, EdgeWithTwoInnerNodesMustContainFourNodes) {
     node2.ID = 1;
     node2.data.coords = Vector(x2, y2);
 
-    Mesh mesh;
+    Mesh mesh(2, false);
     mesh.nodes.push_back(node1);
     mesh.nodes.push_back(node2);
 

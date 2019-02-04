@@ -18,6 +18,7 @@ class Node {
     Data data;
 
     std::set<long> cellIDs;
+    std::set<long> edgeIDs;
 
     Node(){};
     Node(Mesh &mesh, double x, double y, bool used, bool boundNode, bool cellCenterNode);

@@ -1,13 +1,13 @@
 #include "Parser.hpp"
 
 #include "Mesh.hpp"
-#include "Parameters.hpp"
 
 #include <cmath>
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 // Make vector of values from string words
 std::vector<std::string> split(const std::string &s, const char *delimiter) {
@@ -26,30 +26,28 @@ std::vector<std::string> split(const std::string &s, const char *delimiter) {
     return values;
 }
 
-int Parser::LoadNodes(Mesh *mesh, std::string nodeFile) {
+int Parser::LoadNodes(Mesh *mesh, std::string fileName) {
     std::string line;
-    std::ifstream nodefile(nodeFile);
+    std::ifstream nodeFile(fileName);
 
-    if (!nodefile) {
+    if (!nodeFile) {
         std::cout << "Error opening node file!" << std::endl;
         return 1;
     }
 
     std::vector<std::string> values;
-    int i = 0, nNodes;
+    int nNodes;
+    getline(nodeFile, line);
+    values = split(line, " ");
+    nNodes = atoi(values[0].c_str());
 
-    while (getline(nodefile, line) && (i != (nNodes + 1))) {
-        if (i == nNodes + 1) continue;  // miss last string
-
+    int i = 1;
+    while (getline(nodeFile, line) && (i != (nNodes + 1))) {
         values = split(line, " ");
-        if (i == 0) {
-            i++;
-            nNodes = atoi(values[0].c_str());  // init number of Nodes
-            continue;
-        }
-
+        double x = atof(values[1].c_str());
+        double y = atof(values[2].c_str());
         bool boundNode = atoi(values[3].c_str()) == 1 ? true : false;
-        Node *node = new Node(*mesh, atof(values[1].c_str()), atof(values[2].c_str()), true, boundNode, false);
+        Node *node = new Node(*mesh, x, y, mesh->edgeOuterNodesUsed, boundNode, false);
         mesh->nodes.push_back(*node);
 
         i++;
@@ -58,31 +56,29 @@ int Parser::LoadNodes(Mesh *mesh, std::string nodeFile) {
     return 0;
 }
 
-int Parser::LoadEdges(Mesh *mesh, std::string edgeFile) {
+int Parser::LoadEdges(Mesh *mesh, std::string fileName) {
     std::string line;
-    std::ifstream edgefile(edgeFile);
+    std::ifstream edgeFile(fileName);
 
-    if (!edgefile) {
+    if (!edgeFile) {
         std::cout << "Error opening edge file!" << std::endl;
         return 1;
     }
 
     std::vector<std::string> values;
-    int i = 0, nEdges;
+    int nEdges;
+    getline(edgeFile, line);
+    values = split(line, " ");
+    nEdges = atoi(values[0].c_str());
 
-    while (getline(edgefile, line) && (i != (nEdges + 1))) {
-        if (i == nEdges + 1) continue;  // miss last string
-
+    int i = 1;
+    while (getline(edgeFile, line) && (i != (nEdges + 1))) {
         values = split(line, " ");
-        if (i == 0) {
-            i++;
-            nEdges = atoi(values[0].c_str());  // init number of Nodes
-            continue;
-        }
-
-        Edge *edge = new Edge(*mesh, atol(values[0].c_str()) - 1, atol(values[1].c_str()) - 1,
-                              atol(values[2].c_str()) - 1, atoi(values[3].c_str()),
-                              Parameters::EDGE_INNER_NODES_NUMBER);
+        unsigned long ID = atol(values[0].c_str()) - 1;
+        unsigned long nodeID1 = atol(values[1].c_str()) - 1;
+        unsigned long nodeID2 = atol(values[2].c_str()) - 1;
+        int bound = atoi(values[3].c_str());
+        Edge *edge = new Edge(*mesh, ID, nodeID1, nodeID2, bound, mesh->edgeInnerNodesNumber);
         mesh->edges.push_back(*edge);
 
         i++;
@@ -91,30 +87,29 @@ int Parser::LoadEdges(Mesh *mesh, std::string edgeFile) {
     return 0;
 }
 
-int Parser::LoadCells(Mesh *mesh, std::string cellFile) {
+int Parser::LoadCells(Mesh *mesh, std::string fileName) {
     std::string line;
-    std::ifstream cellfile(cellFile);
+    std::ifstream cellFile(fileName);
 
-    if (!cellfile) {
+    if (!cellFile) {
         std::cout << "Error opening ele file!" << std::endl;
         return 1;
     }
 
     std::vector<std::string> values;
-    int i = 0, nCells;
+    int nCells;
+    getline(cellFile, line);
+    values = split(line, " ");
+    nCells = atoi(values[0].c_str());
 
-    while (getline(cellfile, line) && (i != (nCells + 1))) {
-        if (i == nCells + 1) continue;  // miss last string
-
+    int i = 1;
+    while (getline(cellFile, line) && (i != (nCells + 1))) {
         values = split(line, " ");
-        if (i == 0) {
-            i++;
-            nCells = atoi(values[0].c_str());  // init number of Nodes
-            continue;
-        }
-
-        Cell *cell = new Cell(*mesh, atol(values[0].c_str()) - 1, atol(values[1].c_str()) - 1,
-                              atol(values[2].c_str()) - 1, atol(values[3].c_str()) - 1);
+        unsigned long ID = atol(values[0].c_str()) - 1;
+        unsigned long nodeID1 = atol(values[1].c_str()) - 1;
+        unsigned long nodeID2 = atol(values[2].c_str()) - 1;
+        unsigned long nodeID3 = atol(values[3].c_str()) - 1;
+        Cell *cell = new Cell(*mesh, ID, nodeID1, nodeID2, nodeID3);
         mesh->cells.push_back(*cell);
 
         i++;

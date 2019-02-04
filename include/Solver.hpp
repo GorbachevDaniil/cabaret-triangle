@@ -5,9 +5,10 @@
 
 class Solver {
 private:
+    double cfl;
     Mesh *mesh;
 public:
-    Solver(Mesh *mesh) : mesh(mesh) {};
+    Solver(double cfl, Mesh *mesh) : cfl(cfl), mesh(mesh) {};
 
     double calculateTau();
     void processPhase1(double tau);

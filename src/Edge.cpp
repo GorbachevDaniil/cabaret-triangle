@@ -6,8 +6,7 @@
 #include <cassert>
 #include <cmath>
 
-Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge,
-           int innerNodeNum) {
+Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge, int innerNodeNum) {
     this->ID = ID;
     this->boundEdge = boundEdge;
     endNodeIDs.push_back(startNodeID);
@@ -23,16 +22,19 @@ Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge
 
     // In nodeIDs there will be always nodes order from start node to end node
     nodeIDs.push_back(startNodeID);
+    mesh.nodes[startNodeID].edgeIDs.insert(ID);
     Vector startNode(startNodeX, startNodeY);
     Vector edgeVector(endNodeX - startNodeX, endNodeY - startNodeY);
     bool isInnerNodesBound = mesh.nodes[startNodeID].boundNode && mesh.nodes[endNodeID].boundNode;
     for (int i = 1; i < innerNodeNum + 1; i++) {
         Vector nodeCoords = edgeVector / (innerNodeNum + 1) * i + startNode;
         Node *node = new Node(mesh, nodeCoords.x, nodeCoords.y, true, isInnerNodesBound, false);
+        node->edgeIDs.insert(ID);
         mesh.nodes.push_back(*node);
         nodeIDs.push_back(node->ID);
     }
     nodeIDs.push_back(endNodeID);
+    mesh.nodes[endNodeID].edgeIDs.insert(ID);
 
     std::pair<int, int> tempNodeIDs;
     tempNodeIDs = std::make_pair(startNodeID, endNodeID);
@@ -53,9 +55,30 @@ std::vector<long> Edge::getUsedNodes(Mesh &mesh) {
 }
 
 std::vector<long> Edge::getInnerNodes() {
-    std::vector<long>::const_iterator firstInnerNode = nodeIDs.begin() + 1;
-    std::vector<long>::const_iterator lastInnerNode = nodeIDs.end() - 1;
-    std::vector<long> innerNodeIDs(firstInnerNode, lastInnerNode);
+    long firstInnerNodeID = nodeIDs.begin()[1];
+    long lastInnerNodeID = nodeIDs.begin()[2];
+    std::vector<long> innerNodeIDs;
+    innerNodeIDs.push_back(firstInnerNodeID);
+    innerNodeIDs.push_back(lastInnerNodeID);
+    assert(firstInnerNodeID != lastInnerNodeID);
     assert(innerNodeIDs.size() > 0);
     return innerNodeIDs;
+}
+
+long Edge::getNearInnerNode(long ID) {
+    assert((ID == nodeIDs.front()) || (ID == nodeIDs.back()));
+    if (ID == nodeIDs.front()) {
+        return nodeIDs.begin()[1];
+    } else {
+        return nodeIDs.begin()[2];
+    }
+}
+
+long Edge::getFarInnerNode(long ID) {
+    assert((ID == nodeIDs.front()) || (ID == nodeIDs.back()));
+    if (ID == nodeIDs.front()) {
+        return nodeIDs.begin()[2];
+    } else {
+        return nodeIDs.begin()[1];
+    }
 }

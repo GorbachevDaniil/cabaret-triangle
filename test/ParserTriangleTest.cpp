@@ -5,7 +5,7 @@
 
 TEST(parserTriangleMesh, LoadNodes) {
     Parser parser;
-    Mesh mesh;
+    Mesh mesh(1, false);
     parser.LoadNodes(&mesh, "test/resources/triangle/test.node");
 
     EXPECT_EQ(-1, mesh.nodes[0].data.coords.x);
@@ -20,7 +20,7 @@ TEST(parserTriangleMesh, LoadNodes) {
 
 TEST(parserTriangleMesh, LoadEdges) {
     Parser parser;
-    Mesh mesh;
+    Mesh mesh(1, false);
     parser.LoadNodes(&mesh, "test/resources/triangle/test.node");
     parser.LoadEdges(&mesh, "test/resources/triangle/test.edge");
 
@@ -81,7 +81,7 @@ TEST(parserTriangleMesh, LoadEdges) {
 
 TEST(parserTriangleMesh, LoadCells) {
     Parser parser;
-    Mesh mesh;
+    Mesh mesh(1, false);
     parser.LoadNodes(&mesh, "test/resources/triangle/test.node");
     parser.LoadEdges(&mesh, "test/resources/triangle/test.edge");
     parser.LoadCells(&mesh, "test/resources/triangle/test.ele");
