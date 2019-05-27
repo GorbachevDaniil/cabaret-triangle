@@ -1,9 +1,14 @@
-#include "Initializer.hpp"
-#include "Mesh.hpp"
 #include "MeshUtils.hpp"
-#include "OutputUtils.hpp"
-#include "Solver.hpp"
 
+#include "TransferInitializer.hpp"
+#include "TransferOutput.hpp"
+#include "TransferSolver.hpp"
+
+#include "ShallowWaterInitializer.hpp"
+#include "ShallowWaterOutput.hpp"
+#include "ShallowWaterSolver.hpp"
+
+#include <chrono>
 #include <iostream>
 #include <libconfig.h++>
 
@@ -13,6 +18,7 @@ int main() {
 
     double cfl = config.lookup("cfl");
     int steps = config.lookup("steps");
+    double timeToStop = config.lookup("time_to_stop");
     int writePeriod = config.lookup("write_period");
     int edgeInnerNodesNumber = config.lookup("edge_inner_nodes_number");
     bool edgeOuterNodesUsed = config.lookup("edge_outer_nodes_used");
@@ -23,25 +29,95 @@ int main() {
 
     MeshUtils::calculateEdgesNormals(*mesh);
     MeshUtils::calculateTransferVectors(*mesh);
-    Initializer::initialize(*mesh);
 
-    OutputUtils::OutputParaview(mesh, 0, writePeriod);
+    // TransferInitializer initializer = TransferInitializer();
+    // initializer.initialize(*mesh);
 
-    Solver solver(cfl, mesh);
+    // TransferOutput output = TransferOutput(writePeriod);
+    // output.writeParaview(mesh, 0);
+
+    // TransferSolver solver = TransferSolver(cfl, mesh);
+    // double time = 0;
+    // double tau = solver.calcTau();
+
+    // std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+    // for (int i = 0; i < steps; i++) {
+    //     if (timeToStop > 0 && time >= timeToStop) {
+    //         output.writeParaview(mesh, i + 1);
+    //         break;
+    //     }
+
+    //     std::cout << "step = " << i << " tau = " << tau << " time = " << time << std::endl;
+    //     time += tau;
+
+    //     solver.processPhase1(tau);
+    //     solver.processPhase2(tau);
+    //     solver.processPhase3(tau);
+    //     solver.prepareNextStep();
+
+    //     output.writeParaview(mesh, i + 1);
+    // }
+
+    ShallowWaterInitializer initializer = ShallowWaterInitializer();
+    initializer.initialize(*mesh);
+
+    ShallowWaterOutput output = ShallowWaterOutput(writePeriod);
+    output.writeParaview(mesh, 0);
+
+    ShallowWaterSolver solver = ShallowWaterSolver(cfl, 9.812, mesh);
     double time = 0;
-    double tau = solver.calculateTau();
+
+    std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+
+    std::chrono::duration<double> durCalcTau = std::chrono::duration<double>(0);
+    std::chrono::duration<double> durPhase1 = std::chrono::duration<double>(0);
+    std::chrono::duration<double> durPhase2 = std::chrono::duration<double>(0);
+    std::chrono::duration<double> durPhase3 = std::chrono::duration<double>(0);
 
     for (int i = 0; i < steps; i++) {
-        std::cout << "step = " << i << " tau = " << tau << " time = " << time << std::endl;
+        if (timeToStop > 0 && time >= timeToStop) {
+            output.writeParaview(mesh, i + 1);
+            break;
+        }
+        output.writeParaview(mesh, i);
+
+        std::chrono::system_clock::time_point startCalcTau = std::chrono::system_clock::now();
+        double tau = solver.calcTau();
+        std::cout << "step = " << i + 1 << " tau = " << tau << " time = " << time << std::endl;
         time += tau;
+        std::chrono::system_clock::time_point stopCalcTau = std::chrono::system_clock::now();
+        durCalcTau +=
+            std::chrono::duration_cast<std::chrono::duration<double>>(stopCalcTau - startCalcTau);
 
+        std::chrono::system_clock::time_point startPhase1 = std::chrono::system_clock::now();
         solver.processPhase1(tau);
-        solver.processPhase2(tau);
-        solver.processPhase3(tau);
-        solver.prepareNextStep();
+        std::chrono::system_clock::time_point stopPhase1 = std::chrono::system_clock::now();
+        durPhase1 +=
+            std::chrono::duration_cast<std::chrono::duration<double>>(stopPhase1 - startPhase1);
 
-        OutputUtils::OutputParaview(mesh, i + 1, writePeriod);
+        std::chrono::system_clock::time_point startPhase2 = std::chrono::system_clock::now();
+        solver.processPhase2(tau);
+        std::chrono::system_clock::time_point stopPhase2 = std::chrono::system_clock::now();
+        durPhase2 +=
+            std::chrono::duration_cast<std::chrono::duration<double>>(stopPhase2 - startPhase2);
+
+        std::chrono::system_clock::time_point startPhase3 = std::chrono::system_clock::now();
+        solver.processPhase3(tau);
+        std::chrono::system_clock::time_point stopPhase3 = std::chrono::system_clock::now();
+        durPhase3 +=
+            std::chrono::duration_cast<std::chrono::duration<double>>(stopPhase3 - startPhase3);
+
+        solver.prepareNextStep();
     }
+    std::chrono::system_clock::time_point stop = std::chrono::system_clock::now();
+    std::chrono::duration<double> dur =
+        std::chrono::duration_cast<std::chrono::duration<double>>(stop - start);
+
+    std::cout << "it took " << dur.count() / steps << " sec to process one step" << std::endl;
+    std::cout << "it took " << durCalcTau.count() / steps << " sec to calculate tau" << std::endl;
+    std::cout << "it took " << durPhase1.count() / steps << " sec to process phase 1" << std::endl;
+    std::cout << "it took " << durPhase2.count() / steps << " sec to process phase 2" << std::endl;
+    std::cout << "it took " << durPhase3.count() / steps << " sec to process phase 3" << std::endl;
 
     return 0;
 }

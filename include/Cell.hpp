@@ -3,7 +3,7 @@
 
 #include "Vector.hpp"
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <armadillo>
 
@@ -17,9 +17,9 @@ class Cell {
 
     std::vector<long> nodeIDs;
     std::vector<long> edgeIDs;
-    std::map<long, int> edgeToNormalDir;
-    std::map<long, Vector> nodeToTransferVector;
-    std::map<long, long> nodeIDToOppositeNodeID;
+    std::unordered_map<long, int> edgeToNormalDir;
+    std::unordered_map<long, Vector> nodeToTransferVector;
+    std::unordered_map<long, long> nodeIDToOppositeNodeID;
 
     arma::mat interpolationMat;
 

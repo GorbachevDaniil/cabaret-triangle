@@ -47,7 +47,7 @@ int Parser::LoadNodes(Mesh *mesh, std::string fileName) {
         double x = atof(values[1].c_str());
         double y = atof(values[2].c_str());
         bool boundNode = atoi(values[3].c_str()) == 1 ? true : false;
-        Node *node = new Node(*mesh, x, y, mesh->edgeOuterNodesUsed, boundNode, false);
+        Node *node = new Node(*mesh, x, y, mesh->edgeOuterNodesUsed, boundNode, false, true);
         mesh->nodes.push_back(*node);
 
         i++;

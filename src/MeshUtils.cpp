@@ -1,12 +1,5 @@
 #include "MeshUtils.hpp"
 
-#include "Mesh.hpp"
-#include "Cell.hpp"
-#include "Edge.hpp"
-#include "Node.hpp"
-#include "Data.hpp"
-#include "Vector.hpp"
-
 #include <vector>
 
 void calculateEdgeNormal(Mesh &mesh, Cell &cell, long edgeID) {

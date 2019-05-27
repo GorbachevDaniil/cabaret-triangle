@@ -46,7 +46,6 @@ $(BIN_DIR)/$(TARGET): $(OBJECTS)
 $(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(BIN_DIR)
-	@mkdir -p $(OUTPUT_DIR)
 	@$(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
@@ -65,13 +64,14 @@ target: $(BIN_DIR)/$(TARGET)
 target_test: $(BIN_DIR)/$(TEST_TARGET)
 
 run_target: target
+	@mkdir -p $(OUTPUT_DIR)
 	./$(BIN_DIR)/$(TARGET)
 
 run_test: target_test
 	./$(BIN_DIR)/$(TEST_TARGET)
 
 clean_all:
-	@rm -f $(OBJECTS) $(TEST_OBJECTS)
+	@rm -rf $(BUILD_DIR)
 	@echo "Cleaned object files successfully!"
 	@rm -f $(BIN_DIR)/$(TARGET) $(BIN_DIR)/$(TEST_TARGET)
 	@echo "Cleaned bin files successfully!"

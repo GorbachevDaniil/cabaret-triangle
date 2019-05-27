@@ -28,10 +28,12 @@ Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge
     bool isInnerNodesBound = mesh.nodes[startNodeID].boundNode && mesh.nodes[endNodeID].boundNode;
     for (int i = 1; i < innerNodeNum + 1; i++) {
         Vector nodeCoords = edgeVector / (innerNodeNum + 1) * i + startNode;
-        Node *node = new Node(mesh, nodeCoords.x, nodeCoords.y, true, isInnerNodesBound, false);
+        Node *node = new Node(mesh, nodeCoords.x, nodeCoords.y, true, 
+                              isInnerNodesBound, false, false);
         node->edgeIDs.insert(ID);
         mesh.nodes.push_back(*node);
         nodeIDs.push_back(node->ID);
+        innerNodeIDs.push_back(node->ID);
     }
     nodeIDs.push_back(endNodeID);
     mesh.nodes[endNodeID].edgeIDs.insert(ID);
@@ -52,17 +54,6 @@ std::vector<long> Edge::getUsedNodes(Mesh &mesh) {
     }
     assert(usedNodeIDs.size() > 0);
     return usedNodeIDs;
-}
-
-std::vector<long> Edge::getInnerNodes() {
-    long firstInnerNodeID = nodeIDs.begin()[1];
-    long lastInnerNodeID = nodeIDs.begin()[2];
-    std::vector<long> innerNodeIDs;
-    innerNodeIDs.push_back(firstInnerNodeID);
-    innerNodeIDs.push_back(lastInnerNodeID);
-    assert(firstInnerNodeID != lastInnerNodeID);
-    assert(innerNodeIDs.size() > 0);
-    return innerNodeIDs;
 }
 
 long Edge::getNearInnerNode(long ID) {

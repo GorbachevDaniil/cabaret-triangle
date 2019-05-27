@@ -2,10 +2,10 @@
 #include <cmath>
 #include <iostream>
 
-double LEFT_BOUNDARY_X = -0.75;
-double RIGHT_BOUNDARY_X = 0.75;
-double LEFT_BOUNDARY_Y = -0.75;
-double RIGHT_BOUNDARY_Y = 0.75;
+double LEFT_BOUNDARY_X = 0.0;
+double RIGHT_BOUNDARY_X = 1.0;
+double LEFT_BOUNDARY_Y = 0.0;
+double RIGHT_BOUNDARY_Y = 1.0;
 
 int main(int argc, char **argv) {
     if (argc < 2) {
@@ -151,6 +151,10 @@ int main(int argc, char **argv) {
     std::fclose(outNodes);
     std::fclose(outEdges);
     std::fclose(outCells);
+
+    std::cout << "number of nodes = " << nNodes << std::endl;
+    std::cout << "number of edges = " << nEdges << std::endl;
+    std::cout << "number of cells = " << nCells << std::endl;
 
     return 0;
 }

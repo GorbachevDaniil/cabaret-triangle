@@ -153,24 +153,24 @@ void Cell::buildInterpolationMat(Mesh &mesh) {
         return;
     }
 
-    arma::mat interpolationMat = arma::mat(matSize, matSize);
+    arma::mat mat = arma::mat(matSize, matSize);
     int row = 0;
 
     for (long nodeID : nodeIDs) {
         Vector coords = mesh.nodes[nodeID].data.coords;
-        assignRowValues(interpolationMat, coords.x, coords.y, row);
+        assignRowValues(mat, coords.x, coords.y, row);
         row++;
     }
     for (long edgeID : edgeIDs) {
-        for (long nodeID : mesh.edges[edgeID].getInnerNodes()) {
+        for (long nodeID : mesh.edges[edgeID].innerNodeIDs) {
             Vector coords = mesh.nodes[nodeID].data.coords;
-            assignRowValues(interpolationMat, coords.x, coords.y, row);
+            assignRowValues(mat, coords.x, coords.y, row);
             row++;
         }
     }
     Vector coords = mesh.nodes[centerNodeID].data.coords;
-    assignRowValues(interpolationMat, coords.x, coords.y, row);
-    this->interpolationMat = interpolationMat;
+    assignRowValues(mat, coords.x, coords.y, row);
+    this->interpolationMat = arma::inv(mat);
 }
 
 Cell::Cell(Mesh &mesh, long ID, long nodeID1, long nodeID2, long nodeID3) {
@@ -197,7 +197,7 @@ Cell::Cell(Mesh &mesh, long ID, long nodeID1, long nodeID2, long nodeID3) {
     xMedian = (x1 + x2 + x3) / 3;
     yMedian = (y1 + y2 + y3) / 3;
 
-    Node *node = new Node(mesh, xMedian, yMedian, true, false, true);
+    Node *node = new Node(mesh, xMedian, yMedian, true, false, true, false);
     mesh.nodes.push_back(*node);
 
     this->centerNodeID = node->ID;

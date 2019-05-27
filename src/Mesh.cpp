@@ -6,9 +6,9 @@
 
 int Mesh::InitMesh(Mesh *mesh) {
     Parser parser;
-    parser.LoadNodes(mesh, "mesh_generation/triangle_regular/Mesh.node");
-    parser.LoadEdges(mesh, "mesh_generation/triangle_regular/Mesh.edge");
-    parser.LoadCells(mesh, "mesh_generation/triangle_regular/Mesh.ele");
+    parser.LoadNodes(mesh, "mesh_generation/triangle/Mesh.1.node");
+    parser.LoadEdges(mesh, "mesh_generation/triangle/Mesh.1.edge");
+    parser.LoadCells(mesh, "mesh_generation/triangle/Mesh.1.ele");
 
     return 0;
 }

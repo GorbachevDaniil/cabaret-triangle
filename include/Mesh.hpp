@@ -19,7 +19,10 @@ public:
   std::vector<Node> nodes;
   std::vector<Edge> edges;
   std::vector<Cell> cells;
+  
   std::map<std::pair<int, int>, int> mapNodesWithEdge;
+  std::map<long, std::vector<double>> edgeIDToDivs;
+  std::map<long, std::vector<Vector>> cellIDToGrads;
 
   inline long getNewNodeID() { return nodes.size(); };
   int InitMesh(Mesh *mesh);
