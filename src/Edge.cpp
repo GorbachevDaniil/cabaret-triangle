@@ -56,6 +56,15 @@ std::vector<long> Edge::getUsedNodes(Mesh &mesh) {
     return usedNodeIDs;
 }
 
+long Edge::getAnotherEndNode(long ID) {
+    assert((ID == nodeIDs.front()) || (ID == nodeIDs.back()));
+    if (ID == nodeIDs.front()) {
+        return nodeIDs.begin()[3];
+    } else {
+        return nodeIDs.begin()[0];
+    }
+}
+
 long Edge::getNearInnerNode(long ID) {
     assert((ID == nodeIDs.front()) || (ID == nodeIDs.back()));
     if (ID == nodeIDs.front()) {

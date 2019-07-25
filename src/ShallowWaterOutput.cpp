@@ -18,8 +18,9 @@ void ShallowWaterOutput::writeParaview(Mesh *mesh, int step) {
     for (unsigned long i = 0; i < mesh->cells.size(); i++) {
         Cell *cell = &mesh->cells[i];
         Data *data = &mesh->nodes[cell->centerNodeID].data;
+        long centerNodeID = cell->centerNodeID;
         std::fprintf(output_f, "%f,%f,%f,%f,%f,%f\n", data->coords.x, data->coords.y, 0.0,
-                     data->s0[0], data->v0[0].x, data->v0[0].y);
+                     mesh->s0[centerNodeID][0], mesh->v0[centerNodeID][0].x, mesh->v0[centerNodeID][0].y);
         // for (unsigned long edgeID : cell->edgeIDs) {
         //     Edge *edge = &mesh->edges[edgeID];
         //     for (unsigned long usedNodeID : edge->getUsedNodes(*mesh)) {

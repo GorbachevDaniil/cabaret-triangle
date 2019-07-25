@@ -4,12 +4,15 @@
 #include "AbstractSolver.hpp"
 
 class TransferSolver : public AbstractSolver {
-private:
+   private:
     double cfl;
     Mesh *mesh;
-    
-public:
-    TransferSolver(double cfl, Mesh *mesh) : cfl(cfl), mesh(mesh) {};
+
+   public:
+    TransferSolver(double cfl, Mesh *mesh) {
+        this->cfl = cfl;
+        this->mesh = mesh;
+    };
 
     double calcTau();
     void processPhase1(double tau);
@@ -20,10 +23,10 @@ public:
     void processPhase2BoundEdge(Edge *edge, double tau);
     void processPhase2InnerEdge(Edge *edge, double tau);
 
-private:
+   private:
     double calcDivOnEdge(Edge *edge, int phase);
-    double getNewInvariantValue(Data *data, Data *centerData, Data *oppositeData,
-                                Vector transfer, double tau, bool monotize);
+    double getNewInvariantValue(Data *data, Data *centerData, Data *oppositeData, Vector transfer,
+                                double tau, bool monotize);
 };
 
 #endif

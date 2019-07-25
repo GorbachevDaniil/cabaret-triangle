@@ -4,7 +4,7 @@
 #include "AbstractInitializer.hpp"
 
 class ShallowWaterInitializer : public AbstractInitializer {
-public:
+   public:
     void initialize(Mesh &mesh);
 };
 

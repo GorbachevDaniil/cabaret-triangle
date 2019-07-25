@@ -24,6 +24,7 @@ class Edge {
     Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge, int innerNodeNum);
 
     std::vector<long> getUsedNodes(Mesh &mesh);
+    long getAnotherEndNode(long ID);
     long getNearInnerNode(long ID);
     long getFarInnerNode(long ID);
 };

@@ -8,24 +8,39 @@
 #include <vector>
 
 class Mesh {
-public:
-  Mesh(int edgeInnerNodesNumber, bool edgeOuterNodesUsed)
-      : edgeInnerNodesNumber(edgeInnerNodesNumber),
-        edgeOuterNodesUsed(edgeOuterNodesUsed){};
+   public:
+    int edgeInnerNodesNumber;
+    bool apexNodesUsed;
 
-  int edgeInnerNodesNumber;
-  bool edgeOuterNodesUsed;
+    // list of scalar variables on n layer of time
+    std::vector<std::vector<double>> s0;
+    // list of scalar variables on n+1/2 layer of time
+    std::vector<std::vector<double>> s1;
+    // list of scalar variables on n+1 layer of time
+    std::vector<std::vector<double>> s2;
 
-  std::vector<Node> nodes;
-  std::vector<Edge> edges;
-  std::vector<Cell> cells;
-  
-  std::map<std::pair<int, int>, int> mapNodesWithEdge;
-  std::map<long, std::vector<double>> edgeIDToDivs;
-  std::map<long, std::vector<Vector>> cellIDToGrads;
+    // list of vector variables on n layer of time
+    std::vector<std::vector<Vector>> v0;
+    // list of vector variables on n+1/2 layer of time
+    std::vector<std::vector<Vector>> v1;
+    // list of vector variables on n+1 layer of time
+    std::vector<std::vector<Vector>> v2;
 
-  inline long getNewNodeID() { return nodes.size(); };
-  int InitMesh(Mesh *mesh);
+    std::vector<Node> nodes;
+    std::vector<Edge> edges;
+    std::vector<Cell> cells;
+
+    std::map<std::pair<int, int>, int> mapNodesWithEdge;
+    std::map<long, std::vector<double>> edgeIDToDivs;
+    std::map<long, std::vector<Vector>> cellIDToGrads;
+
+    Mesh(int edgeInnerNodesNumber, bool apexNodesUsed) {
+        this->edgeInnerNodesNumber = edgeInnerNodesNumber;
+        this->apexNodesUsed = apexNodesUsed;
+    };
+
+    inline long getNewNodeID() { return nodes.size(); };
+    int InitMesh(Mesh *mesh);
 };
 
 #endif

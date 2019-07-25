@@ -4,12 +4,10 @@
 #include "AbstractOutput.hpp"
 
 class ShallowWaterOutput : public AbstractOutput {
-public:
-	ShallowWaterOutput(int writePeriod) {
-		this->writePeriod = writePeriod;
-	};
+   public:
+    ShallowWaterOutput(int writePeriod) { this->writePeriod = writePeriod; };
 
-	void writeParaview(Mesh *mesh, int step);
+    void writeParaview(Mesh *mesh, int step);
 };
 
 #endif

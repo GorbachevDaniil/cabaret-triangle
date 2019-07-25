@@ -21,8 +21,8 @@ class Node {
     std::set<long> edgeIDs;
 
     Node(){};
-    Node(Mesh &mesh, double x, double y, bool used, bool boundNode,
-         bool cellCenterNode,bool isApex);
+    Node(Mesh &mesh, double x, double y, bool used, bool boundNode, bool cellCenterNode,
+         bool isApex);
 };
 
 #endif

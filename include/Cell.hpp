@@ -3,9 +3,9 @@
 
 #include "Vector.hpp"
 
+#include <armadillo>
 #include <unordered_map>
 #include <vector>
-#include <armadillo>
 
 class Mesh;
 

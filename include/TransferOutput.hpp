@@ -4,12 +4,10 @@
 #include "AbstractOutput.hpp"
 
 class TransferOutput : public AbstractOutput {
-public:
-	TransferOutput(int writePeriod) {
-		this->writePeriod = writePeriod;
-	};
+   public:
+    TransferOutput(int writePeriod) { this->writePeriod = writePeriod; };
 
-	void writeParaview(Mesh *mesh, int step);
+    void writeParaview(Mesh *mesh, int step);
 };
 
 #endif

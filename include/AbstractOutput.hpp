@@ -4,10 +4,11 @@
 #include "Mesh.hpp"
 
 class AbstractOutput {
-protected:
-	int writePeriod;
-public:
-	virtual void writeParaview(Mesh *mesh, int step) = 0;
+   protected:
+    int writePeriod;
+
+   public:
+    virtual void writeParaview(Mesh *mesh, int step) = 0;
 };
 
 #endif

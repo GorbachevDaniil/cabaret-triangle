@@ -4,28 +4,23 @@
 #include "Vector.hpp"
 
 #include <vector>
-#include <unordered_map>
+
+class Mesh;
 
 class Data {
-public:
+   public:
+    long nodeID;
     Vector coords;
 
-    // list of scalar variables on n layer of time
-    std::unordered_map<int, double> s0;
-    // list of scalar variables on n+1/2 layer of time
-    std::unordered_map<int, double> s1;
-    // list of scalar variables on n+1 layer of time
-    std::unordered_map<int, double> s2;
+    Mesh *mesh;
 
-    // list of vector variables on n layer of time
-    std::unordered_map<int, Vector> v0;
-    // list of vector variables on n+1/2 layer of time
-    std::unordered_map<int, Vector> v1;
-    // list of vector variables on n+1 layer of time
-    std::unordered_map<int, Vector> v2;
+    double getS0(int pos);
+    double getS1(int pos);
+    double getS2(int pos);
 
-    // list of stationary vector variables
-    std::unordered_map<int, Vector> vector;
+    Vector getV0(int pos);
+    Vector getV1(int pos);
+    Vector getV2(int pos);
 };
 
 #endif

@@ -4,7 +4,7 @@
 #include "Mesh.hpp"
 
 class AbstractSolver {
-public:
+   public:
     virtual double calcTau() = 0;
     virtual void processPhase1(double tau) = 0;
     virtual void processPhase2(double tau) = 0;
