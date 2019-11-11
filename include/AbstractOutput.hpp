@@ -8,7 +8,7 @@ class AbstractOutput {
     int writePeriod;
 
    public:
-    virtual void writeParaview(Mesh *mesh, int step) = 0;
+    virtual void writeParaview(Mesh *mesh, double time, int step) = 0;
 };
 
 #endif

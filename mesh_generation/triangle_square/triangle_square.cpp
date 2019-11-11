@@ -2,10 +2,10 @@
 #include <cmath>
 #include <iostream>
 
-double LEFT_BOUNDARY_X = -0.7;
-double RIGHT_BOUNDARY_X = 0.7;
-double LEFT_BOUNDARY_Y = -0.7;
-double RIGHT_BOUNDARY_Y = 0.7;
+double LEFT_BOUNDARY_X = -1;
+double RIGHT_BOUNDARY_X = 1;
+double LEFT_BOUNDARY_Y = -1;
+double RIGHT_BOUNDARY_Y = 1;
 
 int main(int argc, char **argv) {
     if (argc < 3) {
@@ -14,6 +14,10 @@ int main(int argc, char **argv) {
     }
     int nx = std::atoi(argv[1]);
     int ny = std::atoi(argv[2]);
+    int mode = std::atoi(argv[3]);
+    assert(nx > 0);
+    assert(ny > 0);
+    assert((mode == 1) || (mode == 0));
 
     double hx = abs(RIGHT_BOUNDARY_X - LEFT_BOUNDARY_X) / nx;
     double hy = abs(RIGHT_BOUNDARY_Y - LEFT_BOUNDARY_Y) / ny;
@@ -59,13 +63,24 @@ int main(int argc, char **argv) {
                 bound = 1;
             }
             std::fprintf(outEdges, "%4lu   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 1,
-                         i * (nx + 1) + j + 2, bound);
+                            i * (nx + 1) + j + 2, bound);
             edgeID++;
 
             bound = 0;
-            std::fprintf(outEdges, "%4lu   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 1,
+            if (mode == 1) {
+                if (i % 2 == 0) {
+                    std::fprintf(outEdges, "%4lu   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 1,
+                                 i * (nx + 1) + j + nx + 3, bound);
+                } else {
+                    std::fprintf(outEdges, "%4lu   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 2,
+                                 i * (nx + 1) + j + nx + 2, bound);
+                }
+                edgeID++;
+            } else {
+                std::fprintf(outEdges, "%4lu   %d  %d  %d\n", edgeID, i * (nx + 1) + j + 1,
                          i * (nx + 1) + j + nx + 3, bound);
-            edgeID++;
+                edgeID++;
+            }
 
             if (i == ny - 1) {
                 bound = 1;
@@ -81,13 +96,33 @@ int main(int argc, char **argv) {
                 edgeID++;
             }
 
-            std::fprintf(outCells, "%4lu    %4d  %4d  %4d\n", cellID, i * (nx + 1) + j + 1,
-                         i * (nx + 1) + j + 2, i * (nx + 1) + j + nx + 3);
-            cellID++;
+            if (mode == 1) {
+                if (i % 2 == 0) {
+                    std::fprintf(outCells, "%4lu    %4d  %4d  %4d\n", cellID, i * (nx + 1) + j + 1,
+                                 i * (nx + 1) + j + 2, i * (nx + 1) + j + nx + 3);
+                    cellID++;
 
-            std::fprintf(outCells, "%4lu    %4d  %4d  %4d\n", cellID, i * (nx + 1) + j + 1,
-                         i * (nx + 1) + j + nx + 3, i * (nx + 1) + j + nx + 2);
-            cellID++;
+                    std::fprintf(outCells, "%4lu    %4d  %4d  %4d\n", cellID, i * (nx + 1) + j + 1,
+                                 i * (nx + 1) + j + nx + 3, i * (nx + 1) + j + nx + 2);
+                    cellID++;
+                } else {
+                    std::fprintf(outCells, "%4lu    %4d  %4d  %4d\n", cellID, i * (nx + 1) + j + 1,
+                                 i * (nx + 1) + j + 2, i * (nx + 1) + j + nx + 2);
+                    cellID++;
+
+                    std::fprintf(outCells, "%4lu    %4d  %4d  %4d\n", cellID, i * (nx + 1) + j + 2,
+                                 i * (nx + 1) + j + nx + 3, i * (nx + 1) + j + nx + 2);
+                    cellID++;
+                }
+            } else {
+                std::fprintf(outCells, "%4lu    %4d  %4d  %4d\n", cellID, i * (nx + 1) + j + 1,
+                             i * (nx + 1) + j + 2, i * (nx + 1) + j + nx + 3);
+                cellID++;
+
+                std::fprintf(outCells, "%4lu    %4d  %4d  %4d\n", cellID, i * (nx + 1) + j + 1,
+                             i * (nx + 1) + j + nx + 3, i * (nx + 1) + j + nx + 2);
+                cellID++;
+            }
         }
     }
 

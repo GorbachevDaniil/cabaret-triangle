@@ -25,11 +25,10 @@ Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge
     mesh.nodes[startNodeID].edgeIDs.insert(ID);
     Vector startNode(startNodeX, startNodeY);
     Vector edgeVector(endNodeX - startNodeX, endNodeY - startNodeY);
-    bool isInnerNodesBound = mesh.nodes[startNodeID].boundNode && mesh.nodes[endNodeID].boundNode;
     for (int i = 1; i < innerNodeNum + 1; i++) {
         Vector nodeCoords = edgeVector / (innerNodeNum + 1) * i + startNode;
         Node *node = new Node(mesh, nodeCoords.x, nodeCoords.y, true, 
-                              isInnerNodesBound, false, false);
+                              boundEdge, false, false);
         node->edgeIDs.insert(ID);
         mesh.nodes.push_back(*node);
         nodeIDs.push_back(node->ID);

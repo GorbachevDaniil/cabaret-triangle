@@ -36,37 +36,30 @@ void ShallowWaterInitializer::initialize(Mesh &mesh) {
         double y = data->coords.y;
 
         // long centerNodeID = mesh.cells[i].centerNodeID;
-        long centerNodeID = i;  
+        long centerNodeID = i;
 
-        // data->v0[0] = Vector(0, 0);
-        // data->s0[0] = 1;
+        mesh.v0[centerNodeID][0] = Vector(0, 0);
+        mesh.s0[centerNodeID][0] = 1;
 
-        // data->v0[0] = Vector(0, 0);
-        // if (x < 0) {
-        //     data->s0[0] = 1;
+        // mesh.v0[centerNodeID][0] = Vector(0, 0);
+        // if (x < 25) {
+        //     mesh.s0[centerNodeID][0] = 1;
         // } else {
-        //     data->s0[0] = 2;
+        //     mesh.s0[centerNodeID][0] = 2;
         // }
 
         // mesh.v0[centerNodeID][0] = Vector(0, 0);
-        // double gamma = 0.07;
-        // mesh.s0[centerNodeID][0] = 1 - exp(-(pow(x, 2) + pow(y, 2)) / (2 * pow(gamma, 2))) / 10;
+        // double gamma = 5.0;
+        // mesh.s0[centerNodeID][0] = 1 - exp(-(pow(x - 25, 2) + pow(y - 25, 2)) / (2 * pow(gamma, 2))) / 1000;
 
-        double r_0 = 0.3;
-        double r = sqrt(pow(x, 2) + pow(y, 2));
-        mesh.v0[centerNodeID][0] = Vector(0, 0);
-        if (r <= r_0) {
-            mesh.s0[centerNodeID][0] = 2;
-        } else {
-            mesh.s0[centerNodeID][0] = 1;
-        }
-
-        // double alpha = 0.404;
+        // double alpha = 0.7;
         // double beta = 0.3;
-        // double r_0 = 0.12;
+        // double r_0 = 0.15;
         // double r = sqrt(pow(x, 2) + pow(y, 2));
-        // mesh.s0[centerNodeID][0] = 1 - pow(alpha, 2) * exp(2 * beta * (1 - pow(r / r_0, 2))) / (4 * beta);
-        // mesh.v0[centerNodeID][0] = Vector(y, -x) * (alpha * exp(beta * (1 - pow(r / r_0, 2))) / r_0);
+        // double teta = alpha * exp(beta * (1 - pow(r / r_0, 2)));
+        // mesh.s0[centerNodeID][0] = 1 - pow(teta, 2) / (4 * beta);
+        // mesh.v0[centerNodeID][0].x = teta * y / r_0;
+        // mesh.v0[centerNodeID][0].y = -teta * x / r_0;
 
         // double alpha = 0.2;
         // double beta = 0.6;
@@ -83,17 +76,29 @@ void ShallowWaterInitializer::initialize(Mesh &mesh) {
         // Positivity-Preserving Well-Balanced Discontinuous Galerkin Methods
         // for the Shallow Water Equations on Unstructured Triangular Meshes.
         // Yulong Xing, Xiangxiong Zhang 
-        // data->v0[0] = Vector(0, 0);
-        // data->s0[0] = 1 + exp(-100 * (pow(x - 0.5, 2) + pow(y - 0.5, 2))) / 10;
+        // mesh.v0[centerNodeID][0] = Vector(0, 0);
+        // mesh.s0[centerNodeID][0] = 1 + exp(-100 * (pow(x - 0.5, 2) + pow(y - 0.5, 2))) / 10;
 
         // Solution of the 2D shallow water equations using the 
         // finite volume method on unstructured triangular meshes. 
         // Anastasiou K., Chan C. T.
-        // data->v0[0] = Vector(0, 0);
+        // Circular dam break
+        // mesh.v0[centerNodeID][0] = Vector(0, 0);
         // if ((pow(x - 25, 2) + pow(y - 25, 2)) <= 11 * 11) {
-        //     data->s0[0] = 10;
+        //     mesh.s0[centerNodeID][0] = 10;
         // } else {
-        //     data->s0[0] = 1;
+        //     mesh.s0[centerNodeID][0] = 1;
+        // }
+
+        // Solution of the 2D shallow water equations using the 
+        // finite volume method on unstructured triangular meshes. 
+        // Anastasiou K., Chan C. T.
+        // Dam break
+        // mesh.v0[centerNodeID][0] = Vector(0, 0);
+        // if (x <= 95) {
+        //     mesh.s0[centerNodeID][0] = 10;
+        // } else {
+        //     mesh.s0[centerNodeID][0] = 5;
         // }
     }
 

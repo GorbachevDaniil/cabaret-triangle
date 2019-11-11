@@ -58,7 +58,7 @@ class ShallowWaterSolver : public AbstractSolver {
 
     arma::vec convertInvToInitialVariables(std::vector<arma::vec> invs);
 
-    std::vector<arma::vec> getInvFromCellExtr(Node *node, Cell *cell, double tau);
+    std::vector<arma::vec> getInvFromCellExtr(Node *node, Edge *edge, Cell *cell, double tau);
     std::vector<arma::vec> getInvFromCellIntr(Node *node, Cell *cell, double avgH, Vector avgU,
                                               double tau);
     std::vector<arma::vec> getInvFromEdge(Node *node, Edge *edge, double avgH, Vector avgU,

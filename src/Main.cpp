@@ -13,6 +13,8 @@
 #include <libconfig.h++>
 
 int main() {
+    std::cout.precision(16);
+
     libconfig::Config config;
     config.readFile("config/config.cfg");
 
@@ -67,7 +69,7 @@ int main() {
             initializer.initialize(*mesh);
 
             ShallowWaterOutput output = ShallowWaterOutput(writePeriod);
-            output.writeParaview(mesh, 0);
+            output.writeParaview(mesh, 0, 0);
 
             double cfl = config.lookup("solver.cfl");
             double g = config.lookup("solver.shallow_water.g");
@@ -82,12 +84,6 @@ int main() {
 
             double time = 0;
             for (int i = 0; i < steps; i++) {
-                if (timeToStop > 0 && time >= timeToStop) {
-                    output.writeParaview(mesh, i + 1);
-                    break;
-                }
-                output.writeParaview(mesh, i);
-
                 std::chrono::system_clock::time_point startCalcTau = std::chrono::system_clock::now();
                 double tau = solver.calcTau();
                 std::cout << "step = " << i + 1 << " tau = " << tau << " time = " << time << std::endl;
@@ -115,6 +111,12 @@ int main() {
                     std::chrono::duration_cast<std::chrono::duration<double>>(stopPhase3 - startPhase3);
 
                 solver.prepareNextStep();
+
+                if (timeToStop > 0 && time >= timeToStop) {
+                    output.writeParaview(mesh, time, i + 1);
+                    break;
+                }
+                output.writeParaview(mesh, time, i + 1);
             }
             std::chrono::system_clock::time_point stop = std::chrono::system_clock::now();
             std::chrono::duration<double> dur =
