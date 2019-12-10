@@ -3,9 +3,9 @@
 #include <iostream>
 
 double LEFT_BOUNDARY_X = 0.0;
-double RIGHT_BOUNDARY_X = 1.0;
+double RIGHT_BOUNDARY_X = 50.0;
 double LEFT_BOUNDARY_Y = 0.0;
-double RIGHT_BOUNDARY_Y = 1.0;
+double RIGHT_BOUNDARY_Y = 50.0;
 
 int main(int argc, char **argv) {
     if (argc < 2) {
@@ -14,26 +14,34 @@ int main(int argc, char **argv) {
     }
     // number of cells in x direction
     int nx = std::atoi(argv[1]);
-    int nIntervals = nx % 2 == 0 ? nx / 2 : nx / 2 + 1;
-    double hx = (abs(RIGHT_BOUNDARY_X) + abs(LEFT_BOUNDARY_X)) / nIntervals;
+    int nIntervals = nx + 1;
+    double hx = 2 * (abs(RIGHT_BOUNDARY_X) + abs(LEFT_BOUNDARY_X)) / nIntervals;
     double hy = sqrt(3) * hx / 2;
-    // number of cells in x direction
+    // double hy = (abs(RIGHT_BOUNDARY_Y) + abs(LEFT_BOUNDARY_Y)) / nIntervals;
+    // number of cells in y direction
     int ny = (abs(RIGHT_BOUNDARY_Y) + abs(LEFT_BOUNDARY_Y)) / hy;
+    // int ny = nx + 1;
     
     int minNodesPerLayer = nx / 2 + 1;
     int maxNodesPerLayer = nx % 2 == 0 ? minNodesPerLayer : minNodesPerLayer + 1;
-    unsigned long nNodes = (minNodesPerLayer + maxNodesPerLayer);
+    unsigned long nNodes = (minNodesPerLayer + maxNodesPerLayer) + 2;
     nNodes = ny % 2 == 1 ? nNodes * ((ny + 1) / 2): nNodes * (ny / 2 + 1);
     nNodes = ny % 2 == 1 ? nNodes : nNodes - maxNodesPerLayer;
+    nNodes = nx % 2 == 0 && ny % 2 == 0 ? nNodes - 1 : nNodes;
+
+    std::cout << nx << ' ' << ny << std::endl;
+    std::cout << minNodesPerLayer << ' ' << maxNodesPerLayer << std::endl;
 
     int minNEdgesPerLayer = minNodesPerLayer - 1;
+    minNEdgesPerLayer = nx % 2 == 0 ? minNEdgesPerLayer + 1 : minNEdgesPerLayer + 2;
     int maxNEdgesPerLayer = maxNodesPerLayer - 1;
+    maxNEdgesPerLayer = nx % 2 == 0 ? maxNEdgesPerLayer + 1 : maxNEdgesPerLayer;
     unsigned long nEdges = minNEdgesPerLayer + maxNEdgesPerLayer;
     nEdges = ny % 2 == 1 ? nEdges * ((ny + 1) / 2): nEdges * (ny / 2 + 1);
-    nEdges += ny * (nx + 1);
+    nEdges += ny * (nx + 3);
     nEdges = ny % 2 == 1 ? nEdges : nEdges - maxNEdgesPerLayer;
 
-    unsigned long nCells = nx * ny;
+    unsigned long nCells = (nx + 2) * ny;
 
     FILE *outNodes = std::fopen("Mesh.node", "w");
     FILE *outEdges = std::fopen("Mesh.edge", "w");
@@ -52,11 +60,23 @@ int main(int argc, char **argv) {
         for (int j = 0; j < nNodesPerLayer; j++) {
             double xCoord = offset + j * hx + LEFT_BOUNDARY_X;
             int bound = 0;
-            if ((i == 0) || (i == ny) || (j == 0) || (j == nNodesPerLayer - 1)) {
+            if ((i == 0) || (i == ny)) {
                 bound = 1;
+            }
+            if (j == 0) {
+                if (offset > 0) {
+                    std::fprintf(outNodes, "%4lu    %.17g  %.17g    %d\n", nodeID, LEFT_BOUNDARY_X, yCoord, 1);
+                    nodeID++;
+                }
             }
             std::fprintf(outNodes, "%4lu    %.17g  %.17g    %d\n", nodeID, xCoord, yCoord, bound);
             nodeID++;
+            if (j == nNodesPerLayer - 1) {
+                if (xCoord < RIGHT_BOUNDARY_X) {
+                    std::fprintf(outNodes, "%4lu    %.17g  %.17g    %d\n", nodeID, RIGHT_BOUNDARY_X, yCoord, 1);
+                    nodeID++;
+                }
+            }
         }
         nNodesPerLayer = nNodesPerLayer == minNodesPerLayer ? maxNodesPerLayer : minNodesPerLayer;
     }
@@ -65,7 +85,6 @@ int main(int argc, char **argv) {
     // creating edge file
     unsigned long edgeID = 1;
     int nEdgesPerLayer = minNEdgesPerLayer;
-    nNodesPerLayer = minNodesPerLayer;
     unsigned long firstNodeIDForLayer = 1;
     for (int i = 0; i <= ny; i++) {
         for (int j = 0; j < nEdgesPerLayer; j++) {
@@ -78,21 +97,20 @@ int main(int argc, char **argv) {
             std::fprintf(outEdges, "%4lu   %lu  %lu  %d\n", edgeID, nodeID1, nodeID2, bound);
             edgeID++;
         }
-        firstNodeIDForLayer += nNodesPerLayer;
-        nNodesPerLayer = nNodesPerLayer == minNodesPerLayer ? maxNodesPerLayer : minNodesPerLayer;
+        firstNodeIDForLayer += nEdgesPerLayer + 1;
         nEdgesPerLayer = nEdgesPerLayer == minNEdgesPerLayer ? maxNEdgesPerLayer : minNEdgesPerLayer;
     }
 
     bool layerHasMinNodes = true;
-    nNodesPerLayer = minNodesPerLayer;
+    nNodesPerLayer = minNEdgesPerLayer + 1;
     firstNodeIDForLayer = 1;
     for (int i = 0; i < ny; i++) {
         unsigned long botNodeID = firstNodeIDForLayer;
         unsigned long topNodeID = firstNodeIDForLayer + nNodesPerLayer;
-        bool needToIncreaseBot = layerHasMinNodes ? false : true;
-        for (int j = 0; j < nx + 1; j++) {
+        bool needToIncreaseBot = layerHasMinNodes ? true : false;
+        for (int j = 0; j < nx + 3; j++) {
             int bound = 0;
-            if ((j == 0) || (j == nx)) {
+            if ((j == 0) || (j == nx + 2)) {
                 bound = 1;
             }
             std::fprintf(outEdges, "%4lu   %lu  %lu  %d\n", edgeID, botNodeID, topNodeID, bound);
@@ -106,7 +124,7 @@ int main(int argc, char **argv) {
             }
         }
         firstNodeIDForLayer += nNodesPerLayer;
-        nNodesPerLayer = layerHasMinNodes ? maxNodesPerLayer : minNodesPerLayer;
+        nNodesPerLayer = layerHasMinNodes ? maxNEdgesPerLayer + 1 : minNEdgesPerLayer + 1;
         layerHasMinNodes = layerHasMinNodes ? false : true;
     }
     assert(nEdges == edgeID - 1);
@@ -114,14 +132,14 @@ int main(int argc, char **argv) {
     // creating cell file
     unsigned long cellID = 1;
     layerHasMinNodes = true;
-    nNodesPerLayer = minNodesPerLayer;
+    nNodesPerLayer = minNEdgesPerLayer + 1;
     firstNodeIDForLayer = 1;
     for (int i = 0; i < ny; i++) {
-        bool isBotTriangle = layerHasMinNodes ? false : true;
+        bool isBotTriangle = layerHasMinNodes ? true : false;
         unsigned long nodeID1 = firstNodeIDForLayer;
         unsigned long nodeID3 = firstNodeIDForLayer + nNodesPerLayer;
         unsigned long nodeID2 = isBotTriangle ? nodeID1 + 1 : nodeID3 + 1;
-        for (int j = 0; j < nx; j++) {
+        for (int j = 0; j < nx + 2; j++) {
             std::fprintf(outCells, "%4lu    %4lu  %4lu  %4lu\n", cellID, nodeID1, nodeID2, nodeID3);
             if (isBotTriangle) {
                 unsigned long nodeID1Buff = nodeID2;
@@ -143,7 +161,7 @@ int main(int argc, char **argv) {
             cellID++;
         }
         firstNodeIDForLayer += nNodesPerLayer;
-        nNodesPerLayer = layerHasMinNodes ? maxNodesPerLayer : minNodesPerLayer;
+        nNodesPerLayer = layerHasMinNodes ? maxNEdgesPerLayer + 1 : minNEdgesPerLayer + 1;
         layerHasMinNodes = layerHasMinNodes ? false : true;
     }
     assert(nCells == cellID - 1);
