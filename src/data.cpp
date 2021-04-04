@@ -1,4 +1,5 @@
 #include "data.hpp"
+
 #include "mesh.hpp"
 
 double Data::getS0(int pos) {

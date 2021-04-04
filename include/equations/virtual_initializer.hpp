@@ -4,7 +4,7 @@
 #include "mesh.hpp"
 
 class Initializer {
-   public:
+public:
     virtual void initialize(Mesh &mesh) = 0;
 };
 

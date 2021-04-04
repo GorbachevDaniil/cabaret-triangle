@@ -1,16 +1,16 @@
 #ifndef Cell_hpp
 #define Cell_hpp
 
-#include "vector.hpp"
-
 #include <armadillo>
 #include <unordered_map>
 #include <vector>
 
+#include "vector.hpp"
+
 class Mesh;
 
 class Cell {
-   public:
+public:
     long ID;
     long centerNodeID;
     double volume;
@@ -23,14 +23,14 @@ class Cell {
 
     arma::mat interpolationMat;
 
-    Cell(){};
+    Cell() {};
     Cell(Mesh &mesh, long ID, long nodeID1, long nodeID2, long nodeID3);
     double countVolume(Mesh &mesh, long nodeID1, long nodeID2, long nodeID3);
     long getNextNodeID(unsigned long nodeIDPos);
     long getPrevNodeID(unsigned long nodeIDPos);
     std::vector<long> getEdgeOrderedNodeIDs(std::vector<long> edgeUnorderedNodeIDs);
 
-   private:
+private:
     void assignOppositeNodeIDs(Mesh &mesh);
     void buildInterpolationMat(Mesh &mesh);
 };

@@ -1,14 +1,14 @@
 #ifndef Node_hpp
 #define Node_hpp
 
-#include "data.hpp"
-
 #include <set>
+
+#include "data.hpp"
 
 class Mesh;
 
 class Node {
-   public:
+public:
     long ID;
     bool used;
     bool boundNode;
@@ -20,7 +20,7 @@ class Node {
     std::set<long> cellIDs;
     std::set<long> edgeIDs;
 
-    Node(){};
+    Node() {};
     Node(Mesh &mesh, double x, double y, bool used, bool boundNode, bool cellCenterNode,
          bool isApex);
 };

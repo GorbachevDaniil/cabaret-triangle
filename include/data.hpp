@@ -1,14 +1,14 @@
 #ifndef Data_hpp
 #define Data_hpp
 
-#include "vector.hpp"
-
 #include <vector>
+
+#include "vector.hpp"
 
 class Mesh;
 
 class Data {
-   public:
+public:
     long nodeID;
     Vector coords;
 

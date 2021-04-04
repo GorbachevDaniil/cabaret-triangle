@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <limits>
 
-double ShallowWaterSolver::calcTau() {
+double ShallowWaterSolver::calc_tau() {
     double tau = std::numeric_limits<double>::max();
     for (unsigned long i = 0; i < mesh->cells.size(); i++) {
         Cell *cell = &mesh->cells[i];
@@ -36,8 +36,8 @@ double ShallowWaterSolver::calcTau() {
     return cfl * tau;
 }
 
-double ShallowWaterSolver::calcDiv1(double h, Vector u, Vector n) { 
-    return (u * h) * n; 
+double ShallowWaterSolver::calcDiv1(double h, Vector u, Vector n) {
+    return (u * h) * n;
 }
 
 double ShallowWaterSolver::calcDiv2(double h, Vector u, Vector n) {
@@ -60,7 +60,7 @@ double ShallowWaterSolver::calcIntegral(std::vector<double> values, double lengt
     assert(false && "such integration not supported");
 }
 
-void ShallowWaterSolver::processPhase1(double tau) {
+void ShallowWaterSolver::process_phase_1(double tau) {
     for (unsigned long i = 0; i < mesh->edges.size(); i++) {
         Edge *edge = &mesh->edges[i];
 
@@ -139,8 +139,8 @@ double ShallowWaterSolver::calcLambdaS(double h, Vector u, Vector n) {
     return u * n;
 }
 
-double ShallowWaterSolver::calcQR(Cell *cell, double dirDerivH, 
-                                  double dirDerivUx, double dirDerivUy, 
+double ShallowWaterSolver::calcQR(Cell *cell, double dirDerivH,
+                                  double dirDerivUx, double dirDerivUy,
                                   Vector n) {
     Vector m = Vector(-n.y, n.x);
     long center = cell->centerNodeID;
@@ -153,8 +153,8 @@ double ShallowWaterSolver::calcQR(Cell *cell, double dirDerivH,
     return -Q;
 }
 
-double ShallowWaterSolver::calcQQ(Cell *cell, double dirDerivH, 
-                                  double dirDerivUx, double dirDerivUy, 
+double ShallowWaterSolver::calcQQ(Cell *cell, double dirDerivH,
+                                  double dirDerivUx, double dirDerivUy,
                                   Vector n) {
     Vector m = Vector(-n.y, n.x);
     long center = cell->centerNodeID;
@@ -167,8 +167,8 @@ double ShallowWaterSolver::calcQQ(Cell *cell, double dirDerivH,
     return -Q;
 }
 
-double ShallowWaterSolver::calcQS(Cell *cell, double dirDerivH, 
-                                  double dirDerivUx, double dirDerivUy, 
+double ShallowWaterSolver::calcQS(Cell *cell, double dirDerivH,
+                                  double dirDerivUx, double dirDerivUy,
                                   Vector n) {
     Vector m = Vector(-n.y, n.x);
     long center = cell->centerNodeID;
@@ -194,7 +194,7 @@ double monotize(double inv2, double inv0, double invCenter0, double invOpposite0
     return inv2;
 }
 
-double monotize(double inv2, double inv0, double invCenter0, double invOpposite0, 
+double monotize(double inv2, double inv0, double invCenter0, double invOpposite0,
                 double invCenter1, double tau, double Q) {
     double min = std::min(std::min(inv0, invOpposite0), invCenter0);
     double max = std::max(std::max(inv0, invOpposite0), invCenter0);
@@ -212,7 +212,7 @@ double ShallowWaterSolver::extrapolateInv(
     Cell *cell, Edge *edge, Node *node, Vector n, double G,
     std::function<double(ShallowWaterSolver &, double, double, Vector, Vector)> calcInv,
     std::function<double(ShallowWaterSolver &, double, Vector, Vector)> calcLambda,
-    std::function<double(ShallowWaterSolver &, Cell*, double, double, double, Vector)> calcQ,
+    std::function<double(ShallowWaterSolver &, Cell *, double, double, double, Vector)> calcQ,
     double tau, bool needMonotize) {
     assert(cell->nodeIDToOppositeNodeID[node->ID] != -1);
 
@@ -326,7 +326,7 @@ arma::vec ShallowWaterSolver::convertInvToInitialVariables(std::vector<arma::vec
 std::vector<arma::vec> ShallowWaterSolver::getInvFromCellExtr(Node *node, Edge *edge, Cell *cell,
                                                               double tau) {
     bool monotize = true;
-    
+
     std::vector<arma::vec> invs;
 
     long centerNodeID = cell->centerNodeID;
@@ -472,7 +472,7 @@ void ShallowWaterSolver::processPhase2InnerEdge(Edge *edge, double tau) {
     }
 }
 
-void ShallowWaterSolver::processPhase2(double tau) {
+void ShallowWaterSolver::process_phase_2(double tau) {
     for (unsigned long i = 0; i < mesh->edges.size(); i++) {
         Edge *edge = &mesh->edges[i];
         if (edge->boundEdge) {
@@ -483,7 +483,7 @@ void ShallowWaterSolver::processPhase2(double tau) {
     }
 }
 
-void ShallowWaterSolver::processPhase3(double tau) {
+void ShallowWaterSolver::process_phase_3(double tau) {
     for (unsigned long i = 0; i < mesh->edges.size(); i++) {
         Edge *edge = &mesh->edges[i];
 
@@ -538,7 +538,7 @@ void ShallowWaterSolver::processPhase3(double tau) {
     }
 }
 
-void ShallowWaterSolver::prepareNextStep() {
+void ShallowWaterSolver::prepare_next_step() {
     for (unsigned long i = 0; i < mesh->nodes.size(); i++) {
         for (unsigned long j = 0; j < mesh->s0[i].size(); j++) {
             mesh->s0[i][j] = mesh->s2[i][j];

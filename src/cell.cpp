@@ -1,13 +1,13 @@
 #include "cell.hpp"
 
-#include "mesh.hpp"
-#include "node.hpp"
-#include "vector.hpp"
-
 #include <algorithm>
 #include <cassert>
 #include <vector>
 #include <limits>
+
+#include "mesh.hpp"
+#include "node.hpp"
+#include "vector.hpp"
 
 double calculateDeterminant(double a11, double a12, double a21, double a22) {
     return std::abs(a11 * a22 - a12 * a21);
@@ -25,7 +25,7 @@ void Cell::assignOppositeNodeIDs(Mesh &mesh) {
         double A = endNode1->data.coords.y - endNode2->data.coords.y;
         double B = endNode2->data.coords.x - endNode1->data.coords.x;
         double C = endNode1->data.coords.x * endNode2->data.coords.y -
-                   endNode1->data.coords.y * endNode2->data.coords.x;
+            endNode1->data.coords.y * endNode2->data.coords.x;
 
         std::vector<double> coef;
         coef.push_back(A);
@@ -43,8 +43,8 @@ void Cell::assignOppositeNodeIDs(Mesh &mesh) {
             double lineA = edgeNode->data.coords.y - cellNode->data.coords.y;
             double lineB = cellNode->data.coords.x - edgeNode->data.coords.x;
             double lineC = edgeNode->data.coords.x * cellNode->data.coords.y -
-                           edgeNode->data.coords.y * cellNode->data.coords.x;
-            
+                edgeNode->data.coords.y * cellNode->data.coords.x;
+
             unsigned long oppositeEdgeID = std::numeric_limits<unsigned long>::max();
             double oppositeX = std::numeric_limits<double>::max();
             double oppositeY = std::numeric_limits<double>::max();
@@ -73,7 +73,7 @@ void Cell::assignOppositeNodeIDs(Mesh &mesh) {
 
                 double xCross = (edgeLineC * lineB - lineC * edgeLineB) / determinant;
                 double yCross = (lineC * edgeLineA - edgeLineC * lineA) / determinant;
-                
+
                 Edge *oppositeEdge = &mesh.edges[it->first];
                 Node *endNode1 = &mesh.nodes[oppositeEdge->endNodeIDs[0]];
                 Node *endNode2 = &mesh.nodes[oppositeEdge->endNodeIDs[1]];
@@ -89,11 +89,11 @@ void Cell::assignOppositeNodeIDs(Mesh &mesh) {
                 if (minAndMaxYEquals && std::abs(minEndY - yCross) > 0.1e-9) {
                     continue;
                 }
-                if ((!minAndMaxXEquals && ((minEndX > xCross) || (maxEndX < xCross))) || 
+                if ((!minAndMaxXEquals && ((minEndX > xCross) || (maxEndX < xCross))) ||
                     (!minAndMaxYEquals && ((minEndY > yCross) || (maxEndY < yCross)))) {
                     continue;
                 }
-                
+
                 Vector cross(xCross, yCross);
                 double distFromNodeToCellNode = (cellNode->data.coords - edgeNode->data.coords).length();
                 double distFromCellNodeToCross = (cellNode->data.coords - cross).length();
@@ -130,7 +130,7 @@ void Cell::assignOppositeNodeIDs(Mesh &mesh) {
                 nodeIDToOppositeNodeID[nodeID] = finalOppositeNodeID;
             }
         }
-        
+
     }
 }
 

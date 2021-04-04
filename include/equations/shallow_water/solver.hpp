@@ -1,34 +1,28 @@
 #ifndef ShallowWaterSolver_hpp
 #define ShallowWaterSolver_hpp
 
-#include "../virtual_solver.hpp"
-
 #include <functional>
 
+#include "../virtual_solver.hpp"
+
 class ShallowWaterSolver : public Solver {
-   private:
-    double cfl;
-    double g;
-
-    Mesh *mesh;
-
-   public:
+public:
     ShallowWaterSolver(double cfl, double g, Mesh *mesh) {
         this->cfl = cfl;
         this->g = g;
         this->mesh = mesh;
     };
 
-    double calcTau();
-    void processPhase1(double tau);
-    void processPhase2(double tau);
-    void processPhase3(double tau);
-    void prepareNextStep();
+    double calc_tau();
+    void process_phase_1(double tau);
+    void process_phase_2(double tau);
+    void process_phase_3(double tau);
+    void prepare_next_step();
 
+private:
     void processPhase2BoundEdge(Edge *edge, double tau);
     void processPhase2InnerEdge(Edge *edge, double tau);
 
-   private:
     double calcIntegral(std::vector<double> values, double length);
 
     double calcDiv1(double h, Vector u, Vector n);
@@ -55,8 +49,14 @@ class ShallowWaterSolver : public Solver {
         Cell *cell, Edge *edge, Node *node, Vector n, double G,
         std::function<double(ShallowWaterSolver &, double, double, Vector, Vector)> calcInv,
         std::function<double(ShallowWaterSolver &, double, Vector, Vector)> calcLambda,
-        std::function<double(ShallowWaterSolver &, Cell*, double, double, double, Vector)> calcQ,
+        std::function<double(ShallowWaterSolver &, Cell *, double, double, double, Vector)> calcQ,
         double tau, bool needMonotize);
+
+private:
+    double cfl;
+    double g;
+
+    Mesh *mesh;
 };
 
 #endif

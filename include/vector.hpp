@@ -4,12 +4,12 @@
 #include <cmath>
 
 class Vector {
-   public:
+public:
     double x;
     double y;
 
-    Vector() : x(0), y(0){};
-    Vector(double x, double y) : x(x), y(y){};
+    Vector() : x(0), y(0) {};
+    Vector(double x, double y) : x(x), y(y) {};
     Vector(const Vector &v) {
         x = v.x;
         y = v.y;

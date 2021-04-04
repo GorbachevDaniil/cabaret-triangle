@@ -4,7 +4,7 @@
 #include "../virtual_initializer.hpp"
 
 class ShallowWaterInitializer : public Initializer {
-   public:
+public:
     void initialize(Mesh &mesh);
 };
 

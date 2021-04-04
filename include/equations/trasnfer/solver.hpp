@@ -4,11 +4,11 @@
 #include "../virtual_solver.hpp"
 
 class TransferSolver : public AbstractSolver {
-   private:
+private:
     double cfl;
     Mesh *mesh;
 
-   public:
+public:
     TransferSolver(double cfl, Mesh *mesh) {
         this->cfl = cfl;
         this->mesh = mesh;
@@ -23,7 +23,7 @@ class TransferSolver : public AbstractSolver {
     void processPhase2BoundEdge(Edge *edge, double tau);
     void processPhase2InnerEdge(Edge *edge, double tau);
 
-   private:
+private:
     double calcDivOnEdge(Edge *edge, int phase);
     double getNewInvariantValue(Data *data, Data *centerData, Data *oppositeData, Vector transfer,
                                 double tau, bool monotize);

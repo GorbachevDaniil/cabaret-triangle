@@ -1,10 +1,11 @@
 #include "node.hpp"
-#include "mesh.hpp"
 
 #include <iostream>
 
-Node::Node(Mesh &mesh, double x, double y, bool used, bool boundNode, 
-           bool cellCenterNode,bool isApex) {
+#include "mesh.hpp"
+
+Node::Node(Mesh &mesh, double x, double y, bool used, bool boundNode,
+           bool cellCenterNode, bool isApex) {
     data.coords = Vector(x, y);
     ID = mesh.getNewNodeID();
     data.nodeID = ID;

@@ -3,8 +3,8 @@
 #include <iostream>
 #include <string>
 
-void ShallowWaterOutput::writeParaview(Mesh *mesh, double time, int step) {
-    if (step % writePeriod != 0) {
+void ShallowWaterOutput::write_paraview(Mesh *mesh, double time, int step) {
+    if (step % write_period_ != 0) {
         return;
     }
 
@@ -18,15 +18,15 @@ void ShallowWaterOutput::writeParaview(Mesh *mesh, double time, int step) {
     for (unsigned long i = 0; i < mesh->cells.size(); i++) {
         Cell *cell = &mesh->cells[i];
         Data *data = &mesh->nodes[cell->centerNodeID].data;
-        if (writeConservative) {
+        if (write_conservative_) {
             long centerNodeID = cell->centerNodeID;
-            std::fprintf(output_f, "%f,%f,%f,%f,%f,%f,%f,%d\n", 
+            std::fprintf(output_f, "%f,%f,%f,%f,%f,%f,%f,%d\n",
                          data->coords.x, data->coords.y,
                          0.0, time, mesh->s0[centerNodeID][0],
-                         mesh->v0[centerNodeID][0].x, mesh->v0[centerNodeID][0].y, 
+                         mesh->v0[centerNodeID][0].x, mesh->v0[centerNodeID][0].y,
                          mesh->nodes[centerNodeID].boundNode);
         }
-        if (writeFlux) {
+        if (write_flux_) {
             for (unsigned long edgeID : cell->edgeIDs) {
                 Edge *edge = &mesh->edges[edgeID];
                 for (unsigned long usedNodeID : edge->usedNodeIDs) {

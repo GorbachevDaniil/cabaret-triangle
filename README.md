@@ -47,8 +47,8 @@ Now you have all mesh files to run main programm.
 
 ### Triangle mesh in square area based on square mesh
 
-Use mesh generation tool from mesh_generation/triangle_square
+Use mesh generation tool from lib/mesh_generation/triangle_square
 
 ### Triangle mesh in square area with angles with 60 degrees
 
-Use mesh generation tool from mesh_generation/triangle_regular
+Use mesh generation tool from lib/mesh_generation/triangle_regular

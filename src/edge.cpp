@@ -1,10 +1,10 @@
 #include "edge.hpp"
 
-#include "mesh.hpp"
-#include "node.hpp"
-
 #include <cassert>
 #include <cmath>
+
+#include "mesh.hpp"
+#include "node.hpp"
 
 Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge, int innerNodeNum) {
     this->ID = ID;
@@ -27,7 +27,7 @@ Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge
     Vector edgeVector(endNodeX - startNodeX, endNodeY - startNodeY);
     for (int i = 1; i < innerNodeNum + 1; i++) {
         Vector nodeCoords = edgeVector / (innerNodeNum + 1) * i + startNode;
-        Node *node = new Node(mesh, nodeCoords.x, nodeCoords.y, true, 
+        Node *node = new Node(mesh, nodeCoords.x, nodeCoords.y, true,
                               boundEdge, false, false);
         node->edgeIDs.insert(ID);
         mesh.nodes.push_back(*node);

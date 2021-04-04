@@ -8,7 +8,7 @@ void calculateEdgeNormal(Mesh &mesh, Cell &cell, long edgeID) {
     std::vector<long> nodeIDs = cell.getEdgeOrderedNodeIDs(edge->endNodeIDs);
 
     Vector tangential(mesh.nodes[nodeIDs[1]].data.coords -
-                      mesh.nodes[nodeIDs[0]].data.coords);
+        mesh.nodes[nodeIDs[0]].data.coords);
 
     Vector normal(tangential.y, -tangential.x);
     normal = normal / edge->length;

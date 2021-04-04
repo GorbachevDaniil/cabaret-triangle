@@ -4,7 +4,7 @@
 #include "../virtual_initializer.hpp"
 
 class TransferInitializer : public AbstractInitializer {
-   public:
+public:
     void initialize(Mesh &mesh);
 };
 

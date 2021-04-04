@@ -8,7 +8,7 @@
 class Mesh;
 
 class Edge {
-   public:
+public:
     long ID;
     double length;
     bool boundEdge;
@@ -21,7 +21,7 @@ class Edge {
     std::vector<long> usedNodeIDs;
     std::vector<long> cellIDs;
 
-    Edge(){};
+    Edge() {};
     Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge, int innerNodeNum);
 
     long getAnotherEndNode(long ID);

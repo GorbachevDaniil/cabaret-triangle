@@ -100,7 +100,7 @@ void ShallowWaterInitializer::initialize(Mesh &mesh) {
             // }
         }
     }
-    
+
     for (unsigned long i = 0; i < mesh.cells.size(); i++) {
         Cell *cell = &mesh.cells[i];
 

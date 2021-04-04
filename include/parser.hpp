@@ -4,7 +4,7 @@
 #include "mesh.hpp"
 
 class Parser {
-   public:
+public:
     int LoadNodes(Mesh *mesh, std::string nodeFile);
     int LoadEdges(Mesh *mesh, std::string edgeFile);
     int LoadCells(Mesh *mesh, std::string cellFile);

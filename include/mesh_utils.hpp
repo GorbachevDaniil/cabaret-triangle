@@ -4,7 +4,7 @@
 #include "mesh.hpp"
 
 class MeshUtils {
-   public:
+public:
     static void calculateEdgesNormals(Mesh &mesh);
     static void calculateTransferVectors(Mesh &mesh);
 };

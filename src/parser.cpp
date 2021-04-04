@@ -1,13 +1,13 @@
 #include "parser.hpp"
 
-#include "mesh.hpp"
-
 #include <cmath>
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <vector>
+
+#include "mesh.hpp"
 
 // Make vector of values from string words
 std::vector<std::string> split(const std::string &s, const char *delimiter) {

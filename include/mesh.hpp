@@ -1,14 +1,14 @@
 #ifndef Mesh_hpp
 #define Mesh_hpp
 
-#include "cell.hpp"
-#include "edge.hpp"
-#include "node.hpp"
-
 #include <vector>
 
+#include "node.hpp"
+#include "edge.hpp"
+#include "cell.hpp"
+
 class Mesh {
-   public:
+public:
     int edgeInnerNodesNumber;
     bool apexNodesUsed;
 
