@@ -41,7 +41,15 @@ public:
     };
 
     inline long getNewNodeID() { return nodes.size(); };
-    int InitMesh(Mesh *mesh);
+
+    void init_mesh(const std::string& path_to_noad_file,
+                   const std::string& path_to_edge_file,
+                   const std::string& path_to_ele_file);
+
+    void calculate_edges_normals();
+    void calculate_transfer_vectors();
+private:
+    void calculate_edge_normal(Cell* cell, long edgeID);
 };
 
 #endif

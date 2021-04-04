@@ -123,7 +123,7 @@ double ShallowWaterSolver::calcInvQ(double G, double h, Vector u, Vector n) {
     return u * n - G * h;
 }
 
-double ShallowWaterSolver::calcInvS(double G, double h, Vector u, Vector n) {
+double ShallowWaterSolver::calcInvS(double /*G*/, double /*h*/, Vector u, Vector n) {
     return -u.x * n.y + u.y * n.x;
 }
 
@@ -135,7 +135,7 @@ double ShallowWaterSolver::calcLambdaQ(double h, Vector u, Vector n) {
     return u * n - sqrt(g * h);
 }
 
-double ShallowWaterSolver::calcLambdaS(double h, Vector u, Vector n) {
+double ShallowWaterSolver::calcLambdaS(double /*h*/, Vector u, Vector n) {
     return u * n;
 }
 
@@ -179,7 +179,7 @@ double ShallowWaterSolver::calcQS(Cell *cell, double dirDerivH,
 }
 
 double monotize(double inv2, double inv0, double invCenter0, double invOpposite0, double invCenter1,
-                double lambda, double tau, double h, double dirDerivative) {
+                double lambda, double tau, double /*h*/, double dirDerivative) {
 
     double Q = (invCenter1 - invCenter0) / (tau / 2) + lambda * dirDerivative;
     // invCenter0 = (6 * invCenter0 / h - inv0 - invOpposite0) / 4;
@@ -195,7 +195,7 @@ double monotize(double inv2, double inv0, double invCenter0, double invOpposite0
 }
 
 double monotize(double inv2, double inv0, double invCenter0, double invOpposite0,
-                double invCenter1, double tau, double Q) {
+                double /*invCenter1*/, double tau, double Q) {
     double min = std::min(std::min(inv0, invOpposite0), invCenter0);
     double max = std::max(std::max(inv0, invOpposite0), invCenter0);
 
@@ -209,10 +209,10 @@ double monotize(double inv2, double inv0, double invCenter0, double invOpposite0
 }
 
 double ShallowWaterSolver::extrapolateInv(
-    Cell *cell, Edge *edge, Node *node, Vector n, double G,
+    Cell* cell, Edge* /*edge*/, Node* node, Vector n, double G,
     std::function<double(ShallowWaterSolver &, double, double, Vector, Vector)> calcInv,
     std::function<double(ShallowWaterSolver &, double, Vector, Vector)> calcLambda,
-    std::function<double(ShallowWaterSolver &, Cell *, double, double, double, Vector)> calcQ,
+    std::function<double(ShallowWaterSolver &, Cell *, double, double, double, Vector)> /*calcQ*/,
     double tau, bool needMonotize) {
     assert(cell->nodeIDToOppositeNodeID[node->ID] != -1);
 

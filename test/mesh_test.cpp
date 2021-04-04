@@ -6,7 +6,6 @@
 #include "edge.hpp"
 #include "cell.hpp"
 #include "mesh.hpp"
-#include "mesh_utils.hpp"
 
 #include <vector>
 
@@ -42,7 +41,7 @@ TEST(calculateEdgeNormals, Positive) {
     mesh.edges.push_back(edge);
     mesh.cells.push_back(cell);
 
-    MeshUtils::calculateEdgesNormals(mesh);
+    mesh.calculate_edges_normals();
 
     EXPECT_EQ((y2 - y1) / length, mesh.edges[0].normal.x);
     EXPECT_EQ(-(x2 - x1) / length, mesh.edges[0].normal.y);
@@ -81,7 +80,7 @@ TEST(calculateTransferVectors, Positive) {
     mesh.edges.push_back(edge);
     mesh.cells.push_back(cell);
 
-    MeshUtils::calculateTransferVectors(mesh);
+    mesh.calculate_transfer_vectors();
 
     EXPECT_DOUBLE_EQ((x1 - x2) / length, mesh.cells[cell.ID].nodeToTransferVector[edgeCenter.ID].x);
     EXPECT_DOUBLE_EQ((y1 - y2) / length, mesh.cells[cell.ID].nodeToTransferVector[edgeCenter.ID].y);

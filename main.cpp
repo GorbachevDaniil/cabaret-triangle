@@ -1,36 +1,51 @@
 #include <chrono>
 #include <iostream>
-#include <libconfig.h++>
 
-#include "mesh_utils.hpp"
+//#include <libconfig.h++>
+
+#include "mesh.hpp"
 #include "equations/shallow_water/initializer.hpp"
 #include "equations/shallow_water/output.hpp"
 #include "equations/shallow_water/solver.hpp"
 
 int main() {
-    std::cout.precision(16);
+    std::cout.precision(8);
 
-    libconfig::Config config;
-    config.readFile("config/config.cfg");
+//    libconfig::Config config;
+//    config.readFile("config/config.cfg");
 
-    int steps = config.lookup("steps");
-    double timeToStop = config.lookup("time_to_stop");
+//    int steps = config.lookup("steps");
+//    double timeToStop = config.lookup("time_to_stop");
+//
+//    int writePeriod = config.lookup("write_period");
+//    bool writeConservative = config.lookup("write_conservative");
+//    bool writeFlux = config.lookup("write_flux");
+//
+//    int edgeInnerNodesNumber = config.lookup("edge_inner_nodes_number");
+//    bool apexNodesUsed = config.lookup("apex_nodes_used");
 
-    int writePeriod = config.lookup("write_period");
-    bool writeConservative = config.lookup("write_conservative");
-    bool writeFlux = config.lookup("write_flux");
+    int steps = 10;
+    double timeToStop = 0.0;
 
-    int edgeInnerNodesNumber = config.lookup("edge_inner_nodes_number");
-    bool apexNodesUsed = config.lookup("apex_nodes_used");
+    int writePeriod = 1;
+    bool writeConservative = true;
+    bool writeFlux = true;
+
+    int edgeInnerNodesNumber = 2;
+    bool apexNodesUsed = false;
 
     Mesh *mesh = new Mesh(edgeInnerNodesNumber, apexNodesUsed);
-    mesh->InitMesh(mesh);
+    mesh->init_mesh(
+        "/Users/gorbdan/workspace/projects/cabaret/cabaret-triangle/resources/mesh/regular/square -1x1/Mesh.node",
+        "/Users/gorbdan/workspace/projects/cabaret/cabaret-triangle/resources/mesh/regular/square -1x1/Mesh.edge",
+        "/Users/gorbdan/workspace/projects/cabaret/cabaret-triangle/resources/mesh/regular/square -1x1/Mesh.ele"
+    );
     std::cout << "number of cells = " << mesh->cells.size() << std::endl;
 
-    MeshUtils::calculateEdgesNormals(*mesh);
-    MeshUtils::calculateTransferVectors(*mesh);
+    mesh->calculate_edges_normals();
+    mesh->calculate_transfer_vectors();
 
-    int task = config.lookup("solver.task");
+    int task = 2;
     switch (task) {
         // case 1: {
         //     TransferInitializer initializer = TransferInitializer();
@@ -72,8 +87,10 @@ int main() {
                                                            writeFlux);
             output.write_paraview(mesh, 0, 0);
 
-            double cfl = config.lookup("solver.cfl");
-            double g = config.lookup("solver.shallow_water.g");
+//            double cfl = config.lookup("solver.cfl");
+//            double g = config.lookup("solver.shallow_water.g");
+            double cfl = 0.3;
+            double g = 1.0;
             ShallowWaterSolver solver = ShallowWaterSolver(cfl, g, mesh);
 
             std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
