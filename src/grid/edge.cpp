@@ -1,10 +1,9 @@
-#include "edge.hpp"
+#include "grid/edge.hpp"
 
 #include <cassert>
 #include <cmath>
 
-#include "mesh.hpp"
-#include "node.hpp"
+#include "grid/mesh.hpp"
 
 Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge, int innerNodeNum) {
     this->ID = ID;
@@ -45,9 +44,9 @@ Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge
 
     std::pair<int, int> tempNodeIDs;
     tempNodeIDs = std::make_pair(startNodeID, endNodeID);
-    mesh.mapNodesWithEdge.insert(std::pair<std::pair<int, int>, int>(tempNodeIDs, ID));
+    mesh.map_nodes_with_edge.insert(std::pair<std::pair<int, int>, int>(tempNodeIDs, ID));
     tempNodeIDs = std::make_pair(endNodeID, startNodeID);
-    mesh.mapNodesWithEdge.insert(std::pair<std::pair<int, int>, int>(tempNodeIDs, ID));
+    mesh.map_nodes_with_edge.insert(std::pair<std::pair<int, int>, int>(tempNodeIDs, ID));
 }
 
 long Edge::getAnotherEndNode(long ID) {

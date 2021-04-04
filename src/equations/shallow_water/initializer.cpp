@@ -5,13 +5,13 @@
 void ShallowWaterInitializer::initialize(Mesh &mesh) {
     for (unsigned long i = 0; i < mesh.edges.size(); i++) {
         long edgeID = mesh.edges[i].ID;
-        mesh.edgeIDToDivs0[edgeID] = std::vector<double>(3);
-        mesh.edgeIDToDivs2[edgeID] = std::vector<double>(3);
+        mesh.edge_id_to_divs_0[edgeID] = std::vector<double>(3);
+        mesh.edge_id_to_divs_2[edgeID] = std::vector<double>(3);
     }
 
     for (unsigned long i = 0; i < mesh.cells.size(); i++) {
         long cellID = mesh.cells[i].ID;
-        mesh.cellIDToGrads[cellID] = std::vector<Vector>(3);
+        mesh.cell_id_to_grads[cellID] = std::vector<Vector>(3);
     }
 
     for (unsigned long i = 0; i < mesh.nodes.size(); i++) {

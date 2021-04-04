@@ -35,7 +35,7 @@ Steps for mesh generation:
 Edit PolyGenerator.cpp to set up (boundary) and (amount of cells) values.
 Then compile and run it via:
 ```
-g++ PolyGenerator.cpp && ./a.out
+g_++ PolyGenerator.cpp && ./a.out
 ```
 
 To generate mesh files by Triangle use command(you should make triangle before):

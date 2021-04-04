@@ -12,7 +12,7 @@ public:
                write_conservative,
                write_flux) {}
 
-    void write_paraview(Mesh *mesh, double time, int step);
+    void write_paraview(Mesh& mesh, double time, int step);
 };
 
 #endif

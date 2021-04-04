@@ -1,19 +1,34 @@
 #ifndef AbstractSolver_hpp
 #define AbstractSolver_hpp
 
-#include "mesh.hpp"
+#include "grid/mesh.hpp"
 
 class Solver {
 public:
-    virtual double calc_tau() = 0;
-    virtual void process_phase_1(double tau) = 0;
-    virtual void process_phase_2(double tau) = 0;
-    virtual void process_phase_3(double tau) = 0;
+    Solver(Mesh& mesh,
+           double cfl) :
+        mesh_(mesh),
+        cfl_(cfl)
+    {}
+
+    virtual void calc_tau() = 0;
+    virtual void process_phase_1() = 0;
+    virtual void process_phase_2() = 0;
+    virtual void process_phase_3() = 0;
     virtual void prepare_next_step() = 0;
 
+    double get_tau() const {
+        return tau_;
+    }
+
+protected:
+    Mesh mesh_;
+    double cfl_;
+    double tau_;
+
 private:
-    virtual void processPhase2BoundEdge(Edge *edge, double tau) = 0;
-    virtual void processPhase2InnerEdge(Edge *edge, double tau) = 0;
+    virtual void process_phase_2_bound(Edge *edge) = 0;
+    virtual void process_phase_2_inner(Edge *edge) = 0;
 };
 
 #endif

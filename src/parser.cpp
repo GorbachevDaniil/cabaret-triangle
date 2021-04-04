@@ -7,7 +7,7 @@
 #include <sstream>
 #include <vector>
 
-#include "mesh.hpp"
+#include "grid/mesh.hpp"
 
 // Make vector of values from string words
 std::vector<std::string> split(const std::string &s, const char *delimiter) {
@@ -47,7 +47,7 @@ int Parser::LoadNodes(Mesh *mesh, std::string fileName) {
         double x = atof(values[1].c_str());
         double y = atof(values[2].c_str());
         bool boundNode = atoi(values[3].c_str()) == 1 ? true : false;
-        Node *node = new Node(*mesh, x, y, mesh->apexNodesUsed, boundNode, false, true);
+        Node *node = new Node(*mesh, x, y, mesh->apex_nodes_used, boundNode, false, true);
         mesh->nodes.push_back(*node);
 
         i++;
@@ -78,7 +78,7 @@ int Parser::LoadEdges(Mesh *mesh, std::string fileName) {
         unsigned long nodeID1 = atol(values[1].c_str()) - 1;
         unsigned long nodeID2 = atol(values[2].c_str()) - 1;
         int bound = atoi(values[3].c_str());
-        Edge *edge = new Edge(*mesh, ID, nodeID1, nodeID2, bound, mesh->edgeInnerNodesNumber);
+        Edge *edge = new Edge(*mesh, ID, nodeID1, nodeID2, bound, mesh->edge_inner_nodes);
         mesh->edges.push_back(*edge);
 
         i++;

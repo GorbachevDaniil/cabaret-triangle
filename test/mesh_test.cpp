@@ -1,13 +1,13 @@
 #include "gtest/gtest.h"
 
-#include "vector.hpp"
-#include "data.hpp"
-#include "node.hpp"
-#include "edge.hpp"
-#include "cell.hpp"
-#include "mesh.hpp"
-
 #include <vector>
+
+#include "vector.hpp"
+#include "grid/data.hpp"
+#include "grid/node.hpp"
+#include "grid/edge.hpp"
+#include "grid/cell.hpp"
+#include "grid/mesh.hpp"
 
 TEST(calculateEdgeNormals, Positive) {
     double x1 = 1;

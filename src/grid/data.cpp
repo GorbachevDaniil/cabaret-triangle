@@ -1,6 +1,6 @@
-#include "data.hpp"
+#include "grid/data.hpp"
 
-#include "mesh.hpp"
+#include "grid/mesh.hpp"
 
 double Data::getS0(int pos) {
     return mesh->s0[nodeID][pos];

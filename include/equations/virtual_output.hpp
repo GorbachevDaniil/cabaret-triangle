@@ -1,7 +1,7 @@
 #ifndef AbstractOutput_hpp
 #define AbstractOutput_hpp
 
-#include "mesh.hpp"
+#include "grid/mesh.hpp"
 
 class Output {
 public:
@@ -12,7 +12,7 @@ public:
         write_conservative_(write_conservative),
         write_flux_(write_flux) {}
 
-    virtual void write_paraview(Mesh *mesh, double time, int step) = 0;
+    virtual void write_paraview(Mesh& mesh, double time, int step) = 0;
 
 protected:
     const int write_period_;

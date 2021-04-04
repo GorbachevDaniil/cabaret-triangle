@@ -1,7 +1,7 @@
 #ifndef Parser_hpp
 #define Parser_hpp
 
-#include "mesh.hpp"
+#include "grid/mesh.hpp"
 
 class Parser {
 public:

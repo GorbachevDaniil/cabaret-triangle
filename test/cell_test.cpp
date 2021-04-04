@@ -1,12 +1,12 @@
 #include "gtest/gtest.h"
 
-#include "node.hpp"
-#include "edge.hpp"
-#include "cell.hpp"
-#include "mesh.hpp"
-
 #include <vector>
 #include <iostream>
+
+#include "grid/node.hpp"
+#include "grid/edge.hpp"
+#include "grid/cell.hpp"
+#include "grid/mesh.hpp"
 
 TEST(getNextNodeIDTest, ReturnTheNextValueInACircularManner) {
     Cell cell;

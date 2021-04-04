@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mesh.hpp"
+#include "grid/mesh.hpp"
 #include "parser.hpp"
 
 TEST(parserTriangleMesh, LoadNodes) {

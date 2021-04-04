@@ -1,7 +1,7 @@
 #ifndef AbstractInitializer_hpp
 #define AbstractInitializer_hpp
 
-#include "mesh.hpp"
+#include "grid/mesh.hpp"
 
 class Initializer {
 public:

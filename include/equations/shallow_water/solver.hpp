@@ -7,21 +7,22 @@
 
 class ShallowWaterSolver : public Solver {
 public:
-    ShallowWaterSolver(double cfl, double g, Mesh *mesh) {
-        this->cfl = cfl;
-        this->g = g;
-        this->mesh = mesh;
-    };
+    ShallowWaterSolver(Mesh& mesh,
+                       double cfl,
+                       double g) :
+        Solver(mesh, cfl),
+        g_(g)
+    {}
 
-    double calc_tau();
-    void process_phase_1(double tau);
-    void process_phase_2(double tau);
-    void process_phase_3(double tau);
+    void calc_tau();
+    void process_phase_1();
+    void process_phase_2();
+    void process_phase_3();
     void prepare_next_step();
 
 private:
-    void processPhase2BoundEdge(Edge *edge, double tau);
-    void processPhase2InnerEdge(Edge *edge, double tau);
+    void process_phase_2_bound(Edge *edge);
+    void process_phase_2_inner(Edge *edge);
 
     double calcIntegral(std::vector<double> values, double length);
 
@@ -43,20 +44,17 @@ private:
 
     arma::vec convertInvToInitialVariables(std::vector<arma::vec> invs);
 
-    std::vector<arma::vec> getInvFromCellExtr(Node *node, Edge *edge, Cell *cell, double tau);
+    std::vector<arma::vec> getInvFromCellExtr(Node *node, Edge *edge, Cell *cell);
 
     double extrapolateInv(
         Cell *cell, Edge *edge, Node *node, Vector n, double G,
         std::function<double(ShallowWaterSolver &, double, double, Vector, Vector)> calcInv,
         std::function<double(ShallowWaterSolver &, double, Vector, Vector)> calcLambda,
         std::function<double(ShallowWaterSolver &, Cell *, double, double, double, Vector)> calcQ,
-        double tau, bool needMonotize);
+        bool needMonotize);
 
 private:
-    double cfl;
-    double g;
-
-    Mesh *mesh;
+    double g_;
 };
 
 #endif

@@ -9,8 +9,13 @@
 
 class Mesh {
 public:
-    int edgeInnerNodesNumber;
-    bool apexNodesUsed;
+    Mesh(int edge_inner_nodes, bool apex_nodes_used) :
+        edge_inner_nodes(edge_inner_nodes),
+        apex_nodes_used(apex_nodes_used)
+    {}
+
+    int edge_inner_nodes;
+    bool apex_nodes_used;
 
     // list of scalar variables on n layer of time
     std::vector<std::vector<double>> s0;
@@ -30,17 +35,12 @@ public:
     std::vector<Edge> edges;
     std::vector<Cell> cells;
 
-    std::map<std::pair<int, int>, int> mapNodesWithEdge;
-    std::map<long, std::vector<double>> edgeIDToDivs0;
-    std::map<long, std::vector<double>> edgeIDToDivs2;
-    std::map<long, std::vector<Vector>> cellIDToGrads;
+    std::map<std::pair<int, int>, int> map_nodes_with_edge;
+    std::map<long, std::vector<double>> edge_id_to_divs_0;
+    std::map<long, std::vector<double>> edge_id_to_divs_2;
+    std::map<long, std::vector<Vector>> cell_id_to_grads;
 
-    Mesh(int edgeInnerNodesNumber, bool apexNodesUsed) {
-        this->edgeInnerNodesNumber = edgeInnerNodesNumber;
-        this->apexNodesUsed = apexNodesUsed;
-    };
-
-    inline long getNewNodeID() { return nodes.size(); };
+    inline long get_new_node_id() { return nodes.size(); };
 
     void init_mesh(const std::string& path_to_noad_file,
                    const std::string& path_to_edge_file,

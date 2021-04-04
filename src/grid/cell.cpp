@@ -1,12 +1,11 @@
-#include "cell.hpp"
+#include "grid/cell.hpp"
 
 #include <algorithm>
 #include <cassert>
 #include <vector>
 #include <limits>
 
-#include "mesh.hpp"
-#include "node.hpp"
+#include "grid/mesh.hpp"
 #include "vector.hpp"
 
 double calculateDeterminant(double a11, double a12, double a21, double a22) {
@@ -148,7 +147,7 @@ void assignRowValues(arma::mat &mat, double x, double y, int row) {
 }
 
 void Cell::buildInterpolationMat(Mesh &mesh) {
-    int matSize = mesh.edgeInnerNodesNumber * 3 + 4;
+    int matSize = mesh.edge_inner_nodes * 3 + 4;
     if (matSize != 10) {
         return;
     }
@@ -209,17 +208,17 @@ Cell::Cell(Mesh &mesh, long ID, long nodeID1, long nodeID2, long nodeID3) {
     std::map<std::pair<int, int>, int>::const_iterator it;
     int tempEdgeID;
 
-    it = mesh.mapNodesWithEdge.find(std::make_pair(nodeID1, nodeID2));
+    it = mesh.map_nodes_with_edge.find(std::make_pair(nodeID1, nodeID2));
     tempEdgeID = it->second;
     edgeIDs.push_back(tempEdgeID);
     mesh.edges[tempEdgeID].cellIDs.push_back(ID);
 
-    it = mesh.mapNodesWithEdge.find(std::make_pair(nodeID2, nodeID3));
+    it = mesh.map_nodes_with_edge.find(std::make_pair(nodeID2, nodeID3));
     tempEdgeID = it->second;
     edgeIDs.push_back(tempEdgeID);
     mesh.edges[tempEdgeID].cellIDs.push_back(ID);
 
-    it = mesh.mapNodesWithEdge.find(std::make_pair(nodeID3, nodeID1));
+    it = mesh.map_nodes_with_edge.find(std::make_pair(nodeID3, nodeID1));
     tempEdgeID = it->second;
     edgeIDs.push_back(tempEdgeID);
     mesh.edges[tempEdgeID].cellIDs.push_back(ID);
