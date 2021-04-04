@@ -21,7 +21,7 @@ Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge
     length = sqrt(pow((endNodeX - startNodeX), 2) + pow((endNodeY - startNodeY), 2));
 
     // In nodeIDs there will be always nodes order from start node to end node
-    nodeIDs.push_back(startNodeID);
+    this->nodeIDs.push_back(startNodeID);
     mesh.nodes[startNodeID].edgeIDs.insert(ID);
     Vector startNode(startNodeX, startNodeY);
     Vector edgeVector(endNodeX - startNodeX, endNodeY - startNodeY);
@@ -31,28 +31,23 @@ Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge
                               boundEdge, false, false);
         node->edgeIDs.insert(ID);
         mesh.nodes.push_back(*node);
-        nodeIDs.push_back(node->ID);
-        innerNodeIDs.push_back(node->ID);
+        this->nodeIDs.push_back(node->ID);
+        this->innerNodeIDs.push_back(node->ID);
     }
-    nodeIDs.push_back(endNodeID);
+    this->nodeIDs.push_back(endNodeID);
     mesh.nodes[endNodeID].edgeIDs.insert(ID);
+
+    for (long nodeID : this->nodeIDs) {
+        if (mesh.nodes[nodeID].used) {
+            this->usedNodeIDs.push_back(nodeID);
+        }
+    }
 
     std::pair<int, int> tempNodeIDs;
     tempNodeIDs = std::make_pair(startNodeID, endNodeID);
     mesh.mapNodesWithEdge.insert(std::pair<std::pair<int, int>, int>(tempNodeIDs, ID));
     tempNodeIDs = std::make_pair(endNodeID, startNodeID);
     mesh.mapNodesWithEdge.insert(std::pair<std::pair<int, int>, int>(tempNodeIDs, ID));
-}
-
-std::vector<long> Edge::getUsedNodes(Mesh &mesh) {
-    std::vector<long> usedNodeIDs;
-    for (long nodeID : nodeIDs) {
-        if (mesh.nodes[nodeID].used) {
-            usedNodeIDs.push_back(nodeID);
-        }
-    }
-    assert(usedNodeIDs.size() > 0);
-    return usedNodeIDs;
 }
 
 long Edge::getAnotherEndNode(long ID) {

@@ -46,28 +46,28 @@ TEST(parserTriangleMesh, LoadEdges) {
     EXPECT_EQ(1, mesh.edges[4].nodeIDs[2]);
 
     /* Coords for center Nodes */
-    EXPECT_EQ((unsigned long) 1, mesh.edges[0].getUsedNodes(mesh).size());
-    long centerID = mesh.edges[0].getUsedNodes(mesh)[0];
+    EXPECT_EQ((unsigned long) 1, mesh.edges[0].usedNodeIDs.size());
+    long centerID = mesh.edges[0].usedNodeIDs[0];
     EXPECT_EQ(-1, mesh.nodes[centerID].data.coords.x);
     EXPECT_EQ(0, mesh.nodes[centerID].data.coords.y);
 
-    EXPECT_EQ((unsigned long) 1, mesh.edges[1].getUsedNodes(mesh).size());
-    centerID = mesh.edges[1].getUsedNodes(mesh)[0];
+    EXPECT_EQ((unsigned long) 1, mesh.edges[1].usedNodeIDs.size());
+    centerID = mesh.edges[1].usedNodeIDs[0];
     EXPECT_EQ(0, mesh.nodes[centerID].data.coords.x);
     EXPECT_EQ(-1, mesh.nodes[centerID].data.coords.y);
 
-    EXPECT_EQ((unsigned long) 1, mesh.edges[2].getUsedNodes(mesh).size());
-    centerID = mesh.edges[2].getUsedNodes(mesh)[0];
+    EXPECT_EQ((unsigned long) 1, mesh.edges[2].usedNodeIDs.size());
+    centerID = mesh.edges[2].usedNodeIDs[0];
     EXPECT_EQ(0, mesh.nodes[centerID].data.coords.x);
     EXPECT_EQ(0, mesh.nodes[centerID].data.coords.y);
 
-    EXPECT_EQ((unsigned long) 1, mesh.edges[3].getUsedNodes(mesh).size());
-    centerID = mesh.edges[3].getUsedNodes(mesh)[0];
+    EXPECT_EQ((unsigned long) 1, mesh.edges[3].usedNodeIDs.size());
+    centerID = mesh.edges[3].usedNodeIDs[0];
     EXPECT_EQ(1, mesh.nodes[centerID].data.coords.x);
     EXPECT_EQ(0, mesh.nodes[centerID].data.coords.y);
 
-    EXPECT_EQ((unsigned long) 1, mesh.edges[4].getUsedNodes(mesh).size());
-    centerID = mesh.edges[4].getUsedNodes(mesh)[0];
+    EXPECT_EQ((unsigned long) 1, mesh.edges[4].usedNodeIDs.size());
+    centerID = mesh.edges[4].usedNodeIDs[0];
     EXPECT_EQ(0, mesh.nodes[centerID].data.coords.x);
     EXPECT_EQ(1, mesh.nodes[centerID].data.coords.y);
 

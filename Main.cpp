@@ -20,7 +20,11 @@ int main() {
 
     int steps = config.lookup("steps");
     double timeToStop = config.lookup("time_to_stop");
+
     int writePeriod = config.lookup("write_period");
+    bool writeConservative = config.lookup("write_conservative");
+    bool writeFlux = config.lookup("write_flux");
+
     int edgeInnerNodesNumber = config.lookup("edge_inner_nodes_number");
     bool apexNodesUsed = config.lookup("apex_nodes_used");
 
@@ -68,7 +72,9 @@ int main() {
             ShallowWaterInitializer initializer = ShallowWaterInitializer();
             initializer.initialize(*mesh);
 
-            ShallowWaterOutput output = ShallowWaterOutput(writePeriod);
+            ShallowWaterOutput output = ShallowWaterOutput(writePeriod,
+                                                           writeConservative,
+                                                           writeFlux);
             output.writeParaview(mesh, 0, 0);
 
             double cfl = config.lookup("solver.cfl");
@@ -83,6 +89,7 @@ int main() {
             std::chrono::duration<double> durPhase3 = std::chrono::duration<double>(0);
 
             double time = 0;
+            int real_steps = 0;
             for (int i = 0; i < steps; i++) {
                 std::chrono::system_clock::time_point startCalcTau = std::chrono::system_clock::now();
                 double tau = solver.calcTau();
@@ -112,6 +119,8 @@ int main() {
 
                 solver.prepareNextStep();
 
+                real_steps += 1;
+
                 if (timeToStop > 0 && time >= timeToStop) {
                     output.writeParaview(mesh, time, i + 1);
                     break;
@@ -122,11 +131,11 @@ int main() {
             std::chrono::duration<double> dur =
                 std::chrono::duration_cast<std::chrono::duration<double>>(stop - start);
 
-            std::cout << "it took " << dur.count() / steps << " sec to process one step" << std::endl;
-            std::cout << "it took " << durCalcTau.count() / steps << " sec to calculate tau" << std::endl;
-            std::cout << "it took " << durPhase1.count() / steps << " sec to process phase 1" << std::endl;
-            std::cout << "it took " << durPhase2.count() / steps << " sec to process phase 2" << std::endl;
-            std::cout << "it took " << durPhase3.count() / steps << " sec to process phase 3" << std::endl;
+            std::cout << "it took " << dur.count() / real_steps << " sec to process one step" << std::endl;
+            std::cout << "it took " << durCalcTau.count() / real_steps << " sec to calculate tau" << std::endl;
+            std::cout << "it took " << durPhase1.count() / real_steps << " sec to process phase 1" << std::endl;
+            std::cout << "it took " << durPhase2.count() / real_steps << " sec to process phase 2" << std::endl;
+            std::cout << "it took " << durPhase3.count() / real_steps << " sec to process phase 3" << std::endl;
             break;
         }
     }

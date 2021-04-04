@@ -1,23 +1,13 @@
-# Compiled files #
-*.dll
-*.exe
-*.o
-*.out
-*.a
-bin/
 build/
-
-# Project files #
+.idea/
 .vscode/
-.history/
+cmake-build-debug/
+cmake-build-debug-coverage/
 
-# Triangle generated files #
-triangle/*.poly
-triangle/*.ele
-triangle/*.node
-triangle/*.edge
+# Mesh related files
+*.poly
+*.ele
+*.node
+*.edge
 
-triangle_regular/*.poly
-triangle_regular/*.ele
-triangle_regular/*.node
-triangle_regular/*.edge
+*.ipynb

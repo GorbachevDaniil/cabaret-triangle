@@ -5,7 +5,11 @@
 
 class ShallowWaterOutput : public AbstractOutput {
    public:
-    ShallowWaterOutput(int writePeriod) { this->writePeriod = writePeriod; };
+    ShallowWaterOutput(int writePeriod, bool writeConservative, bool writeFlux) {
+        this->writePeriod = writePeriod;
+        this->writeConservative = writeConservative;
+        this->writeFlux = writeFlux;
+    };
 
     void writeParaview(Mesh *mesh, double time, int step);
 };

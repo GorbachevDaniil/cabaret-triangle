@@ -16,14 +16,14 @@ class Edge {
     Vector normal;
 
     std::vector<long> endNodeIDs;
-    std::vector<long> innerNodeIDs;
     std::vector<long> nodeIDs;
+    std::vector<long> innerNodeIDs;
+    std::vector<long> usedNodeIDs;
     std::vector<long> cellIDs;
 
     Edge(){};
     Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge, int innerNodeNum);
 
-    std::vector<long> getUsedNodes(Mesh &mesh);
     long getAnotherEndNode(long ID);
     long getNearInnerNode(long ID);
     long getFarInnerNode(long ID);

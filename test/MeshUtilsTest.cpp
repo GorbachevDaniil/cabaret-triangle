@@ -68,6 +68,7 @@ TEST(calculateTransferVectors, Positive) {
 
     Edge edge;
     edge.nodeIDs.push_back(0); // edgeCenter
+    edge.usedNodeIDs.push_back(0); // edgeCenter
 
     Cell cell;
     cell.ID = 0;

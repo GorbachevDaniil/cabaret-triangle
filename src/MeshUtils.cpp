@@ -39,7 +39,7 @@ void MeshUtils::calculateTransferVectors(Mesh &mesh) {
         Node *cellNode = &mesh.nodes[cell->centerNodeID];
 
         for (unsigned long edgeID : cell->edgeIDs) {
-            for (unsigned long nodeID : mesh.edges[edgeID].getUsedNodes(mesh)) {
+            for (unsigned long nodeID : mesh.edges[edgeID].usedNodeIDs) {
                 Node *node = &mesh.nodes[nodeID];
 
                 Vector transferVector(node->data.coords - cellNode->data.coords);

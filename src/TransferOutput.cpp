@@ -22,7 +22,7 @@
 //                      data->s0[0]);
 //         for (unsigned long edgeID : cell->edgeIDs) {
 //             Edge *edge = &mesh->edges[edgeID];
-//             for (unsigned long usedNodeID : edge->getUsedNodes(*mesh)) {
+//             for (unsigned long usedNodeID : edge->usedNodeIDs) {
 //                 data = &mesh->nodes[usedNodeID].data;
 //                 std::fprintf(output_f, "%f,%f,%f,%f\n", data->coords.x, data->coords.y, 0.0,
 //                              data->s0[0]);

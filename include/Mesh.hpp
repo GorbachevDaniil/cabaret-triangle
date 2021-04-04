@@ -31,7 +31,8 @@ class Mesh {
     std::vector<Cell> cells;
 
     std::map<std::pair<int, int>, int> mapNodesWithEdge;
-    std::map<long, std::vector<double>> edgeIDToDivs;
+    std::map<long, std::vector<double>> edgeIDToDivs0;
+    std::map<long, std::vector<double>> edgeIDToDivs2;
     std::map<long, std::vector<Vector>> cellIDToGrads;
 
     Mesh(int edgeInnerNodesNumber, bool apexNodesUsed) {

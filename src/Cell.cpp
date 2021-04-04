@@ -37,7 +37,7 @@ void Cell::assignOppositeNodeIDs(Mesh &mesh) {
     Node *cellNode = &mesh.nodes[centerNodeID];
     for (unsigned long edgeID : edgeIDs) {
         Edge *edge = &mesh.edges[edgeID];
-        for (unsigned long nodeID : edge->getUsedNodes(mesh)) {
+        for (unsigned long nodeID : edge->usedNodeIDs) {
             Node *edgeNode = &mesh.nodes[nodeID];
             // let's build line passing edgeNode and cellNode like Ax+By+C=0
             double lineA = edgeNode->data.coords.y - cellNode->data.coords.y;

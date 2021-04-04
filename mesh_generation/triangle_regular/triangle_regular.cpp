@@ -2,10 +2,10 @@
 #include <cmath>
 #include <iostream>
 
-double LEFT_BOUNDARY_X = 0.0;
-double RIGHT_BOUNDARY_X = 50.0;
-double LEFT_BOUNDARY_Y = 0.0;
-double RIGHT_BOUNDARY_Y = 50.0;
+double LEFT_BOUNDARY_X = -1.0;
+double RIGHT_BOUNDARY_X = 1.0;
+double LEFT_BOUNDARY_Y = -1.0;
+double RIGHT_BOUNDARY_Y = 1.0;
 
 int main(int argc, char **argv) {
     if (argc < 2) {

@@ -6,28 +6,28 @@
 // #include <limits>
 
 // double TransferSolver::calcTau() {
-//     double tau = std::numeric_limits<double>::max();
-//     for (unsigned long i = 0; i < mesh->cells.size(); i++) {
-//         Cell *cell = &mesh->cells[i];
-//         Node *cellNode = &mesh->nodes[cell->centerNodeID];
-//         for (unsigned long edgeID : cell->edgeIDs) {
-//             for (unsigned long nodeID : mesh->edges[edgeID].innerNodeIDs) {
-//                 Node *node = &mesh->nodes[nodeID];
-//                 double lambda = node->data.vector[0] * cell->nodeToTransferVector[nodeID];
-//                 double h = 2 * (node->data.coords - cellNode->data.coords).length();
-//                 double nodeTau = h / std::abs(lambda);
-//                 if (tau > nodeTau) {
-//                     tau = nodeTau;
-//                 }
-//             }
-//         }
-//     }
-//     assert(tau != std::numeric_limits<double>::max());
-//     return cfl * tau;
+    // double tau = std::numeric_limits<double>::max();
+    // for (unsigned long i = 0; i < mesh->cells.size(); i++) {
+    //     Cell *cell = &mesh->cells[i];
+    //     Node *cellNode = &mesh->nodes[cell->centerNodeID];
+    //     for (unsigned long edgeID : cell->edgeIDs) {
+    //         for (unsigned long nodeID : mesh->edges[edgeID].innerNodeIDs) {
+    //             Node *node = &mesh->nodes[nodeID];
+    //             double lambda = node->data.vector[0] * cell->nodeToTransferVector[nodeID];
+    //             double h = 2 * (node->data.coords - cellNode->data.coords).length();
+    //             double nodeTau = h / std::abs(lambda);
+    //             if (tau > nodeTau) {
+    //                 tau = nodeTau;
+    //             }
+    //         }
+    //     }
+    // }
+    // assert(tau != std::numeric_limits<double>::max());
+    // return cfl * tau;
 // }
 
 // double TransferSolver::calcDivOnEdge(Edge *edge, int phase) {
-//     std::vector<long> usedNodeIDs = edge->getUsedNodes(*mesh);
+//     std::vector<long> usedNodeIDs = edge->usedNodeIDs;
 //     double div = 0;
 //     switch (usedNodeIDs.size()) {
 //         case 1: {
