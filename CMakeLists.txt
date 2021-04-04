@@ -13,7 +13,7 @@ find_package(Armadillo REQUIRED)
 include_directories(SYSTEM ${ARMADILLO_INCLUDE_DIRS})
 
 # cabaret target begin
-add_executable(cabaret Main.cpp ${SOURCES})
+add_executable(cabaret main.cpp ${SOURCES})
 target_compile_options(cabaret PRIVATE -Wall -Wextra -pedantic -Werror)
 target_link_libraries(cabaret ${ARMADILLO_LIBRARIES})
 # engine target end
