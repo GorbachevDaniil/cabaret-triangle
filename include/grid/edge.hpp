@@ -9,19 +9,16 @@ class Mesh;
 
 class Edge {
 public:
-    long ID;
+    long id;
     double length;
-    bool boundEdge;
+    bool is_bound;
 
-    Vector normal;
+    std::vector<long> end_node_ids;
+    std::vector<long> node_ids;
+    std::vector<long> inner_node_ids;
+    std::vector<long> used_node_ids;
+    std::vector<long> cell_ids;
 
-    std::vector<long> endNodeIDs;
-    std::vector<long> nodeIDs;
-    std::vector<long> innerNodeIDs;
-    std::vector<long> usedNodeIDs;
-    std::vector<long> cellIDs;
-
-    Edge() {};
     Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge, int innerNodeNum);
 
     long getAnotherEndNode(long ID);

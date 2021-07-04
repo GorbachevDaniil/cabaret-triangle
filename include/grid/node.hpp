@@ -3,26 +3,22 @@
 
 #include <set>
 
-#include "data.hpp"
+#include "vector.hpp"
 
 class Mesh;
 
 class Node {
 public:
-    long ID;
+    long id;
     bool used;
-    bool boundNode;
-    bool cellCenterNode;
-    bool isApex;
+    bool is_bound;
 
-    Data data;
+    Vector coords;
 
-    std::set<long> cellIDs;
-    std::set<long> edgeIDs;
+    std::set<long> cell_ids;
+    std::set<long> edge_ids;
 
-    Node() {};
-    Node(Mesh &mesh, double x, double y, bool used, bool boundNode, bool cellCenterNode,
-         bool isApex);
+    Node(Mesh &mesh, double x, double y, bool used, bool is_bound);
 };
 
 #endif

@@ -3,73 +3,78 @@
 #include "grid/mesh.hpp"
 #include "parser.hpp"
 
-TEST(parserTriangleMesh, LoadNodes) {
-    Parser parser;
-    Mesh mesh(1, false);
-    parser.LoadNodes(&mesh, "test/resources/triangle/test.node");
+class ParserTest : public ::testing::Test
+{
+public:
+    ParserTest() : mesh(1, false) {
+        Parser parser;
+        parser.LoadNodes(&mesh, "test/resources/triangle/test.node");
+        parser.LoadEdges(&mesh, "test/resources/triangle/test.edge");
+        parser.LoadCells(&mesh, "test/resources/triangle/test.ele");
+    }
 
-    EXPECT_EQ(-1, mesh.nodes[0].data.coords.x);
-    EXPECT_EQ(-1, mesh.nodes[0].data.coords.y);
-    EXPECT_EQ(-1, mesh.nodes[1].data.coords.x);
-    EXPECT_EQ(1, mesh.nodes[1].data.coords.y);
-    EXPECT_EQ(1, mesh.nodes[2].data.coords.x);
-    EXPECT_EQ(1, mesh.nodes[2].data.coords.y);
-    EXPECT_EQ(1, mesh.nodes[3].data.coords.x);
-    EXPECT_EQ(-1, mesh.nodes[3].data.coords.y);
+protected:
+    Mesh mesh;
+};
+
+TEST_F(ParserTest, parse_nodes) {
+    EXPECT_EQ(-1, mesh.nodes[0].coords.x);
+    EXPECT_EQ(-1, mesh.nodes[0].coords.y);
+    EXPECT_EQ(-1, mesh.nodes[1].coords.x);
+    EXPECT_EQ(1, mesh.nodes[1].coords.y);
+    EXPECT_EQ(1, mesh.nodes[2].coords.x);
+    EXPECT_EQ(1, mesh.nodes[2].coords.y);
+    EXPECT_EQ(1, mesh.nodes[3].coords.x);
+    EXPECT_EQ(-1, mesh.nodes[3].coords.y);
 }
 
-TEST(parserTriangleMesh, LoadEdges) {
-    Parser parser;
-    Mesh mesh(1, false);
-    parser.LoadNodes(&mesh, "test/resources/triangle/test.node");
-    parser.LoadEdges(&mesh, "test/resources/triangle/test.edge");
-
+TEST_F(ParserTest, parse_edges) {
     /* Nodes for every Edge */
-    EXPECT_EQ(1, mesh.edges[0].nodeIDs[0]);
-    EXPECT_EQ(4, mesh.edges[0].nodeIDs[1]);
-    EXPECT_EQ(0, mesh.edges[0].nodeIDs[2]);
+    EXPECT_EQ(1, mesh.edges[0].node_ids[0]);
+    EXPECT_EQ(4, mesh.edges[0].node_ids[1]);
+    EXPECT_EQ(0, mesh.edges[0].node_ids[2]);
 
-    EXPECT_EQ(0, mesh.edges[1].nodeIDs[0]);
-    EXPECT_EQ(5, mesh.edges[1].nodeIDs[1]);
-    EXPECT_EQ(3, mesh.edges[1].nodeIDs[2]);
+    EXPECT_EQ(0, mesh.edges[1].node_ids[0]);
+    EXPECT_EQ(5, mesh.edges[1].node_ids[1]);
+    EXPECT_EQ(3, mesh.edges[1].node_ids[2]);
 
-    EXPECT_EQ(3, mesh.edges[2].nodeIDs[0]);
-    EXPECT_EQ(6, mesh.edges[2].nodeIDs[1]);
-    EXPECT_EQ(1, mesh.edges[2].nodeIDs[2]);
+    EXPECT_EQ(3, mesh.edges[2].node_ids[0]);
+    EXPECT_EQ(6, mesh.edges[2].node_ids[1]);
+    EXPECT_EQ(1, mesh.edges[2].node_ids[2]);
 
-    EXPECT_EQ(3, mesh.edges[3].nodeIDs[0]);
-    EXPECT_EQ(7, mesh.edges[3].nodeIDs[1]);
-    EXPECT_EQ(2, mesh.edges[3].nodeIDs[2]);
+    EXPECT_EQ(3, mesh.edges[3].node_ids[0]);
+    EXPECT_EQ(7, mesh.edges[3].node_ids[1]);
+    EXPECT_EQ(2, mesh.edges[3].node_ids[2]);
 
-    EXPECT_EQ(2, mesh.edges[4].nodeIDs[0]);
-    EXPECT_EQ(8, mesh.edges[4].nodeIDs[1]);
-    EXPECT_EQ(1, mesh.edges[4].nodeIDs[2]);
+    EXPECT_EQ(2, mesh.edges[4].node_ids[0]);
+    EXPECT_EQ(8, mesh.edges[4].node_ids[1]);
+    EXPECT_EQ(1, mesh.edges[4].node_ids[2]);
 
     /* Coords for center Nodes */
-    EXPECT_EQ((unsigned long) 1, mesh.edges[0].usedNodeIDs.size());
-    long centerID = mesh.edges[0].usedNodeIDs[0];
-    EXPECT_EQ(-1, mesh.nodes[centerID].data.coords.x);
-    EXPECT_EQ(0, mesh.nodes[centerID].data.coords.y);
+    EXPECT_EQ((unsigned long) 1, mesh.edges[0].used_node_ids.size());
+    long centerID = mesh.edges[0].used_node_ids[0];
+    EXPECT_EQ(-1, mesh.nodes[centerID].coords.x);
+    EXPECT_EQ(0, mesh.nodes[centerID].coords.y);
 
-    EXPECT_EQ((unsigned long) 1, mesh.edges[1].usedNodeIDs.size());
-    centerID = mesh.edges[1].usedNodeIDs[0];
-    EXPECT_EQ(0, mesh.nodes[centerID].data.coords.x);
-    EXPECT_EQ(-1, mesh.nodes[centerID].data.coords.y);
+    EXPECT_EQ((unsigned long) 1, mesh.edges[1].used_node_ids.size());
+    centerID = mesh.edges[1].used_node_ids[0];
+    EXPECT_EQ(0, mesh.nodes[centerID].coords.x);
+    EXPECT_EQ(-1, mesh.nodes[centerID].coords.y);
 
-    EXPECT_EQ((unsigned long) 1, mesh.edges[2].usedNodeIDs.size());
-    centerID = mesh.edges[2].usedNodeIDs[0];
-    EXPECT_EQ(0, mesh.nodes[centerID].data.coords.x);
-    EXPECT_EQ(0, mesh.nodes[centerID].data.coords.y);
+    EXPECT_EQ((unsigned long) 1, mesh.edges[2].used_node_ids.size());
+    centerID = mesh.edges[2].used_node_ids[0];
+    EXPECT_EQ(0, mesh.nodes[centerID].coords.x);
+    EXPECT_EQ(0, mesh.nodes[centerID].coords.y);
 
-    EXPECT_EQ((unsigned long) 1, mesh.edges[3].usedNodeIDs.size());
-    centerID = mesh.edges[3].usedNodeIDs[0];
-    EXPECT_EQ(1, mesh.nodes[centerID].data.coords.x);
-    EXPECT_EQ(0, mesh.nodes[centerID].data.coords.y);
+    EXPECT_EQ((unsigned long) 1, mesh.edges[3].used_node_ids.size());
+    centerID = mesh.edges[3].used_node_ids[0];
+    EXPECT_EQ(1, mesh.nodes[centerID].coords.x);
+    EXPECT_EQ(0, mesh.nodes[centerID].coords.y);
 
-    EXPECT_EQ((unsigned long) 1, mesh.edges[4].usedNodeIDs.size());
-    centerID = mesh.edges[4].usedNodeIDs[0];
-    EXPECT_EQ(0, mesh.nodes[centerID].data.coords.x);
-    EXPECT_EQ(1, mesh.nodes[centerID].data.coords.y);
+    EXPECT_EQ((unsigned long) 1, mesh.edges[4].used_node_ids.size());
+    centerID = mesh.edges[4].used_node_ids[0];
+    EXPECT_EQ(0, mesh.nodes[centerID].coords.x);
+    EXPECT_EQ(1, mesh.nodes[centerID].coords.y);
 
     /* Edge's Length */
     EXPECT_EQ(2, mesh.edges[0].length);
@@ -79,44 +84,38 @@ TEST(parserTriangleMesh, LoadEdges) {
     EXPECT_EQ(2, mesh.edges[4].length);
 }
 
-TEST(parserTriangleMesh, LoadCells) {
-    Parser parser;
-    Mesh mesh(1, false);
-    parser.LoadNodes(&mesh, "test/resources/triangle/test.node");
-    parser.LoadEdges(&mesh, "test/resources/triangle/test.edge");
-    parser.LoadCells(&mesh, "test/resources/triangle/test.ele");
-
+TEST_F(ParserTest, parse_cells) {
     /* Nodes for every Cell */
-    EXPECT_EQ(1, mesh.cells[0].nodeIDs[0]);
-    EXPECT_EQ(0, mesh.cells[0].nodeIDs[1]);
-    EXPECT_EQ(3, mesh.cells[0].nodeIDs[2]);
-    EXPECT_EQ(3, mesh.cells[1].nodeIDs[0]);
-    EXPECT_EQ(2, mesh.cells[1].nodeIDs[1]);
-    EXPECT_EQ(1, mesh.cells[1].nodeIDs[2]);
+    EXPECT_EQ(1, mesh.cells[0].node_ids[0]);
+    EXPECT_EQ(0, mesh.cells[0].node_ids[1]);
+    EXPECT_EQ(3, mesh.cells[0].node_ids[2]);
+    EXPECT_EQ(3, mesh.cells[1].node_ids[0]);
+    EXPECT_EQ(2, mesh.cells[1].node_ids[1]);
+    EXPECT_EQ(1, mesh.cells[1].node_ids[2]);
 
     /* Coords for center Nodes */
-    long centerID = mesh.cells[0].centerNodeID;
-    EXPECT_EQ(-0.34, floor(mesh.nodes[centerID].data.coords.x * 100) / 100);
-    EXPECT_EQ(-0.34, floor(mesh.nodes[centerID].data.coords.y * 100) / 100);
-    centerID = mesh.cells[1].centerNodeID;
-    EXPECT_EQ(0.33, floor(mesh.nodes[centerID].data.coords.x * 100) / 100);
-    EXPECT_EQ(0.33, floor(mesh.nodes[centerID].data.coords.y * 100) / 100);
+    long centerID = mesh.cells[0].center_node_id;
+    EXPECT_EQ(-0.34, floor(mesh.nodes[centerID].coords.x * 100) / 100);
+    EXPECT_EQ(-0.34, floor(mesh.nodes[centerID].coords.y * 100) / 100);
+    centerID = mesh.cells[1].center_node_id;
+    EXPECT_EQ(0.33, floor(mesh.nodes[centerID].coords.x * 100) / 100);
+    EXPECT_EQ(0.33, floor(mesh.nodes[centerID].coords.y * 100) / 100);
 
     /* Edges for every Cell */
-    EXPECT_EQ(0, mesh.cells[0].edgeIDs[0]);
-    EXPECT_EQ(1, mesh.cells[0].edgeIDs[1]);
-    EXPECT_EQ(2, mesh.cells[0].edgeIDs[2]);
-    EXPECT_EQ(3, mesh.cells[1].edgeIDs[0]);
-    EXPECT_EQ(4, mesh.cells[1].edgeIDs[1]);
-    EXPECT_EQ(2, mesh.cells[1].edgeIDs[2]);
+    EXPECT_EQ(0, mesh.cells[0].edge_ids[0]);
+    EXPECT_EQ(1, mesh.cells[0].edge_ids[1]);
+    EXPECT_EQ(2, mesh.cells[0].edge_ids[2]);
+    EXPECT_EQ(3, mesh.cells[1].edge_ids[0]);
+    EXPECT_EQ(4, mesh.cells[1].edge_ids[1]);
+    EXPECT_EQ(2, mesh.cells[1].edge_ids[2]);
 
     /* Cells for every Edge*/
-    EXPECT_EQ(0, mesh.edges[0].cellIDs[0]);
-    EXPECT_EQ(0, mesh.edges[1].cellIDs[0]);
-    EXPECT_EQ(0, mesh.edges[2].cellIDs[0]);
-    EXPECT_EQ(1, mesh.edges[2].cellIDs[1]);
-    EXPECT_EQ(1, mesh.edges[3].cellIDs[0]);
-    EXPECT_EQ(1, mesh.edges[4].cellIDs[0]);
+    EXPECT_EQ(0, mesh.edges[0].cell_ids[0]);
+    EXPECT_EQ(0, mesh.edges[1].cell_ids[0]);
+    EXPECT_EQ(0, mesh.edges[2].cell_ids[0]);
+    EXPECT_EQ(1, mesh.edges[2].cell_ids[1]);
+    EXPECT_EQ(1, mesh.edges[3].cell_ids[0]);
+    EXPECT_EQ(1, mesh.edges[4].cell_ids[0]);
 
     /* Cell's Volume */
     EXPECT_EQ(2, mesh.cells[0].volume);

@@ -1,7 +1,6 @@
 #ifndef Cell_hpp
 #define Cell_hpp
 
-#include <armadillo>
 #include <unordered_map>
 #include <vector>
 
@@ -11,28 +10,25 @@ class Mesh;
 
 class Cell {
 public:
-    long ID;
-    long centerNodeID;
+    Cell(Mesh &mesh, long id, long node_id_1, long node_id_2, long node_id_3);
+
+    long id;
+    long center_node_id;
     double volume;
 
-    std::vector<long> nodeIDs;
-    std::vector<long> edgeIDs;
-    std::unordered_map<long, int> edgeToNormalDir;
-    std::unordered_map<long, Vector> nodeToTransferVector;
-    std::unordered_map<long, long> nodeIDToOppositeNodeID;
+    std::vector<long> node_ids;
+    std::vector<long> edge_ids;
+    std::unordered_map<long, Vector> edge_to_normal;
+    std::unordered_map<long, Vector> edge_to_div_coef;
+    std::unordered_map<long, Vector> node_to_transfer_vector;
+    std::unordered_map<long, long> node_id_to_opposite_node_id;
 
-    arma::mat interpolationMat;
-
-    Cell() {};
-    Cell(Mesh &mesh, long ID, long nodeID1, long nodeID2, long nodeID3);
-    double countVolume(Mesh &mesh, long nodeID1, long nodeID2, long nodeID3);
-    long getNextNodeID(unsigned long nodeIDPos);
-    long getPrevNodeID(unsigned long nodeIDPos);
-    std::vector<long> getEdgeOrderedNodeIDs(std::vector<long> edgeUnorderedNodeIDs);
+    long get_next_node_id(unsigned long nodeIDPos);
+    long get_prev_node_id(unsigned long nodeIDPos);
+    std::vector<long> get_edge_ordered_node_ids(std::vector<long> edgeUnorderedNodeIDs);
 
 private:
-    void assignOppositeNodeIDs(Mesh &mesh);
-    void buildInterpolationMat(Mesh &mesh);
+    void assign_opposite_node_ids(Mesh &mesh);
 };
 
 #endif

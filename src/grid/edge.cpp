@@ -6,39 +6,40 @@
 #include "grid/mesh.hpp"
 
 Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge, int innerNodeNum) {
-    this->ID = ID;
-    this->boundEdge = boundEdge;
-    endNodeIDs.push_back(startNodeID);
-    endNodeIDs.push_back(endNodeID);
+    this->id = ID;
+    this->is_bound = boundEdge;
+    end_node_ids.push_back(startNodeID);
+    end_node_ids.push_back(endNodeID);
 
     double startNodeX, startNodeY, endNodeX, endNodeY;
-    startNodeX = mesh.nodes[startNodeID].data.coords.x;
-    startNodeY = mesh.nodes[startNodeID].data.coords.y;
-    endNodeX = mesh.nodes[endNodeID].data.coords.x;
-    endNodeY = mesh.nodes[endNodeID].data.coords.y;
+    startNodeX = mesh.nodes[startNodeID].coords.x;
+    startNodeY = mesh.nodes[startNodeID].coords.y;
+    endNodeX = mesh.nodes[endNodeID].coords.x;
+    endNodeY = mesh.nodes[endNodeID].coords.y;
 
     length = sqrt(pow((endNodeX - startNodeX), 2) + pow((endNodeY - startNodeY), 2));
 
     // In nodeIDs there will be always nodes order from start node to end node
-    this->nodeIDs.push_back(startNodeID);
-    mesh.nodes[startNodeID].edgeIDs.insert(ID);
+    this->node_ids.push_back(startNodeID);
+    mesh.nodes[startNodeID].edge_ids.insert(ID);
     Vector startNode(startNodeX, startNodeY);
     Vector edgeVector(endNodeX - startNodeX, endNodeY - startNodeY);
     for (int i = 1; i < innerNodeNum + 1; i++) {
-        Vector nodeCoords = edgeVector / (innerNodeNum + 1) * i + startNode;
-        Node *node = new Node(mesh, nodeCoords.x, nodeCoords.y, true,
-                              boundEdge, false, false);
-        node->edgeIDs.insert(ID);
+        Node *node = new Node(mesh,
+                              edgeVector.x / (innerNodeNum + 1) * i + startNode.x,
+                              edgeVector.y / (innerNodeNum + 1) * i + startNode.y,
+                              true, boundEdge);
+        node->edge_ids.insert(ID);
         mesh.nodes.push_back(*node);
-        this->nodeIDs.push_back(node->ID);
-        this->innerNodeIDs.push_back(node->ID);
+        this->node_ids.push_back(node->id);
+        this->inner_node_ids.push_back(node->id);
     }
-    this->nodeIDs.push_back(endNodeID);
-    mesh.nodes[endNodeID].edgeIDs.insert(ID);
+    this->node_ids.push_back(endNodeID);
+    mesh.nodes[endNodeID].edge_ids.insert(ID);
 
-    for (long nodeID : this->nodeIDs) {
+    for (long nodeID : this->node_ids) {
         if (mesh.nodes[nodeID].used) {
-            this->usedNodeIDs.push_back(nodeID);
+            this->used_node_ids.push_back(nodeID);
         }
     }
 
@@ -50,28 +51,28 @@ Edge::Edge(Mesh &mesh, long ID, long startNodeID, long endNodeID, bool boundEdge
 }
 
 long Edge::getAnotherEndNode(long ID) {
-    assert((ID == nodeIDs.front()) || (ID == nodeIDs.back()));
-    if (ID == nodeIDs.front()) {
-        return nodeIDs.begin()[3];
+    assert((ID == node_ids.front()) || (ID == node_ids.back()));
+    if (ID == node_ids.front()) {
+        return node_ids.begin()[3];
     } else {
-        return nodeIDs.begin()[0];
+        return node_ids.begin()[0];
     }
 }
 
 long Edge::getNearInnerNode(long ID) {
-    assert((ID == nodeIDs.front()) || (ID == nodeIDs.back()));
-    if (ID == nodeIDs.front()) {
-        return nodeIDs.begin()[1];
+    assert((ID == node_ids.front()) || (ID == node_ids.back()));
+    if (ID == node_ids.front()) {
+        return node_ids.begin()[1];
     } else {
-        return nodeIDs.begin()[2];
+        return node_ids.begin()[2];
     }
 }
 
 long Edge::getFarInnerNode(long ID) {
-    assert((ID == nodeIDs.front()) || (ID == nodeIDs.back()));
-    if (ID == nodeIDs.front()) {
-        return nodeIDs.begin()[2];
+    assert((ID == node_ids.front()) || (ID == node_ids.back()));
+    if (ID == node_ids.front()) {
+        return node_ids.begin()[2];
     } else {
-        return nodeIDs.begin()[1];
+        return node_ids.begin()[1];
     }
 }

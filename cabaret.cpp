@@ -1,30 +1,15 @@
 #include <chrono>
 #include <iostream>
 
-//#include <libconfig.h++>
-
 #include "grid/mesh.hpp"
 #include "equations/shallow_water/initializer.hpp"
 #include "equations/shallow_water/output.hpp"
 #include "equations/shallow_water/solver.hpp"
 
 int main() {
-    std::cout.precision(8);
+    std::cout.precision(30);
 
-//    libconfig::Config config;
-//    config.readFile("config/config.cfg");
-
-//    int steps = config.lookup("steps");
-//    double timeToStop = config.lookup("time_to_stop");
-//
-//    int writePeriod = config.lookup("write_period");
-//    bool writeConservative = config.lookup("write_conservative");
-//    bool writeFlux = config.lookup("write_flux");
-//
-//    int edgeInnerNodesNumber = config.lookup("edge_inner_nodes_number");
-//    bool apexNodesUsed = config.lookup("apex_nodes_used");
-
-    int steps = 10;
+    int steps = 500;
     double time_to_stop = 0.0;
 
     int write_period = 1;
@@ -36,9 +21,9 @@ int main() {
 
     Mesh mesh{edge_inner_nodes, apex_nodes_used};
     mesh.init_mesh(
-        "/Users/gorbdan/workspace/projects/cabaret/cabaret-triangle/resources/mesh/regular/square -1x1/Mesh.node",
-        "/Users/gorbdan/workspace/projects/cabaret/cabaret-triangle/resources/mesh/regular/square -1x1/Mesh.edge",
-        "/Users/gorbdan/workspace/projects/cabaret/cabaret-triangle/resources/mesh/regular/square -1x1/Mesh.ele"
+        "/Users/gorbdan/workspace/projects/cabaret/cabaret-triangle/resources/mesh/regular/square -1x1/4080/Mesh.node",
+        "/Users/gorbdan/workspace/projects/cabaret/cabaret-triangle/resources/mesh/regular/square -1x1/4080/Mesh.edge",
+        "/Users/gorbdan/workspace/projects/cabaret/cabaret-triangle/resources/mesh/regular/square -1x1/4080/Mesh.ele"
     );
     std::cout << "number of cells = " << mesh.cells.size() << std::endl;
 
@@ -47,46 +32,13 @@ int main() {
 
     int task = 2;
     switch (task) {
-        // case 1: {
-        //     TransferInitializer initializer = TransferInitializer();
-        //     initializer.initialize(*mesh);
-
-        //     TransferOutput output = TransferOutput(writePeriod);
-        //     output.writeParaview(mesh, 0);
-
-        //     double cfl = config.lookup("solver.cfl");
-        //     TransferSolver solver = TransferSolver(cfl, mesh);
-        //     double time = 0;
-        //     double tau = solver.calcTau();
-
-        //     for (int i = 0; i < steps; i++) {
-        //         if (timeToStop > 0 && time >= timeToStop) {
-        //             output.writeParaview(mesh, i + 1);
-        //             break;
-        //         }
-
-        //         std::cout << "step = " << i << " tau = " << tau << " time = " << time << std::endl;
-        //         time += tau;
-
-        //         solver.processPhase1(tau);
-        //         solver.processPhase2(tau);
-        //         solver.processPhase3(tau);
-        //         solver.prepareNextStep();
-
-        //         output.writeParaview(mesh, i + 1);
-        //     }
-        //     break;
-        // }
-
         case 2: {
             ShallowWaterInitializer initializer = ShallowWaterInitializer();
             initializer.initialize(mesh);
 
-            ShallowWaterOutput output = ShallowWaterOutput{write_period, write_conservative, write_flux};
+            ShallowWaterOutput output = ShallowWaterOutput{write_conservative, write_flux};
             output.write_paraview(mesh, 0, 0);
 
-//            double cfl = config.lookup("solver.cfl");
-//            double g = config.lookup("solver.shallow_water.g");
             double cfl = 0.3;
             double g = 1.0;
             ShallowWaterSolver solver = ShallowWaterSolver(mesh, cfl, g);
@@ -98,7 +50,7 @@ int main() {
             std::chrono::duration<double> durPhase2 = std::chrono::duration<double>(0);
             std::chrono::duration<double> durPhase3 = std::chrono::duration<double>(0);
 
-            double tau = 0;
+            double tau;
             double time = 0;
             int real_steps = 0;
             for (int i = 0; i < steps; i++) {
@@ -133,21 +85,25 @@ int main() {
 
                 real_steps += 1;
 
-                if (time_to_stop > 0 && time >= time_to_stop) {
+                if ((i + 1) % write_period == 0) {
                     output.write_paraview(mesh, time, i + 1);
+                }
+                if (time_to_stop > 0 && time >= time_to_stop) {
                     break;
                 }
-                output.write_paraview(mesh, time, i + 1);
             }
             std::chrono::system_clock::time_point stop = std::chrono::system_clock::now();
-            std::chrono::duration<double> dur =
-                std::chrono::duration_cast<std::chrono::duration<double>>(stop - start);
+            std::chrono::duration<double> dur = std::chrono::duration_cast<std::chrono::duration<double>>(stop - start);
 
             std::cout << "it took " << dur.count() / real_steps << " sec to process one step" << std::endl;
             std::cout << "it took " << durCalcTau.count() / real_steps << " sec to calculate tau" << std::endl;
             std::cout << "it took " << durPhase1.count() / real_steps << " sec to process phase 1" << std::endl;
             std::cout << "it took " << durPhase2.count() / real_steps << " sec to process phase 2" << std::endl;
             std::cout << "it took " << durPhase3.count() / real_steps << " sec to process phase 3" << std::endl;
+            break;
+        }
+        default: {
+            std::cout << "such task not supported" << std::endl;
             break;
         }
     }

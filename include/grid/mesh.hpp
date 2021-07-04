@@ -1,6 +1,7 @@
 #ifndef Mesh_hpp
 #define Mesh_hpp
 
+#include <map>
 #include <vector>
 
 #include "node.hpp"
@@ -13,6 +14,11 @@ public:
         edge_inner_nodes(edge_inner_nodes),
         apex_nodes_used(apex_nodes_used)
     {}
+
+    Mesh(Mesh&&) = delete;
+    Mesh(const Mesh&) = delete;
+    Mesh& operator=(Mesh&&) = delete;
+    Mesh& operator=(const Mesh&) = delete;
 
     int edge_inner_nodes;
     bool apex_nodes_used;
@@ -36,9 +42,6 @@ public:
     std::vector<Cell> cells;
 
     std::map<std::pair<int, int>, int> map_nodes_with_edge;
-    std::map<long, std::vector<double>> edge_id_to_divs_0;
-    std::map<long, std::vector<double>> edge_id_to_divs_2;
-    std::map<long, std::vector<Vector>> cell_id_to_grads;
 
     inline long get_new_node_id() { return nodes.size(); };
 
@@ -49,7 +52,7 @@ public:
     void calculate_edges_normals();
     void calculate_transfer_vectors();
 private:
-    void calculate_edge_normal(Cell* cell, long edgeID);
+    void calculate_edge_normal(Cell* cell, long edge_id);
 };
 
 #endif

@@ -22,13 +22,13 @@ public:
     }
 
 protected:
-    Mesh mesh_;
+    Mesh& mesh_;
     double cfl_;
     double tau_;
 
 private:
-    virtual void process_phase_2_bound(Edge *edge) = 0;
-    virtual void process_phase_2_inner(Edge *edge) = 0;
+    virtual void process_phase_2_bound(const Edge& edge) = 0;
+    virtual void process_phase_2_inner(const Edge& edge) = 0;
 };
 
 #endif

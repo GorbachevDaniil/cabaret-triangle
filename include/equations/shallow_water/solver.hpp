@@ -14,47 +14,32 @@ public:
         g_(g)
     {}
 
-    void calc_tau();
-    void process_phase_1();
-    void process_phase_2();
-    void process_phase_3();
-    void prepare_next_step();
-
-private:
-    void process_phase_2_bound(Edge *edge);
-    void process_phase_2_inner(Edge *edge);
-
-    double calcIntegral(std::vector<double> values, double length);
-
-    double calcDiv1(double h, Vector u, Vector n);
-    double calcDiv2(double h, Vector u, Vector n);
-    double calcDiv3(double h, Vector u, Vector n);
-
-    double calcInvR(double G, double h, Vector u, Vector n);
-    double calcInvQ(double G, double h, Vector u, Vector n);
-    double calcInvS(double G, double h, Vector u, Vector n);
-
-    double calcLambdaR(double h, Vector u, Vector n);
-    double calcLambdaQ(double h, Vector u, Vector n);
-    double calcLambdaS(double h, Vector u, Vector n);
-
-    double calcQR(Cell *cell, double dirDerivH, double dirDerivUx, double dirDerivUy, Vector n);
-    double calcQQ(Cell *cell, double dirDerivH, double dirDerivUx, double dirDerivUy, Vector n);
-    double calcQS(Cell *cell, double dirDerivH, double dirDerivUx, double dirDerivUy, Vector n);
-
-    arma::vec convertInvToInitialVariables(std::vector<arma::vec> invs);
-
-    std::vector<arma::vec> getInvFromCellExtr(Node *node, Edge *edge, Cell *cell);
-
-    double extrapolateInv(
-        Cell *cell, Edge *edge, Node *node, Vector n, double G,
-        std::function<double(ShallowWaterSolver &, double, double, Vector, Vector)> calcInv,
-        std::function<double(ShallowWaterSolver &, double, Vector, Vector)> calcLambda,
-        std::function<double(ShallowWaterSolver &, Cell *, double, double, double, Vector)> calcQ,
-        bool needMonotize);
+    void calc_tau() final;
+    void process_phase_1() final;
+    void process_phase_2() final;
+    void process_phase_3() final;
+    void prepare_next_step() final;
 
 private:
     double g_;
+
+    void process_phase_2_bound(const Edge& edge) final;
+    void process_phase_2_inner(const Edge& edge) final;
+
+    [[nodiscard]] double calc_div_1(double h, double u_x, double u_y, Vector div_coef) const;
+    [[nodiscard]] double calc_div_2(double h, double u_x, double u_y, Vector div_coef) const;
+    [[nodiscard]] double calc_div_3(double h, double u_x, double u_y, Vector div_coef) const;
+
+    [[nodiscard]] double calc_inv_r(double G, double h, const Vector& u, const Vector& n) const;
+    [[nodiscard]] double calc_inv_q(double G, double h, const Vector& u, const Vector& n) const;
+    [[nodiscard]] double calc_inv_s(const Vector& u, const Vector& n) const;
+
+    [[nodiscard]] double calc_lambda_r(double h, const Vector& u, const Vector& n) const;
+    [[nodiscard]] double calc_lambda_q(double h, const Vector& u, const Vector& n) const;
+    [[nodiscard]] double calc_lambda_s(const Vector& u, const Vector& n) const;
+
+    std::array<std::array<double, 3>, 2> calc_invs(const double& G, const Vector& n,
+                                                   Cell& cell, long node_id);
 };
 
 #endif

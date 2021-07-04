@@ -9,20 +9,20 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(include)
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
-find_package(Armadillo REQUIRED)
 include_directories(SYSTEM ${ARMADILLO_INCLUDE_DIRS})
 
 # cabaret target begin
-add_executable(cabaret main.cpp ${SOURCES})
-target_compile_options(cabaret PRIVATE -Wall -Wextra -pedantic -Werror)
-target_link_libraries(cabaret ${ARMADILLO_LIBRARIES})
+add_executable(cabaret cabaret.cpp ${SOURCES})
+target_compile_options(cabaret PRIVATE -Wall -Wextra -pedantic)
+
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/output)
 # engine target end
 
 # unit_tests target begin
 FetchContent_Declare(
         googletest
         GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG        release-1.10.0
+        GIT_TAG        release-1.11.0
 )
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_GetProperties(googletest)
